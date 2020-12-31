@@ -1,4 +1,16 @@
-# Install all required libraries (versions noted are tested, others may work):
+# ASCOT
+As of year 2020, ASCOT development and maintenance has been moved to the group for Space Geodesy and Geodynamics, Onsala Space Observatory, Sweden.
+
+## Publications
+- Artz et al. (2016): https://ui.adsabs.harvard.edu/abs/2016ivs..conf..217A/abstract
+
+## Historical background
+The VLBI group of the Institute of Geodesy and Geoinformation of the University of Bonn (IGG) started implementing a new analysis toolbox for VLBI observations. The main reason is the need for a flexible environment, which allows for straightforward implementations of new scientific and software-related ideas for VLBI data analysis. Furthermore, we wanted to accumulate the developments, which have been performed in Bonn in recent years, under a unified software package. The software is implemented in C++ and should finally be able to perform schedules of VLBI sessions, simulation of VLBI observations as well as geodetic data analysis and intra-technique combination. Thus, it is named: IGG VLBI Group – Analysis, Scheduling and Combination Toolbox (ivg::ASCOT). Currently, we are able to perform single-session data analysis, at a stage where the ambiguities have been resolved. Furthermore, global solutions to derive celestial and terrestrial reference frames can be performed on the normal equation level. Intra-technique combinations of several solutions complete the initial functionality of the software package. Scheduling can be performed for INTensives and small regional networks, using different approaches like impact factors or sky-coverage. 
+
+## Install instructions
+ASCOT is somewhat tricky to compile. Hopefully this will be improved in the near future, but meanwhile here's some snippets of useful information.
+
+### Install all required libraries (versions noted are tested, others may work):
 - gfortran (7.5.0)
 - lapack (sudo apt-get install liblapack-dev)
 - OpenBLAS (sudo apt-get install libopenblas-dev)
@@ -15,7 +27,7 @@
 - tclap (sudo apt-get install libtclap-dev)
 - doxygen (sudo apt-get install doxygen)
 
-# Set variables 
+### Set variables 
 - $OB_DIR to where OpenBLAS is installed, if not in standard location
 - $ASCOT_DIR to folder where you want to install ASCOT (e.g. /opt/ascot)
 - $CPATH and $LD_LIBRARY_PATH contains paths to all relevant header files and libraries
@@ -24,11 +36,11 @@
   and then set as "export CPATH=/usr/include/x86_64-linux-gnu/qt5"
 - May need to "cd src/qt_plot && rm .qmake.stash && qmake" to refresh qmake stash
 
-# Run "make_ascot all", alternatively "make_ascot all n" to run n paralell jobs - might work, if so it's faster.
+### Run "make_ascot all", alternatively "make_ascot all n" to run n paralell jobs - might work, if so it's faster.
 
-# Run "bin/get_external_data" to download VMF1 etc.
+### Run "bin/get_external_data" to download VMF1 etc.
 
-Troubleshooting:
+## Troubleshooting
 - Errors like "undefined reference to `GRBModel::read" for e.g. ivg_indep can be solved by following instructions at 
   https://support.gurobi.com/hc/en-us/articles/360039093112-How-do-I-resolve-undefined-reference-errors-while-linking-Gurobi-in-C-
   i.e. running "cd /opt/gurobi911/linux64/src/build && make && cp libgurobi_c++.a ../../lib/"
