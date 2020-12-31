@@ -1,0 +1,60 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+   <TITLE> On-line artificial satellite identification </TITLE>
+   <META http-equiv=Content-Type content="text/html; charset=utf-8">
+   <META NAME="Author" CONTENT="Bill Gray">
+</head>
+<body>
+
+<h1> On-line artificial satellite identification </h1>
+
+<p> This is an on-line version of the <a href="sat_id.htm"> <tt> sat_id
+</tt> </a> program used for identifying artificial satellites found
+by asteroid observers.  Use the form below to find which artsats match
+the position/motion of objects you've observed. </p>
+
+<p> Suggested quick start:  <b>Don't panic!</b>  Copy/paste your observations in the
+large text window below, <em> or </em> click on "Browse" to pick a file
+containing the astrometry.  Then click the "find matching artsats"
+button.  That will probably be all you need. </p>
+
+<p> The output will show each line of astrometry,  followed by the object(s)
+within the specified angular distance and a little information about them.
+If you supply more than one position (which I strongly recommend),  the apparent
+motion of "your" object will be shown,  and you can compare it to the motion
+of the possible matching artsats. </p>
+
+<p> Be warned:  as currently written,  the program uses "recent" elements for
+almost all objects.  Which means that if you feed it observations made a month
+ago,  it'll probably fail.  Also,  it times out after 15 seconds,  so don't
+try to feed it too many observations at once. </p>
+
+<p> If you're still not getting things to work,  contact me at
+p&#x202e;&ocirc;&#xe7;.&ouml;tulp&#x165;c&eacute;j&ocirc;&#x159;p&#x40;ot&uacute;l&#x202c;m
+(modified to baffle spammers). </p>
+
+<p><hr>
+<FORM METHOD=POST enctype="multipart/form-data" ACTION="/cgi-bin/sat_id/sat_id2"
+  onReset="return confirm('Do you really want to reset the form to the defaults?')" >
+  <p><input type=submit value=" Find matching artsats ">
+     <input type=reset value=" Reset ">
+
+<p> Cut/paste observations in the
+<a href="http://www.minorplanetcenter.net/iau/info/OpticalObs.html">
+80-column MPC format </a> below.  Don't worry about it if some
+other text is copied in as well;  extra text will simply be disregarded.
+
+<p><textarea name="TextArea" cols=90 rows=10></textarea>
+
+<p> <i> Or, </i> you can upload a file containing the astrometry.
+<input type=file name="upfile">
+
+<p> Find artsats within <input name="radius" maxlength=6 size=6 value="2"> degrees
+  <p><input type=submit value=" Find matching artsats ">
+     <input type=reset value=" Reset ">
+
+</form>
+
+</body>
+</html>

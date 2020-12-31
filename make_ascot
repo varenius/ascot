@@ -1,0 +1,203 @@
+#! /bin/bash
+# ========================================================================== #
+# ivg::ASCOT make-script                                                     #
+#                                                                            #
+# call ./make_ascot all: compile everything and create all programs & doc    #
+#      ./make_ascot clean: remove everything (programs, libraries, doc)      #
+#      ./make_ascot all x: compile everything with -j x options (x jobs)     #
+#      ./make_ascot all x n : compile everything with -j x options (x jobs)  #
+#                             but do not create a doc                        #
+#                                                                            #
+# ========================================================================== #
+export ASCOT_DIR=/opt/ascot/
+export SOFA_V=20150209_a
+# Set CPATH to where qt4/5 headers live
+export CPATH=/usr/include/x86_64-linux-gnu/qt5
+#export OB_DIR=/path/to/openblas
+# ========================================================================== #
+
+echo ' '
+if [ "$1" != "all" -a  "$1" != "clean" ];then
+  echo 'ERROR: wrong input arguments; use all|clean! Exiting'
+  echo ' '
+  exit -1
+fi
+
+if [ "$ASCOT_DIR" == "" ]; then
+   echo 'ERROR: $ASCOT_DIR not set! Exiting'
+  echo ' '
+  exit -2
+fi
+
+echo 'ivg::ASCOT: make '$1' in directory: '$ASCOT_DIR
+
+
+# cerate directories
+if [ "$1" == "all" ]; then
+   cd $ASCOT_DIR
+   mkdir bin include lib
+fi
+
+# get number of processors from input arg and check for errors 
+if [ -z "$2" ]
+  then
+    echo "second argument number of logical processores not supplied"
+    jobs=1
+  else
+    re='^[0-9]+$' #regular expression to check whether input argument is a number
+    if ! [[ $2 =~ $re ]]
+    then
+        echo "!!! error: Input argument for number of processors has to be an integer"
+	jobs=1 
+    else
+      jobs=$2
+    fi
+fi
+echo 'using ' $jobs 'jobs'
+
+# (1) IERS routines
+echo ' '
+echo '******************************************************************************'
+echo '*** IERS routines'
+cd $ASCOT_DIR/src/iers
+# -j workes for iers but causes problems during step (7) Programs. so do not use here
+make $1
+
+# (2) SOFA routines
+echo ' '
+echo '******************************************************************************'
+echo '*** SOFA routines'
+cd $ASCOT_DIR/src/sofa/$SOFA_V/c/src
+make -j $jobs $1
+
+if [ "$1" == "all" ]; then
+   make -j $jobs  test
+fi
+
+# (3) projectpluto libraries
+echo ' '
+echo '******************************************************************************'
+echo '*** projectpluto libraries'
+if [ "$1" == "all" ]; then
+   if [ ! -d $ASCOT_DIR/src/projectpluto/lib ]; then
+      mkdir  $ASCOT_DIR/src/projectpluto/lib
+   fi
+   if [ ! -d $ASCOT_DIR/src/projectpluto/include ]; then
+      mkdir  $ASCOT_DIR/src/projectpluto/include
+   fi
+fi
+echo ' '
+echo ' ****** lunar'
+cd $ASCOT_DIR/src/projectpluto/lunar
+make -j $jobs $1
+echo ' '
+echo ' ****** jpl_eph'
+cd $ASCOT_DIR/src/projectpluto/jpl_eph
+make -j $jobs $1
+echo ' '
+echo ' ****** sat_code'
+cd $ASCOT_DIR/src/projectpluto/sat_code
+make -j $jobs sat_code.a
+
+# (4) IVG library
+echo ' '
+echo '******************************************************************************'
+echo '*** IVG library'
+cd $ASCOT_DIR/src/ivg
+make -j $jobs $1
+if [ "$1" == "clean" ]; then
+   rm $ASCOT_DIR/include/iers_wrapper.h
+fi
+
+# (5) IVG QTplot library
+echo ' '
+echo '******************************************************************************'
+echo '*** IVG QTplot library'
+cd $ASCOT_DIR/src/qt_plot
+if [ "$1" == "all" ]; then
+   qmake
+fi
+make -j $jobs $1
+if [ "$1" == "clean" ]; then
+   rm $ASCOT_DIR/lib/libqt_plot.a
+fi
+
+# (6) IVG analysis tools
+echo ' '
+echo '******************************************************************************'
+echo '*** IVG analysis tools library'
+cd $ASCOT_DIR/src/analysistools
+make -j $jobs $1
+
+
+ # (7) Programs
+ echo ' '
+ echo '******************************************************************************'
+ echo '*** ivg::ASCOT programs'
+ cd $ASCOT_DIR/src/progs/analysis
+ echo ' '
+ echo ' ****** ivg_atools'
+ make -j $jobs $1
+ 
+ cd $ASCOT_DIR/src/progs/arc_file_generator
+ echo ' '
+ echo ' ****** arc_file_generator'
+ make $1
+ 
+ cd $ASCOT_DIR/src/progs/sinex_analyzer
+ echo ' '
+ echo ' ****** sinex_analyzer'
+ make $1
+ 
+ cd $ASCOT_DIR/src/progs/get_ext_data
+ echo ' '
+ echo ' ****** get_ext_data'
+ make $1
+ 
+ cd $ASCOT_DIR/src/progs/indep_solution
+ echo ' '
+ echo ' ****** ivg_indep'
+ make $1
+ 
+ cd $ASCOT_DIR/src/progs/global_solution
+ echo ' '
+ echo ' ****** ivg_global'
+ make $1
+
+ cd $ASCOT_DIR/src/progs/solve_ambiguities
+ echo ' '
+ echo ' ****** solve_ambiguities'
+ make $1
+
+ cd $ASCOT_DIR/src/progs/get_db
+ echo ' '
+ echo ' ****** get_db'
+ make $1
+ 
+ # (8) Documentation
+ if [ "$3" != "n" ]; then
+   echo ' '
+   echo '******************************************************************************'
+   echo '*** documentation'
+   cd $ASCOT_DIR/documentation
+   if [ "$1" == "all" ]; then
+      doxygen doxy_ascot_config
+   else
+      rm -r html/ latex/
+   fi
+ 
+   # remove (empty) directories
+   if [ "$1" == "clean" ]; then
+      cd $ASCOT_DIR
+      rmdir bin include lib
+   fi
+ fi
+ echo ' '
+ echo '******************************************************************************'
+ echo 'make '$1' done'
+ if [ "$1" == "all" ]; then
+    echo '!!! enjoy ivg:ASCOT: JUST VLBI !!!'
+ fi
+ echo '******************************************************************************'
+ echo ' '
+ 

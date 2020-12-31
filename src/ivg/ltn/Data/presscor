@@ -1,0 +1,11 @@
+#
+# File including parameters for pressure correction
+# 
+# station: 2-letter code 
+# gamma: average temperature lapse rate
+# g: gravity
+# h: Height of the barometer
+# h0: height of the VLBI Reference point
+#
+# station gamma g h h0
+#wn -0.0065 9.81 656.040 669.1

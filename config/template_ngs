@@ -1,0 +1,360 @@
+# ************************************************************************   
+# Example application configuration file 
+# for analyzing a VLBI session in NGS card format
+#
+# 2015-06-11
+# ************************************************************************   
+version = "1.0";
+
+setup:
+{
+   @include "/opt/bakkari/configfiles/definitions.cfg"
+   # Directory to the output files
+   outdir = "/home/halsig/bakkari/output/test/";
+   # Directory to the clockbreak info files (br_files)
+   brdir = "/data/bakkari/br_info/";
+
+   export_snx = false;
+   outdir = "/home/halsig/bakkari/output/test";
+   export_snx = { save = true,
+                  dir  = "/data/sinex/test", # empty string => outdir is used
+                  type = "NEQ" };            # (NEQ|SOLUTION)
+   export_gmm = false;
+
+   datadirs = (("ngs","ngs", "/data/ngs/"),
+	           ("vgosdb_IGG", "vgosdb", "/data/vgosDB/"),
+	           ("vgosdb_GSFC", "vgosdb", "/data/vgosDB_GSFC/"));
+
+   session_type = "ngs"; 
+
+# ************************************************************************   
+#                                    GENERAL SETTINGS
+# ************************************************************************
+
+# Session names
+sessions = (
+   { dbname = "04JAN05XA", version = "4" }
+#    { dbname = "02OCT16XA", version = "5" }
+#    @include "/opt/bakkari/configfiles/cont02.arc"
+);
+           
+         #Reference Frames
+         crf = "icrf2";             # icrf2 / ocars / ngs
+         trf = "vtrf2014";          # itrf2008 / vtrf2014
+                  
+         #Ephemerides
+         ephemerides = "jpl405"; # jpl405 / jpl421
+
+         #Earth Orientation
+         eop_files = (("dedecc1","C04", "/data/bakkari/DeDeCC1/const.erp"),
+		                ("vievs_tmp","C04", "/data/bakkari/vievs_C04_08_1962_now.txt"),
+		                ("iersc04","C04", "/data/bakkari/eopc04_IAU2000.62-now"),
+		                ("c04opa","C04", "/data/bakkari/eopc04_IAU2000.txt"),
+                      ("finals2000A","finals", "/data/bakkari/finals2000A.all")); 
+
+         eop = { erp_aprioris = "iersc04";
+                 ut1_zonal_tides = false;
+                 hf_ocean = true;
+                 ut_libration = true;
+                 pm_nutation = true;
+                 nutation_type = "MODFILE"; };
+                     
+         #Troposhphere
+         troposphere = { pressure = "database";              # vmf1 / gpt2 / database (not yet implemented)
+                         temperature = "database";                # vmf1 / gpt2
+                         mapping_function = "vmf1";          # vmf1 / gpt2 / gmf
+                         interpolation_type = "cspline"; 
+                         gradients = false; };
+         
+         # Ionosphere (To-Do: TEC maps, ionosphere models,... )
+         ionosphere = { apply = false };
+         
+         #Station Geophysical Effects
+         stadisp = ( ("SOLID EARTH TIDES", true),
+                     ("OCEAN LOADING", true, "fes2004"),
+                     ("POLE TIDE", true, 2015 ),
+                     ("OCEAN POLE TIDE LOADING", true),
+                     ("TIDAL APLO", true),
+                     ("NON TIDAL APLO", true, "cspline"),
+                     ("HYDROLOGY LOADING", false, "cspline","cmte") ); #cmte / cmse
+
+                      
+# ************************************************************************   
+#                                     GROUPS
+# ************************************************************************                                          
+         # define groups of stations for parametrization
+         groups = { 
+			           stations = ( ( "WETTZELL", "KOKEE" ), 
+             		            	( "ALGOPARK" ), 
+             			            ( "HARTRAO" ), 
+             			            ( "WETTZELL" ) );
+ 	      	         sources = ( ["0133+476", "0234+285", "1357+769", "1611+343", "1823+568"], 
+				                      @include "/opt/bakkari/configfiles/icrf2_definings.cfg"
+ 				                   );
+			            baselines = ( ( "WETTZELL-KOKEE" ), 
+              	 		              ( "WETTZELL-WESTFORD", "GILCREEK-HOBART26" ) );
+		   }; 
+                      
+         icrf2_def_src = ( );             
+                      
+# ************************************************************************   
+#                                     PARAMETER
+# ************************************************************************                      
+
+PARAMS = {
+
+         # clocks: stations, for which clocks should be estimated,
+         #         handling, i.e., parameter should be reduced/fixed or not,
+         #         polynom with order (i.e., 0-offset; 1-linear,...) and constraints (#cnstr = order)
+         #         continuous pice-wise linear functions, true/false; interval length (minutes), rate constraint
+         clocks = ( 
+                    { stations = 4;
+                      handling = "fix" ; # reduce / fix / none
+                      polynom = { order = 0;
+                                   cnstr = ( 0.0 ); };
+                      cpwlf = { insert = false;
+                                  int_length = 60.0;
+                                  rate_cnstr = 2e-14; }; },                       
+                    { stations = 0;
+                      handling = "none" ; # reduce / fix / none
+                      polynom = { order = 2;
+                                   cnstr = ( 0.0, 0.0, 0.0 ); };
+                      cpwlf = { insert = true;
+                                int_length = 60.0;
+                                rate_cnstr = 7.2e-11; }; } );                              
+             
+             
+         # zenith wet delays: stations, for which clocks should be estimated,
+         #                    handling, i.e., parameter should be reduced/fixed or not,
+         #                    polynom with order (i.e., 0-offset; 1-linear,...) and constraints (#cnstr = order)
+         #                    continuous pice-wise linear functions, true/false; interval length (minutes), rate constraint
+         zwd = ( { stations = 0;
+                   handling = "none" ; # reduce / fix / none
+                   polynom = { order = 0;
+                               cnstr = ( 0.0 ); };
+                   cpwlf = { insert = true;
+                             int_length = 60.0;
+                             rate_cnstr = 4.0e-11; }; } );
+         
+         # azimuthal gradients: stations, for which clocks should be estimated,
+         #                      handling, i.e., parameter should be reduced/fixed or not,
+         #                      polynom with order (i.e., 0-offset; 1-linear,...) and constraints (#cnstr = order)
+         #                      continuous pice-wise linear functions, true/false; interval length (minutes), rate constraint
+         gradients = ( { stations = 0;
+                         handling = "none" ; # reduce / fix / none
+                         polynom = { order = 0;
+                                     cnstr = ( 0.5 ); };
+                         cpwlf = { insert = true;
+                                   int_length = 1440.0;
+                                   rate_cnstr = 0.08; }; } );
+         
+         # Earth Rotation param.: stations, for which clocks should be estimated,
+         #                        handling, i.e., parameter should be reduced/fixed or not,
+         #                        polynom with order (i.e., 0-offset; 1-linear,...) and constraints (#cnstr = order)
+         #                        continuous pice-wise linear functions, true/false; interval length (minutes), rate constraint
+         pm =  ( { stations = 0;
+                   handling = "none" ; # reduce / fix / none
+                   polynom = { order = 0;
+                               cnstr = ( 0.0 ); };
+                   cpwlf = { insert = false;
+                              int_length = 0.0;
+                              rate_cnstr = 0.0; }; } );
+         ut1 =  ( { stations = 0;
+                    handling = "none" ; # reduce / fix / none
+                    polynom = { order = 0;
+                                cnstr = ( 0.0 ); };
+                    cpwlf = { insert = false;
+                              int_length = 0.0;
+                              rate_cnstr = 0.0; }; } );
+         nut =  ( { stations = 0;
+                    handling = "none" ; # reduce / fix / none
+                    polynom = { order = 0;
+                                cnstr = ( 0.0 ); };
+                    cpwlf = { insert = false;
+                               int_length = 0.0;
+                               rate_cnstr = 0.0; }; } );
+      
+         # stations: stations, for which clocks should be estimated,
+         #           handling, i.e., parameter should be reduced/fixed or not,
+         #           polynom with order (i.e., 0-offset; 1-linear,...) and constraints (#cnstr = order)
+         #           continuous pice-wise linear functions, true/false; interval length (minutes), rate constraint
+         stations = ( 
+                      { stations = 0;
+                        handling = "none" ; # reduce / fix / none
+                        polynom = { order = 0;
+                                    cnstr = ( 0.0 ); };
+                        cpwlf = { insert = false;
+                                  int_length = 0.0;
+                                  rate_cnstr = 0.0; }; } );
+         
+         # sources:  stations, for which clocks should be estimated,
+         #           handling, i.e., parameter should be reduced/fixed or not,
+         #           polynom with order (i.e., 0-offset; 1-linear,...) and constraints (#cnstr = order)
+         #           continuous pice-wise linear functions, true/false; interval length (minutes), rate constraint
+         sources = ( { sources = 0;
+                       handling = "fix"
+                       polynom = { order = 0;
+                                   cnstr = ( 0.0 ); };
+                       cpwlf = { insert = false;
+                                 int_length = 0.0;
+                                 rate_cnstr = 0.0; }; } );
+};         
+         
+# ************************************************************************   
+#                           STOCHASTIC MODEL
+# ************************************************************************                      
+
+STOCHASTIC_MODEL = {
+         # addional noise (according to Gipson (2007)):
+         additional_noise = ( { stations = 0;
+                                apply = true;
+                                constant_sigma = 33.0;
+                                elevation_dependent_sigma = 0.0;
+                                correlated = false; } );
+         
+         # turbulence: stations: stations, for which VCM due to atmospheric turbulence should be applied,
+         #             model:    atmospheric turbulence model
+         #                        * sigma-c: SIGMA-C model (Schoen and Brunner, 2008)
+         #                        * matern:  MATERN VCM model (Kermarrec and Schoen, 2014)
+         #                        * onsala:  Treuhaft/Lanyi model and extensions (Treuhaft/Lanyi, 1987; Nilsson/Haas, 2010)
+         turbulence = { apply = false;
+                        model = "matern_model"; # sigma_c_model / matern_model / onsala_model
+                        turb_params = ( { stations = -2;                                   
+                                          Cn = 1.0e-7;
+                                          H = 2000.0;
+                                          v = 8.0;
+                                          v_dir = 200.0; },
+                                        { stations = 2;                                   
+                                          Cn = 2.0e-7;
+                                          H = 2000.0;
+                                          v = 7.0;
+                                          v_dir = 200.0; } );
+                        spec_coeffs = ( 1.0, 1.0, 1.0 );
+                        L = 3.0e6;
+                        L0 = 6000.0;
+                        
+                      };
+             
+};     
+        
+# ************************************************************************   
+#                                   DATA ELIM. BLOCK
+# ************************************************************************         
+         
+        #elim_sta = ( "WARK12M", "HOBART12" );
+        elim_sta = ();
+        #elim_src = ( "1741-038", "4C39.25" );
+        elim_src = ();
+
+        # select method for outlier detection: 
+        # BAARDA test if variance factor is known, POPE test otherwise  
+        # or simple method using fixed number of iterations, a threshold 
+        # for gross outliers and a quantile (inverse cdf)
+        test_method = ( ( "baarda", { significance_level = 1e-9; } ), 
+                        ( "pope",   { significance_level = 1e-9; } ), 
+                        ( "simple", { iterations = 2;
+                                      threshold = 1.0e-9;
+                                      quantile = 3.0 } ) ); 
+
+         outliers = { detect = false;
+                      data_snooping = "baarda";
+                      save = (false, "Edit_IVG");               # if true, quality_code = 0 
+                                                  # AND use_obs_flags = false
+                                                  # have to be set!
+                      load = (false, "Edit_IVG");
+                    };
+
+         quality_code = 4;        # only in case of vgosDB
+         use_obs_flags = true;    # if true: only observations with delay flag "0"
+                                  #          (and " " in case of NGS) are used from 
+                                  #          the DELUFLAG entries in Edit.nc or the 
+                                  #          flags in NGS card #2
+                                  # if false: all obs are used
+
+# ************************************************************************   
+#                                     NNR/NNT
+# ************************************************************************                             
+         
+         # No-Net-Rotation (NNR) and No-Net-Translation (NNT)
+         no_net_cnstr = { stations = { stations = 0,
+                                       apply = true,
+                                       handling = "wird nicht benutzt",
+                                       sigma = 1e-4, };
+                          velocities = { stations = 0
+                                         apply = false,
+                                         handling = "wird nicht benutzt",
+                                         sigma = 1e-2, };
+                          sources = { sources = 0
+                                      apply = false,
+                                      handling = "wird nicht benutzt",
+                                      sigma = 1e-2, }; };
+         
+# ************************************************************************   
+#                                     SOLVE
+# ************************************************************************                                            
+                      
+         # method to solve normal equation system
+         solver = "LSM"; # ICLS / LM
+
+
+
+# ************************************************************************   
+#                               SIMULATION
+# ************************************************************************                                          
+# data simulation block: uses vgosDB(_SIM) format and simulates 
+# observations (which are saved as a vgosDB(_SIM) version
+
+SIM = {
+
+      apply = false;
+      
+      # white noise: stations: for which white noise should be simulated;
+      #              std_dev:  corresponding standard deviation
+      white_noise = ( { baselines = -2;
+                        std_dev = 1.0e-11; },
+                      { baselines = 2;
+                        std_dev = 1.0e-11; } );
+         
+      # clocks: stations:      for which white noise should be simulated;
+      #         allan_std_dev: corresponding standard deviation
+      clocks = ( { stations = -2;
+                   allan_std_dev = 1.0e-14;
+                   interval = 50.0; },
+                 { stations = 2;
+                   allan_std_dev = 1.0e-14;
+                   interval = 50.0; } );
+
+      # troposphere: stations: for which white noise should be simulated;
+      #              std_dev:  corresponding standard deviation
+      #              Cn:       structure constant [m**-2/3] (scaling for turbulence)
+      #              H:        effective tropospheric height (integration height)
+      #              v:        wind velocity [m/s**2]
+      #              v_dir:    wind direction [gon]; 200.0 == horizontal; 0.0 == zenith
+      troposphere = { model = "matern_model"; # sigma_c_model / matern_model / onsala_model
+                      turb_params = ( { stations = -2;                                   
+                                        Cn = 1.0e-7;
+                                        H = 2000.0;
+                                        v = 8.0;
+                                        v_dir = 200.0; },
+                                      { stations = 2;                                   
+                                        Cn = 2.0e-7;
+                                        H = 2500.0;
+                                        v = 7.0;
+                                        v_dir = 200.0; } );
+                      spec_coeffs = ( 1.0, 1.0, 1.0 );
+                      L = 3.0e6;
+                      L0 = 6000.0;
+                   };
+
+};
+
+
+} # setup
+
+
+
+
+
+
+
+

@@ -1,0 +1,21 @@
+IERS Conventions 2010 provides several routines for standard analysis at
+    http://maia.usno.navy.mil/conv2010/software.html
+these are compiled and linked together to one single library
+
+A new version of the ETUTC routine must be produced whenever a new leap second
+is announced.
+
+There is a wrapper iers_warapper.h for using the IERS (FORTRAN) routines 
+from C++. Furthermore, all of the routines/functions are in 
+   namespace iers
+
+Some of the original implementations had to be modified, e.g, ocean loading via 
+HARDISP is only provided as a stand alone program. The modifications are:
+   * converted PROGRAM HARDISP to SUBROUTINE HARDISP in HARDISP_ivg.F.
+     Minimal changes have been done, although remaining code is superflous.
+
+
+TODO
+====
+* testing of vienna mapping vunctions vmf1_ and vmf1_ht
+* comparison of XHF2002_IERS with SOFA library

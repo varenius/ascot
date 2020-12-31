@@ -1,0 +1,15 @@
+# Include all_tle.txt
+# Include classfd.tle
+# Include ../../tles/10050b.tle
+# Include ../../tles/13070b.tle
+# Include ../../tles/69046f.tle
+# Include ../../tles/9o0dc57.tle
+# Include ../../tles/dscovr.tle
+# Include ../../tles/imp7.tle
+# Include ../../tles/imp8.tle
+# Include ../../tles/spektr_r.tle
+# Include ../../tles/ta29dcf.tle
+# Include ../../tles/tr93d0f.tle
+# Include ../../tles/uv18b9c.tle
+# Include ../../tles/wj2b5ac.tle
+# Include ../../tles/wt1190f.tle

@@ -1,0 +1,108 @@
+   The actual ephemeris computation,  done in 'jpleph.c',  has been
+greatly revised relative to the original JPL code.  The revisions
+were done to allow use of "wrong-byte-order" ephemerides;  to help me
+understand the source code better;  and to improve the speed of
+computation.  The improvements are mostly C/C++ programming tricks,
+rather than any basic improvement in the mathematics.
+
+   First,  what I did to improve/optimize speed of computation:
+
+   (1) I found that many arguments to functions could be passed as type
+'const'.  For example,  the 'interp' function changed from
+
+void interp(double buf[],double t[],int ncf,int ncm,int na,int ifl,
+            double pv[]);
+
+   to
+
+void interp( const double coef[], const double t[2], const int ncf,
+                 const int ncm, const int na, const int ifl, double posvel[]);
+
+   thus indicating that,  out of all the arguments passed into interp,
+only the posvel[] data will get altered.
+
+   Exactly how much this is going to help depends a lot on your compiler.
+In some cases,  if you tell a compiler that it can count on a particular
+value to be a constant,  it can do an amazing job of optimizing the code.
+That happened for me (using a Microsoft C/C++ compiler).  It certainly
+doesn't hurt.  I also did this because it helps in figuring out the code:
+it can be useful to know that a given value isn't going to change.
+
+   (2) Profiling showed that most of the time is spent in computing
+the Chebyshev polynomials and in summing up the series (in the interp()
+function),  so most of my efforts were directed to improving the speed
+of this.  For example,  I converted the loop to evaluate Chebyshev
+polynomials from
+
+      for(i=np;i<ncf;++i)  pc[i]=twot*pc[i-1]-pc[i-2];
+
+   to
+
+    double *pc_ptr = pc + np;
+
+    for(i=ncf - np; i; i--, pc_ptr++)
+       *pc_ptr = twot * pc_ptr[-1] - pc_ptr[-2];
+
+   But I think what really helped was converting loops such as
+
+       posvel[i]=0.0;
+       for(j=ncf-1;j>=0;--j)
+          posvel[i]=posvel[i]+pc[j]*coef[j+i*ncf+l*ncf*ncm];
+
+   to
+
+     const double *coeff_ptr = coef + ncf * (i + l * ncm + 1);
+     const double *pc_ptr = pc + ncf;
+
+     posvel[i]=0.0;
+     for( j = ncf; j; j--)
+        posvel[i] += (*--pc_ptr) * (*--coeff_ptr);
+
+   The first loop involves three integer multiplies per iteration,
+plus assorted pointer additions.  You will see that I modified a total
+of four loops in interp().  Here,  too,  the speedup you get will be
+compiler-dependent.  But it ought to be significant.
+
+   (Incidentally,  if one is computing positions for dates that are
+spread out enough,  then file I/O becomes a problem:  the code will
+spend more time than you'd really want in reading in widely separated
+parts of the ephemeris.  You can see this effect in the 'testeph'
+program.  Run it twice in a row,  and the second run will be a lot
+faster,  because the data has been read from hard drive into RAM.)
+
+   (3) The interp() function has some code to see if the current
+Chebyshev polynomial time has been changed;  if it hasn't,  it doesn't
+bother re-computing everything.  This can really speed things up if
+you're computing several planets for the same Ephemeris Time instant.
+One problem is that,  if the number of sub-intervals changes ('na' in
+in the interp() function),  so does the Chebyshev polynomial time.
+
+   There's no way to keep that from happening,  of course.  'na' can be 1,
+2, 4,  or 8.  But I added some code to the state() function,  starting at
+
+   for( n_intervals = 1; n_intervals <= 8; n_intervals *= 2)
+
+   that minimizes the problem.  First,  all objects with na=1 are
+computed;  then those with na=2;  and so on.
+
+   (4) The position of the sun (stored in 'pvsun') is computed with
+great regularity.  The problem is that if you ask for,  say,  the
+heliocentric position of Jupiter at a given time,  and then those of
+Mars and Neptune for the same time,  the position of the Sun would be
+computed all three times.  This has (as of December 2011) been fixed:
+'pvsun_t' contains the most recent time for which 'pvsun' was
+computed,  so that the Sun's position would only be computed on the
+first call.
+
+   (5) (Really small improvements)  If the KM flag is set,  you don't
+have to multiply everything by aufac.  If the BARY flag is set,  you
+don't have to subtract PVSUN from everything (and eventually,  I want
+to rig the code such that,  in such a case,  PVSUN isn't even computed;
+right now,  it is _always_ computed,  whether you need it or not.  At
+the very least,  if you want only positions and no velocities,  there
+is no need to compute the velocity part of PVSUN.)
+
+   (6) Byte order is determined when the ephemeris is opened,  along with
+"constants" such as kernel size that can vary between ephemerides.  (The
+original version of the source code had to be edited and recompiled to
+accommodate changes in ephemerides.)

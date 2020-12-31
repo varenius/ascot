@@ -1,0 +1,8 @@
+LIBRARY sm_sat
+EXPORTS
+   SGP4_init                    @2
+   SGP4                         @7
+   select_ephemeris             @11
+   parse_elements               @12
+   tle_checksum                 @17
+

@@ -1,0 +1,501 @@
+# ************************************************************************   
+# Example application configuration file 
+# for analyzing a VLBI session in vgosDB format
+#
+# last modification: 2015-07-07 -SH- Simulation
+# ************************************************************************   
+version = "1.0";
+
+setup:
+{
+   @include "/opt/ascot/config/definitions.cfg"
+   outdir = "/home/bakkari/output/";
+   export_snx = { save = true,
+                  dir  = "/data/sinex/test", # empty string => outdir is used
+                  version = "ivg_2015a",
+                  type = "NEQ" };            # (NEQ|SOLUTION)
+   export_snx_tro = { save = false,
+                      dir  = "",             # empty string => outdir is used
+                      version = "" };   
+   export_resid = { save = true,
+                    dir = "",
+                    format = "ASCOT" };	     # format "ASCOT|ASCOT_EXT|SUB_AMB"		
+   export_gmm = false;
+   obs_met_info = ( false, "/home/bakkari/test/" );
+
+   export_resid = { save = false, dir="", format="ASCOT" };
+   export_snx_tro = { save = false, dir="", version="" };
+
+   export_resid = { save = false, dir="", format="ASCOT" };
+   export_snx_tro = { save = false, dir="", version="" };
+
+   # maximal station estimates to be accepted
+   station_threshold = { vertical  = 0.075, horizontal = 0.05 }; 
+
+   datadirs = ( ("ngs","ngs", "/data/ngs/"),
+	       ("vgosdb_IVS", "vgosdb", "/home/ascot/vgosDB_IVS/"),
+	       ("vgosdb_ZZK", "vgosdb", "/home/ascot/vgosDB_zzk/"),
+	       ("vgosdb_artz", "vgosdb", "/home/artz/ascot/vgosDB/"));
+
+   session_type = "vgosdb_IVS"; 
+
+   # max observation in session in order to get processed
+   max_obs = 20000;
+# ************************************************************************   
+#                                    GENERAL SETTINGS
+# ************************************************************************
+
+# Session names
+sessions = (
+   { dbname = "04JAN05XA", version = "-1" }
+#   { dbname = "02OCT27XA", version = "-1", handling = {elim_sta = ("ONSALA60","WETTZELL"), 
+#                                                       tikhonov_lambda = 167.0}},
+#
+#    { dbname = "02OCT16XA", version = "-1" }
+#    @include "/opt/bakkari/configfiles/cont02.arc"
+);
+           
+         #Reference Frames
+         refframes = (("itrf2008","SSC","/home/ascot/apriori_files/ITRF2008_VLBI.SSC.txt"),
+		       ("vtrf2014","SSC","/home/ascot/apriori_files/IVS_TRF2014b.SSC.txt"),
+		       ("vtrf2014ext","SSC","/home/ascot/apriori_files/IVS_TRF2014b_ivg_ext.SSC.txt"),
+		       ("itrf2014","SNX","/home/ascot/apriori_files/itrf2014P/ITRF2014P-IVS-TRF.SNX"),
+		       ("icrf2","ICRF2","/home/ascot/apriori_files/icrf2-vcs-only.dat","/home/ascot/apriori_files/icrf2-non-vcs.dat"),
+		       ("ocars","OCARS","/home/ascot/apriori_files/ocars.txt"));
+  
+         #Reference Frames
+         crf = "icrf2";             # e.g. icrf2 / ocars / ngs / vgosdb
+         trf = "vtrf2014ext";          # e.g. itrf2008 / vtrf2014
+                  
+         #Ephemerides
+         ephemerides = "jpl421"; # jpl405 / jpl421
+
+         #Earth Orientation
+         eop_files = (("vievs_tmp","C04", "/home/ascot/apriori_files/vievs_C04_08_1962_now.txt"),
+		      ("iersc04","C04", "/home/ascot/apriori_files/eopc04_IAU2000.62-now"),
+		      ("c04opa","C04", "/home/ascot/apriori_files/eopc04_IAU2000.txt"),
+                      ("gsfc_last_erp","cs_erp", "/home/ascot/apriori_files/gsfc_last.erp"),
+                      ("finals2000A","finals", "/home/ascot/apriori_files/finals2000A.all")); 
+
+         eop = { erp_aprioris = "finals2000A";
+                 ut1_zonal_tides = false;
+                 hf_ocean = true;
+                 ut_libration = true;
+                 pm_nutation = true;
+                 nutation_type = "MODFILE"; 
+		 interpolation_type = "cspline"; #cspline|linear|polynomial
+		};
+                     
+         #Troposhphere
+         troposphere = { external_meteo_data = ( false, "meteo", "ecmwf" );  # true|false, meteo|zhd, insitu|ecmwf|gpt2 
+			 gpt2_grid_file = "/home/ascot/apriori_files/gpt2_5.grd";
+                         mapping_function = "vmf1";          # vmf1|gpt2|gmf
+                         interpolation_type = "cspline";     # linear|cspline
+                         bending_mode = "approx";            # nonne|insitu|height|approx
+                        };
+         
+	 # Ionosphere (To-Do: TEC maps, ionosphere models,... )
+         ionosphere = { apply = true };
+
+         # thermal expansion according to Nothnagel (2009)
+         thermal_expansion = false;
+         
+         #Station Geophysical Effects
+         stadisp = ( ("SOLID EARTH TIDES", true),
+                     ("OCEAN LOADING", true, "fes2004"),
+                     ("POLE TIDE", true, 2015 ),
+                     ("OCEAN POLE TIDE LOADING", true),
+                     ("TIDAL APLO", true),
+                     ("NON TIDAL APLO", true, "cspline"),
+                     ("HYDROLOGY LOADING", false, "cspline","cmte"),
+                     ("PSD", false, "/home/bakkari/itrf2014P/ITRF2014P-psd-vlbi.dat")  ); #cmte / cmse
+
+                      
+# ************************************************************************   
+#                                     GROUPS
+# ************************************************************************                                          
+         # define groups of stations for parametrization
+         groups = { 
+			           stations = ( ( "WETTZELL", "KOKEE" ), 
+             		            	( "GILCREEK" ), 
+             			            ( "HARTRAO" ), 
+             			            ( "WETTZELL" ) );
+	      	        sources = ( ["0133+476", "0234+285", "1357+769", "1611+343", "1823+568"], 
+				                    @include "/opt/bakkari/configfiles/icrf2_definings.cfg"
+ 				                  );
+			           baselines = ( ( "WETTZELL-KOKEE" ), 
+             			             ( "WETTZELL-WESTFORD", "GILCREEK-HOBART26" ) );
+		   };
+                      
+         icrf2_def_src = ( );             
+                      
+# ************************************************************************   
+#                                     PARAMETER
+# ************************************************************************                      
+
+PARAMS = {
+
+         # clocks: stations, for which clocks should be estimated,
+         #         handling, i.e., parameter should be reduced/fixed or not,
+         #         polynom with order (i.e., 0-offset; 1-linear,...) and constraints (#cnstr = order)
+         #         continuous pice-wise linear functions, true/false; interval length (minutes), rate constraint
+         clocks = ( 
+                    { stations = "vgosdb";
+                      handling = "fix" ; # reduce / fix / none
+                      polynom = { order = 0;
+                                   cnstr = ( 0.0 ); };
+                      cpwlf = { insert = false;
+                                  int_length = 60.0;
+                                  rate_cnstr = 2e-14; }; },                       
+                    { stations = 0;
+                      handling = "none" ; # reduce / fix / none
+                      polynom = { order = 2;
+                                   cnstr = ( 0.0, 0.0, 0.0 ); };
+                      cpwlf = { insert = true;
+                                int_length = 60.0;
+                                rate_cnstr = 7.2e-10; }; } );   # 2e-14 = 7.2e-10 ds/h 
+             
+             
+         # zenith wet delays: stations, for which clocks should be estimated,
+         #                    handling, i.e., parameter should be reduced/fixed or not,
+         #                    polynom with order (i.e., 0-offset; 1-linear,...) and constraints (#cnstr = order)
+         #                    continuous pice-wise linear functions, true/false; interval length (minutes), rate constraint
+         zwd = ( { stations = 0;
+                  handling = "none" ; # reduce / fix / none
+                  polynom = { order = 0;
+                              cnstr = ( 0.0 ); };
+                  cpwlf = { insert = true;
+                             int_length = 20.0;
+                             rate_cnstr = 1.333e-10; }; } );     # 40 ps/h = 4e-10 ds/h = 1.333e-10 ds/20 min
+         
+         # azimuthal gradients: stations, for which clocks should be estimated,
+         #                      handling, i.e., parameter should be reduced/fixed or not,
+         #                      polynom with order (i.e., 0-offset; 1-linear,...) and constraints (#cnstr = order)
+         #                      continuous pice-wise linear functions, true/false; interval length (minutes), rate constraint
+         gradients = ( { stations = 0;
+                         handling = "none" ; # reduce / fix / none
+                         polynom = { order = 0;
+                                     cnstr = ( 1.668e-10 ); };    # 0.5 mm = 1.668e-10 cs
+                         cpwlf = { insert = true;
+                                   int_length = 480.0;
+                                   rate_cnstr = 2.2e-10; }; } );   # 2 mm/d = 6.671e-10 cs/d = 2.2e-10 cs/(8h)
+         
+         # Earth Rotation param.: stations, for which clocks should be estimated,
+         #                        handling, i.e., parameter should be reduced/fixed or not,
+         #                        polynom with order (i.e., 0-offset; 1-linear,...) and constraints (#cnstr = order)
+         #                        continuous pice-wise linear functions, true/false; interval length (minutes), rate constraint
+         pm =  ( { stations = 0;
+                   handling = "none" ; # reduce / fix / none
+                   polynom = { order = 0;
+                               cnstr = ( 0.0 ); };
+                   cpwlf = { insert = false;
+                              int_length = 0.0;
+                              rate_cnstr = 0.0; }; } );
+         ut1 =  ( { stations = 0;
+                    handling = "none" ; # reduce / fix / none
+                    polynom = { order = 0;
+                                cnstr = ( 0.0 ); };
+                    cpwlf = { insert = false;
+                              int_length = 0.0;
+                              rate_cnstr = 0.0; }; } );
+         nut =  ( { stations = 0;
+                    handling = "none" ; # reduce / fix / none
+                    polynom = { order = 0;
+                                cnstr = ( 0.0 ); };
+                    cpwlf = { insert = false;
+                               int_length = 0.0;
+                               rate_cnstr = 0.0; }; } );
+      
+         # stations: stations, for which clocks should be estimated,
+         #           handling, i.e., parameter should be reduced/fixed or not,
+         #           polynom with order (i.e., 0-offset; 1-linear,...) and constraints (#cnstr = order)
+         #           continuous pice-wise linear functions, true/false; interval length (minutes), rate constraint
+         stations = ( 
+                      { stations = 0;
+                        handling = "none" ; # reduce / fix / none
+                        polynom = { order = 0;
+                                    cnstr = ( 0.0 ); };
+                        cpwlf = { insert = false;
+                                  int_length = 0.0;
+                                  rate_cnstr = 0.0; }; } );
+                  
+         
+         # sources:  stations, for which clocks should be estimated,
+         #           handling, i.e., parameter should be reduced/fixed or not,
+         #           polynom with order (i.e., 0-offset; 1-linear,...) and constraints (#cnstr = order)
+         #           continuous pice-wise linear functions, true/false; interval length (minutes), rate constraint
+         sources = ( { sources = 0;
+                       handling = "fix"
+                       polynom = { order = 0;
+                                   cnstr = ( 0.0 ); };
+                       cpwlf = { insert = false;
+                                 int_length = 0.0;
+                                 rate_cnstr = 0.0; }; } );
+};         
+
+# ************************************************************************   
+#                           STOCHASTIC MODEL
+# ************************************************************************                      
+
+STOCHASTIC_MODEL = {
+         # addional noise (according to Gipson (2007)):
+         additional_noise = ( { stations = 0;
+                               apply = true;
+                               constant_sigma = 33.0;
+                               elevation_dependent_sigma = 0.0;
+                               correlated = false; } );
+         
+         # turbulence: stations: stations, for which VCM due to atmospheric turbulence should be applied,
+         #             model:    atmospheric turbulence model
+         #                        * sigma-c: SIGMA-C model (Schoen and Brunner, 2008)
+         #                        * matern:  MATERN VCM model (Kermarrec and Schoen, 2014)
+         #                        * onsala:  Treuhaft/Lanyi model and extensions (Treuhaft/Lanyi, 1987; Nilsson/Haas, 2010)
+         turbulence = { apply = false;
+                        model = "matern_model"; # sigma_c_model / matern_model / onsala_model
+                        turb_params = ( { stations = -2;                                   
+                                          Cn = 1.0e-7;
+                                          H = 2000.0;
+                                          v = 8.0;
+                                          v_dir = 200.0; },
+                                        { stations = 2;                                   
+                                          Cn = 2.0e-7;
+                                          H = 2000.0;
+                                          v = 7.0;
+                                          v_dir = 200.0; } );
+                        spec_coeffs = ( 1.0, 1.0, 1.0 );
+                        L = 3.0e6;
+                        L0 = 6000.0;
+                        
+                      };
+             
+};     
+        
+# ************************************************************************   
+#                                   DATA ELIM. BLOCK
+# ************************************************************************         
+         
+        #elim_sta = ( "WARK12M", "HOBART12" );
+        elim_sta = ();
+        #minimum observations not to be eliminated
+        elim_min_sta = 3;
+        #elim_src = ( "1741-038", "4C39.25" );
+        elim_src = ();
+        #keep_baseline = ( "HOBART12-YARRA12M" );
+        keep_baseline = (  );
+
+        # select method for outlier detection: 
+        # BAARDA test if variance factor is known, POPE test otherwise  
+        # or simple method using fixed number of iterations, a threshold 
+        # for gross outliers and a quantile (inverse cdf)
+        test_method = ( ( "baarda", { significance_level = 1e-9; } ), 
+                        ( "pope",   { significance_level = 1e-9; } ), 
+                        ( "simple", { iterations = 2;
+                                      threshold = 1.0e-9;
+                                      quantile = 3.0 } ) ); 
+
+        # additional information which editing should be used (e.g. iIVS or iGSFC) 
+        # used for creating GroupDelayFull_bX.nc and Edit.nc filenames
+        vgosdb_editing = "iIVS";
+
+         outliers = { detect = false;
+                      data_snooping = "baarda";
+		      restoration = ( false, 3.0 );
+                      save = (false, "Edit_IVG"); # if true, quality_code = 0 
+                                                  # AND use_obs_flags = false
+                                                  # have to be set!
+                      load = (false, "Edit_IVG");
+                      force_load = false; # force to load EXACTLY e.g. Edit_IVG 
+                    };
+
+         quality_code = 4;        # only in case of vgosDB
+         use_obs_flags = true;    # if true: only observations with delay flag "0"
+                                  #          (and " " in case of NGS) are used from 
+                                  #          the DELUFLAG entries in Edit.nc or the 
+                                  #          flags in NGS card #2
+                                  # if false: all obs are used
+
+# ************************************************************************   
+#                                     NNR/NNT
+# ************************************************************************                             
+         
+         # No-Net-Rotation (NNR) and No-Net-Translation (NNT)
+         no_net_cnstr = { stations = { stations = 0,
+                                       apply = true,
+                                       handling = "wird nicht benutzt",
+                                       sigma = 3.3e-11, };
+                          velocities = { stations = 0
+                                         apply = false,
+                                         handling = "wird nicht benutzt",
+                                         sigma = 1e-2, };
+                          sources = { sources = 0
+                                      apply = false,
+                                      handling = "wird nicht benutzt",
+                                      sigma = 1e-2, }; };
+         
+# ************************************************************************   
+#                                     SOLVE
+# ************************************************************************                                            
+                      
+         # method to solve normal equation system
+         solver = "LSM";  # ICLS|LSM
+	 MC = 1000; 	  # number of Monte-Carlo iterations for ICLS quality numbers
+	 pre-conditioning = true;
+         remove_undefined_params = false;
+
+
+# ************************************************************************   
+#                               SIMULATION
+# ************************************************************************                                          
+# data simulation block: uses vgosDB(_SIM) format and simulates 
+# observations (which are saved as a vgosDB(_SIM) version
+
+SIM = {
+
+      apply = false;
+      
+      # white noise: stations: for which white noise should be simulated;
+      #              std_dev:  corresponding standard deviation
+      white_noise = ( { baselines = -2;
+                        std_dev = 1.0e-11; },
+                      { baselines = 2;
+                        std_dev = 1.0e-11; } );
+         
+      # clocks: stations:      for which white noise should be simulated;
+      #         allan_std_dev: corresponding standard deviation
+      clocks = ( { stations = -2;
+                   allan_std_dev = 1.0e-14;
+                   interval = 50.0; },
+                 { stations = 2;
+                   allan_std_dev = 1.0e-14;
+                   interval = 50.0; } );
+
+      # troposphere: stations: for which white noise should be simulated;
+      #              std_dev:  corresponding standard deviation
+      #              Cn:       structure constant [m**-2/3] (scaling for turbulence)
+      #              H:        effective tropospheric height (integration height)
+      #              v:        wind velocity [m/s**2]
+      #              v_dir:    wind direction [gon]; 200.0 == horizontal; 0.0 == zenith
+      troposphere = { model = "matern_model"; # sigma_c_model / matern_model / onsala_model
+                      turb_params = ( { stations = -2;                                   
+                                        Cn = 1.0e-7;
+                                        H = 2000.0;
+                                        v = 8.0;
+                                        v_dir = 200.0; },
+                                      { stations = 2;                                   
+                                        Cn = 2.0e-7;
+                                        H = 2500.0;
+                                        v = 7.0;
+                                        v_dir = 200.0; } );
+                      spec_coeffs = ( 1.0, 1.0, 1.0 );
+                      L = 3.0e6;
+                      L0 = 6000.0;
+                   };
+
+    save = ( false, "GroupDelayFull_bX_SIM" );  
+    load = ( false, "GroupDelayFull_bX_SIM" ); 
+
+};
+
+# ************************************************************************   
+#                           NEARFIELD
+# ************************************************************************                      
+
+NEARFIELD = {
+
+         # Session 15AUG24X in /home/ascot/vgosDB_zzk/ can be used for initial tests
+         # using different near-field-models and GPS-satellites. 
+         # USE: { dbname = "15AUG24X", version = "-1" }
+
+         # Possible ephemerides to be used for the moon and the satellites
+         ephemerides = (("tle_moon","tle","xxxxxxxxxx"),
+                       ("sp3_sat_15AUG24","sp3","/home/ascot/apriori_files/sat_catalogs/15AUG24X.sp3"),
+                       ("tle_sat_15AUG24","tle","/home/ascot/apriori_files/sat_catalogs/15AUG24X.tle"));
+
+         # Individual selection related to previous defined ephemerides
+         moon_ephem = "tle_moon"; # NOT USED RIGHT NOW
+         sat_ephem = "sp3_sat_15AUG24";
+
+	 # Near-field-delay-model to be used
+	 # "duev_2012", "sekido_2006", "sekido_simple_2006"
+	 moon_model = "sekido_simple_2006";
+	 sat_model = "sekido_simple_2006";
+};     
+
+# ************************************************************************   
+#                           SCHEDULE
+# ************************************************************************  
+
+SKED = {
+
+    # general switch if scheduling is running or not
+    apply = true;
+
+    # selected approach for optimal scan determination
+    # 0 = impact
+    # 1 = coverage
+    # 2 = minsigma
+    # 3 = random
+    approach = 0;
+
+    # define approach for intial scans
+    initial_scans = 7;
+    initial_approach = 2;
+
+    # ATTENTION - In case of INT-scheduling
+    # if true: start/end-time, skd-file-name and stations are used from masterfiles
+    # Affected variables within this configblock will be overwritten!
+    use_intensive_masterfile_infos = true;
+
+    # description and propteries of the experiment
+    description = "e-Intensive INT2";
+    name_prefix = "q"; # leads to e.g. q16013.skd
+    scheduler = "IGG";
+    correlator = "GSI";
+    start_time = "07:30:00";
+    end_time = "08:30:00";
+
+    # minimal distance to sun as angular distance in degree
+    min_sun_dist = 10.0;
+
+    # global elevation mask (default 5.0 degree)
+    min_elevation = 5.0;
+
+    # minimal/maximal scan duration
+    min_scan = 20.0;
+    max_scan = 120.0;
+
+    # maximal and minimal slew for each telescope (degree)
+    # Only in azimuth!
+    max_slew = 175.0; 
+    min_slew = 15.0; 
+
+    # minimum SNR for X-band and S-band
+    snr_min_x = 25.0;
+    snr_min_s = 20.0;
+
+    # minimum time between same source to be observed (default 10min = 600sec)
+    min_time_src = 600.0; #[sec]
+
+    # add picoseconds for calculation of sigma (_std_sked)
+    add_ps = 30.0; # [ps]
+
+    # const times [sec] (defaults)
+    const_sync = 3.0; # sync time offset for simulator._calc_obs_duration(...)
+    const_source = 5.0; # duration to bring into coincidence on source
+    const_calib = 10.0; # duration for calibration (in the SNAP preob procedure) after slewing and before obs-starttime
+    const_setup = 15.0; # Used to set up modules before every scan.
+    const_idle = 0.0; # Post-scan calibration
+
+    sources = "/home/ascot/apriori_files/sked_catalogs/source.cat.geodetic.good";
+    stations = ("WETTZELL","ISHIOKA"); # TSUKUB32 | ISHIOKA | WETTZ13N
+    #stations = ("WETTZELL","NYALES20","ONSALA60","YEBES40M","RAEGYEB","SVETLOE","MATERA","NOTO"); # TSUKUB32 | ISHIOKA
+
+    # information from modes.cat
+    # recording mode name, as found in rec.cat. This label is generally formed as: tracks-channels-fanout-bits.
+    # frequency sequence name, as found in freq.cat.
+    rec_name = "00-16-0-1"; # e.g. 00-16-0-1 or  32-16-1-2
+    freq_name = "GEOSX"; # e.g.    GEOSX     or  GEOSX8N
+};
+
+
+} # setup

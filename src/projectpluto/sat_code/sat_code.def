@@ -1,0 +1,22 @@
+LIBRARY sat_code
+EXPORTS
+   SGP_init                          @1
+   SGP4_init                         @2
+   SGP8_init                         @3
+   SDP4_init                         @4
+   SDP8_init                         @5
+   SGP                               @6
+   SGP4                              @7
+   SGP8                              @8
+   SDP4                              @9
+   SDP8                              @10
+   select_ephemeris                  @11
+   parse_elements                    @12
+   lat_alt_to_parallax               @13
+   observer_cartesian_coords         @14
+   get_satellite_ra_dec_delta        @15
+   epoch_of_date_to_j2000            @16
+   tle_checksum                      @17
+   sxpx_set_implementation_param     @18
+   sxpx_set_dpsec_integration_step   @19
+   sxpx_library_version              @20
