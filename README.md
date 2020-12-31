@@ -1,5 +1,5 @@
 # ASCOT
-As of year 2020, ASCOT development and maintenance has been moved to the group for Space Geodesy and Geodynamics, Onsala Space Observatory, Sweden.
+ASCOT - Analysis, Scheduling and Combination Toolbox, for VLBI. Originally developed as ivg::ASCOT by the VLBI group of the Institute of Geodesy and Geoinformation of the University of Bonn (IGG). As of year 2020, ASCOT development and maintenance has been moved to the group for Space Geodesy and Geodynamics, Onsala Space Observatory, Sweden.
 
 ## Publications
 - Artz et al. (2016): https://ui.adsabs.harvard.edu/abs/2016ivs..conf..217A/abstract
