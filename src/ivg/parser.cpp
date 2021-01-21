@@ -129,7 +129,7 @@ void ecc(ivg::Trf * trf_ptr, const string path)
             {
                 //Reading information
                 ivg::Matrix new_ecc( 3, 1 );
-                istringstream ecc_line( line.substr( 56, 28 ) );
+                istringstream ecc_line( line.substr( 52, 32 ) ); // changed from 56 to 52 to read in the correct values in all cases
                 ecc_line >> new_ecc( 0 ) >> new_ecc( 1 ) >> new_ecc( 2 );
 
                 ivg::Date tmp_date(atoi(line.substr( 17,4 ).c_str()), atoi(line.substr( 22,2 ).c_str()), atoi(line.substr( 25, 2 ).c_str()));
@@ -1408,7 +1408,7 @@ vector<ivg::Analysis_station> ssc_parser(const string path, const vector< map<iv
     // first line contains overall reference epoch in format 2008.0
     ivg::Date _ref_epoch( atoi( line.substr( 58,6 ).c_str() ), 1.0 );
     if(_ref_epoch.get_double_mjd() < 0)
-        throw runtime_error( "vector<ivg::Analysis_station> ssc_parser(...): Unexpected reference epoch " + line.substr( 58,6 ) + " in SSC-File: "+path );
+        throw runtime_error( "vector<ivg::Analysis_station> ssc_parser(...): Unexpected reference epoch in SSC-File: "+path );
 
     while( ivg::parser::get_line(path, inStream, line) )
     {
