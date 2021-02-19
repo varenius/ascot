@@ -4,9 +4,9 @@ USE_AHC = FALSE
 CXX=g++
 
 ifeq ($(USE_AHC),TRUE)
-CXXOPTS=-O3 -std=c++0x -g -DUSE_AHC #-DDEBUG
+CXXOPTS=-O3 -std=c++14 -g -DUSE_AHC -DBOOST_MATH_DISABLE_FLOAT128 #-DDEBUG
 else
-CXXOPTS=-O3 -std=c++0x -g -fPIC #-DDEBUG
+CXXOPTS=-O3 -std=c++14 -g -fPIC -DBOOST_MATH_DISABLE_FLOAT128 #-DDEBUG
 endif
 
 
@@ -17,7 +17,7 @@ INCBLAS  = -I$(OB_DIR)/include
 LIBBLAS  = -L$(OB_DIR)/lib/ -llapack -lopenblas  -lpthread -lgfortran
 
 INCQT = -I. -I/usr/include -I/usr/include/x86_64-linux-gnu/qt5/QtGui/ -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtPrintSupport
-LIBQT = -lQt5Gui -L/usr/lib64 -L/usr/X11R6/lib -lQt5Core -L/usr/lib/x86_64-linux-gnu/hdf5/serial -L/data1/tobson/soft/ASCOT/gurobi800/linux64/lib -L/data1/tobson/soft/ASCOT/qt5inst/qtbase/lib -lQt5Widgets -lQt5PrintSupport -lboost_program_options
+LIBQT = -lQt5Gui -L/usr/lib64 -L/usr/X11R6/lib -lQt5Core -L/usr/lib/x86_64-linux-gnu/hdf5/serial -lQt5Widgets -lQt5PrintSupport -lboost_program_options
 
 
 ifeq ($(USE_AHC),TRUE)

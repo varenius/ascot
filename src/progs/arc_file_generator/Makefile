@@ -1,5 +1,5 @@
 CXX=g++
-CXXOPTS=-O3 -std=c++0x -fPIC
+CXXOPTS=-O3 -std=c++14 -fPIC -DBOOST_MATH_DISABLE_FLOAT128
 
 LIB_DIR = $(ASCOT_DIR)/lib
 BIN_DIR = $(ASCOT_DIR)/bin
@@ -22,7 +22,6 @@ LIBS =						\
 	$(LIBBLAS) \
 	-lQt5Gui -lQt5Core -lQt5Widgets -lQt5PrintSupport \
         -L/usr/lib/x86_64-linux-gnu/hdf5/serial \
-        -L/data1/tobson/soft/ASCOT/qt5inst/qtbase/lib \
 	-lgmp -lCGAL -lgsl  \
 	-lmatio -lhdf5 -L/usr/include/mysql -lmysqlclient
 

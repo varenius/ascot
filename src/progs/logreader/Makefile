@@ -4,11 +4,11 @@ USEMPI=FALSE
 ifeq ($(USEMPI),TRUE)
     DEFINES=-DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_SHARED
     CXX = $(MPI_DIR)/bin/mpic++
-    CXXOPTS = -std=c++11 -O3 -DUSE_MPI -g
+    CXXOPTS = -std=c++14 -O3 -DUSE_MPI -g -DBOOST_MATH_DISABLE_FLOAT128
     INCMPI = -I$(MPI_DIR)/include
 else
     DEFINES=-DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_SHARED -DUSE_MPI
-    CXXOPTS=-O3 -std=c++0x -g -fPIC 
+    CXXOPTS=-O3 -std=c++14 -g -fPIC  -DBOOST_MATH_DISABLE_FLOAT128
     CXX=g++
     INCMPI =
 endif
@@ -21,7 +21,7 @@ INCBLAS  = -I$(OB_DIR)/include
 LIBBLAS  = -L$(OB_DIR)/lib/ -llapack -lopenblas -lgfortran -lpthread
 
 INCQT = -I/qt_4.x.y/mkspecs/linux-g++-64 -I. -I/usr/include 
-LIBQT = -lQt5Gui -L/usr/lib64 -L/usr/X11R6/lib -lQt5Core -L/usr/lib/x86_64-linux-gnu/hdf5/serial -L/data1/tobson/soft/ASCOT/gurobi800/linux64/lib -L/data1/tobson/soft/ASCOT/qt5inst/qtbase/lib -lQt5Widgets -lQt5PrintSupport -lboost_program_options 
+LIBQT = -lQt5Gui -L/usr/lib64 -L/usr/X11R6/lib -lQt5Core -L/usr/lib/x86_64-linux-gnu/hdf5/serial -L/opt/gurobi911/linux64/lib -lQt5Widgets -lQt5PrintSupport -lboost_program_options 
 
 #INC_ALL = -I./ \
 #			 $(INCBLAS) \
@@ -55,7 +55,7 @@ LIBS =						\
 	$(LIBQT) \
 	-lgmp -lCGAL \
 	-lnetcdf_c++ -lnetcdf -lfftw3 `gsl-config --libs` -lboost_regex \
-	-L$(GUROBI_HOME)/lib -lgurobi_c++ -lgurobi80 
+	-L$(GUROBI_HOME)/lib -lgurobi_c++ -lgurobi91
 
 
 #IGG_VLBI_LIB = $(LIB_DIR)/libIvgUtils.a  $(ASCOT_DIR)/lib/libIers2010.a

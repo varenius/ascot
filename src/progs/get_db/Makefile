@@ -1,6 +1,6 @@
 #get_db makefile
 CXX=g++
-CXXOPTS=-O3 -std=c++0x -g -fPIC
+CXXOPTS=-O3 -std=c++14 -g -fPIC -DBOOST_MATH_DISABLE_FLOAT128
 
 DEFINES=-DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_SHARED
 
@@ -11,8 +11,7 @@ INCBLAS  = -I$(OB_DIR)/include
 LIBBLAS  = -L$(OB_DIR)/lib/ -llapack -lopenblas  -lpthread -lgfortran
 
 INCQT =  -I. -I/usr/include
-LIBQT = -lQt5Gui -L/usr/lib64 -L/usr/X11R6/lib -lQt5Core -L/usr/lib/x86_64-linux-gnu/hdf5/serial -L/data1/tobson/soft/ASCOT/gurobi800/linux64/lib -L/data1/tobson/soft/ASCOT/qt5inst/qtbase/lib -lQt5Widgets -lQt5PrintSupport -lboost_program_options 
-
+LIBQT = -lQt5Gui -L/usr/lib64 -L/usr/X11R6/lib -lQt5Core -L/usr/lib/x86_64-linux-gnu/hdf5/serial -L/opt/gurobi911/linux64/lib -lQt5Widgets -lQt5PrintSupport -lboost_program_options 
 
 INC_ALL = -I./ $(INCQT) \
 			 $(INCBLAS) \
