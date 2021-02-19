@@ -1580,7 +1580,7 @@ void Session_inout::_read_vgosdb(ivg::Session *session_ptr, Setting *setup, cons
 
          if(epoch.get_decimal_date() > session_ptr->_end.get_decimal_date())
          {
-            log<INFO>("*** Observation ") % cnt % "/" % nobs % " later than session-end from Edit***.nc. Setting new _end to " % session_ptr->_end.get_date_time("DD/MON/YYYY HH:MI:SS");
+            log<INFO>("*** Observation ") % cnt % "/" % nobs % " later than session-end from Edit***.nc. Setting new _end to " % epoch.get_date_time("DD/MON/YYYY HH:MI:SS");
             session_ptr->_end = epoch;
          }
     }
