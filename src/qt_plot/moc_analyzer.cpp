@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'analyzer.h'
 **
-** Created by: The Qt Meta Object Compiler version 67 (Qt 5.9.5)
+** Created by: The Qt Meta Object Compiler version 67 (Qt 5.12.8)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -12,7 +12,7 @@
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'analyzer.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 67
-#error "This file was generated using the moc from 5.9.5. It"
+#error "This file was generated using the moc from 5.12.8. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -21,8 +21,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_Analyzer_t {
-    QByteArrayData data[31];
-    char stringdata0[483];
+    QByteArrayData data[32];
+    char stringdata0[495];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -37,39 +37,40 @@ QT_MOC_LITERAL(2, 27, 0), // ""
 QT_MOC_LITERAL(3, 28, 19), // "clearLoadedSessions"
 QT_MOC_LITERAL(4, 48, 21), // "clearHighlightedItems"
 QT_MOC_LITERAL(5, 70, 19), // "updateDiffsGroupBox"
-QT_MOC_LITERAL(6, 90, 5), // "index"
-QT_MOC_LITERAL(7, 96, 18), // "addObjectParameter"
-QT_MOC_LITERAL(8, 115, 23), // "updateSelectedReference"
-QT_MOC_LITERAL(9, 139, 3), // "row"
-QT_MOC_LITERAL(10, 143, 6), // "column"
-QT_MOC_LITERAL(11, 150, 19), // "selectedFileChanged"
-QT_MOC_LITERAL(12, 170, 7), // "current"
-QT_MOC_LITERAL(13, 178, 8), // "previous"
-QT_MOC_LITERAL(14, 187, 18), // "plotReferenceFrame"
-QT_MOC_LITERAL(15, 206, 13), // "loadEopSeries"
-QT_MOC_LITERAL(16, 220, 22), // "performStationAnalysis"
-QT_MOC_LITERAL(17, 243, 20), // "plotSelectedStations"
-QT_MOC_LITERAL(18, 264, 16), // "plotSelectedEops"
-QT_MOC_LITERAL(19, 281, 19), // "plotSelectedSources"
-QT_MOC_LITERAL(20, 301, 23), // "loadLatestSelectedSinex"
-QT_MOC_LITERAL(21, 325, 25), // "transformSelectedSessions"
-QT_MOC_LITERAL(22, 351, 17), // "closeTabWidgetTab"
-QT_MOC_LITERAL(23, 369, 18), // "analysisTabChanged"
-QT_MOC_LITERAL(24, 388, 20), // "highlightCurrentPlot"
-QT_MOC_LITERAL(25, 409, 13), // "stringCompare"
-QT_MOC_LITERAL(26, 423, 6), // "string"
-QT_MOC_LITERAL(27, 430, 1), // "l"
-QT_MOC_LITERAL(28, 432, 1), // "r"
-QT_MOC_LITERAL(29, 434, 25), // "_openDirectoryQFileDialog"
-QT_MOC_LITERAL(30, 460, 22) // "_refreshFolderTreeview"
+QT_MOC_LITERAL(6, 90, 11), // "QModelIndex"
+QT_MOC_LITERAL(7, 102, 5), // "index"
+QT_MOC_LITERAL(8, 108, 18), // "addObjectParameter"
+QT_MOC_LITERAL(9, 127, 23), // "updateSelectedReference"
+QT_MOC_LITERAL(10, 151, 3), // "row"
+QT_MOC_LITERAL(11, 155, 6), // "column"
+QT_MOC_LITERAL(12, 162, 19), // "selectedFileChanged"
+QT_MOC_LITERAL(13, 182, 7), // "current"
+QT_MOC_LITERAL(14, 190, 8), // "previous"
+QT_MOC_LITERAL(15, 199, 18), // "plotReferenceFrame"
+QT_MOC_LITERAL(16, 218, 13), // "loadEopSeries"
+QT_MOC_LITERAL(17, 232, 22), // "performStationAnalysis"
+QT_MOC_LITERAL(18, 255, 20), // "plotSelectedStations"
+QT_MOC_LITERAL(19, 276, 16), // "plotSelectedEops"
+QT_MOC_LITERAL(20, 293, 19), // "plotSelectedSources"
+QT_MOC_LITERAL(21, 313, 23), // "loadLatestSelectedSinex"
+QT_MOC_LITERAL(22, 337, 25), // "transformSelectedSessions"
+QT_MOC_LITERAL(23, 363, 17), // "closeTabWidgetTab"
+QT_MOC_LITERAL(24, 381, 18), // "analysisTabChanged"
+QT_MOC_LITERAL(25, 400, 20), // "highlightCurrentPlot"
+QT_MOC_LITERAL(26, 421, 13), // "stringCompare"
+QT_MOC_LITERAL(27, 435, 6), // "string"
+QT_MOC_LITERAL(28, 442, 1), // "l"
+QT_MOC_LITERAL(29, 444, 1), // "r"
+QT_MOC_LITERAL(30, 446, 25), // "_openDirectoryQFileDialog"
+QT_MOC_LITERAL(31, 472, 22) // "_refreshFolderTreeview"
 
     },
     "Analyzer\0objectTypeChanged\0\0"
     "clearLoadedSessions\0clearHighlightedItems\0"
-    "updateDiffsGroupBox\0index\0addObjectParameter\0"
-    "updateSelectedReference\0row\0column\0"
-    "selectedFileChanged\0current\0previous\0"
-    "plotReferenceFrame\0loadEopSeries\0"
+    "updateDiffsGroupBox\0QModelIndex\0index\0"
+    "addObjectParameter\0updateSelectedReference\0"
+    "row\0column\0selectedFileChanged\0current\0"
+    "previous\0plotReferenceFrame\0loadEopSeries\0"
     "performStationAnalysis\0plotSelectedStations\0"
     "plotSelectedEops\0plotSelectedSources\0"
     "loadLatestSelectedSinex\0"
@@ -84,7 +85,7 @@ QT_MOC_LITERAL(30, 460, 22) // "_refreshFolderTreeview"
 static const uint qt_meta_data_Analyzer[] = {
 
  // content:
-       7,       // revision
+       8,       // revision
        0,       // classname
        0,    0, // classinfo
       21,   14, // methods
@@ -99,44 +100,44 @@ static const uint qt_meta_data_Analyzer[] = {
        3,    0,  120,    2, 0x0a /* Public */,
        4,    0,  121,    2, 0x0a /* Public */,
        5,    1,  122,    2, 0x0a /* Public */,
-       7,    0,  125,    2, 0x0a /* Public */,
-       8,    2,  126,    2, 0x0a /* Public */,
-      11,    2,  131,    2, 0x0a /* Public */,
-      14,    0,  136,    2, 0x0a /* Public */,
-      15,    0,  137,    2, 0x0a /* Public */,
-      16,    0,  138,    2, 0x0a /* Public */,
-      17,    0,  139,    2, 0x0a /* Public */,
-      18,    0,  140,    2, 0x0a /* Public */,
-      19,    0,  141,    2, 0x0a /* Public */,
-      20,    0,  142,    2, 0x0a /* Public */,
-      21,    0,  143,    2, 0x0a /* Public */,
-      22,    1,  144,    2, 0x0a /* Public */,
-      23,    1,  147,    2, 0x0a /* Public */,
-      24,    0,  150,    2, 0x0a /* Public */,
-      25,    2,  151,    2, 0x08 /* Private */,
-      29,    0,  156,    2, 0x08 /* Private */,
-      30,    0,  157,    2, 0x08 /* Private */,
+       8,    0,  125,    2, 0x0a /* Public */,
+       9,    2,  126,    2, 0x0a /* Public */,
+      12,    2,  131,    2, 0x0a /* Public */,
+      15,    0,  136,    2, 0x0a /* Public */,
+      16,    0,  137,    2, 0x0a /* Public */,
+      17,    0,  138,    2, 0x0a /* Public */,
+      18,    0,  139,    2, 0x0a /* Public */,
+      19,    0,  140,    2, 0x0a /* Public */,
+      20,    0,  141,    2, 0x0a /* Public */,
+      21,    0,  142,    2, 0x0a /* Public */,
+      22,    0,  143,    2, 0x0a /* Public */,
+      23,    1,  144,    2, 0x0a /* Public */,
+      24,    1,  147,    2, 0x0a /* Public */,
+      25,    0,  150,    2, 0x0a /* Public */,
+      26,    2,  151,    2, 0x08 /* Private */,
+      30,    0,  156,    2, 0x08 /* Private */,
+      31,    0,  157,    2, 0x08 /* Private */,
 
  // slots: parameters
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::QModelIndex,    6,
+    QMetaType::Void, 0x80000000 | 6,    7,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::Int, QMetaType::Int,    9,   10,
-    QMetaType::Void, QMetaType::QModelIndex, QMetaType::QModelIndex,   12,   13,
-    QMetaType::Void,
-    QMetaType::Void,
+    QMetaType::Void, QMetaType::Int, QMetaType::Int,   10,   11,
+    QMetaType::Void, 0x80000000 | 6, 0x80000000 | 6,   13,   14,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::Int,    6,
-    QMetaType::Void, QMetaType::Int,    6,
     QMetaType::Void,
-    QMetaType::Bool, 0x80000000 | 26, 0x80000000 | 26,   27,   28,
+    QMetaType::Void,
+    QMetaType::Void, QMetaType::Int,    7,
+    QMetaType::Void, QMetaType::Int,    7,
+    QMetaType::Void,
+    QMetaType::Bool, 0x80000000 | 27, 0x80000000 | 27,   28,   29,
     QMetaType::Void,
     QMetaType::Void,
 
@@ -146,7 +147,7 @@ static const uint qt_meta_data_Analyzer[] = {
 void Analyzer::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
 {
     if (_c == QMetaObject::InvokeMetaMethod) {
-        Analyzer *_t = static_cast<Analyzer *>(_o);
+        auto *_t = static_cast<Analyzer *>(_o);
         Q_UNUSED(_t)
         switch (_id) {
         case 0: _t->objectTypeChanged(); break;
@@ -176,10 +177,14 @@ void Analyzer::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, vo
     }
 }
 
-const QMetaObject Analyzer::staticMetaObject = {
-    { &QMainWindow::staticMetaObject, qt_meta_stringdata_Analyzer.data,
-      qt_meta_data_Analyzer,  qt_static_metacall, nullptr, nullptr}
-};
+QT_INIT_METAOBJECT const QMetaObject Analyzer::staticMetaObject = { {
+    &QMainWindow::staticMetaObject,
+    qt_meta_stringdata_Analyzer.data,
+    qt_meta_data_Analyzer,
+    qt_static_metacall,
+    nullptr,
+    nullptr
+} };
 
 
 const QMetaObject *Analyzer::metaObject() const

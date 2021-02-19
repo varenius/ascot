@@ -34,6 +34,12 @@
 # Big a priori files which can be obtained elsewhere
 apriori_files/VMF*
 
+# Files for testing
+apriori_files/TEST*
+
+# IVS masterfiles, should get from IVS with update-script
+apriori_files/masterfiles/master*
+
 # Binary files etc.
 bin/*
 include/*

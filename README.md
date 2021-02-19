@@ -26,8 +26,9 @@ ASCOT is somewhat tricky to compile. Hopefully this will be improved in the near
 - gurobi (8.0 or 9.1.1 seems to work both)
 - libfftw3-dev (3.3.7-1)
 - libtclap-dev (1.2.2-1)
-- doxygen (1.8.17-0ubuntu2)
 - libgsl-dev (2.5+dfsg-6build1)
+- libmysqlclient-dev 
+(- doxygen (1.8.17-0ubuntu2) not used right now)
 
 ### Set variables 
 - $OB_DIR to where OpenBLAS is installed, if not in standard location

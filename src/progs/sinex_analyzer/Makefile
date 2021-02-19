@@ -31,7 +31,7 @@ LIBS =						\
 	$(LIBBLAS) \
 	$(LIBLAPACK) -lmatio -lhdf5 -L/usr/include/mysql -lmysqlclient \
 	$(LIBQT) \
-	-lgmp -lCGAL -lgsl \
+	-lgmp -lgsl \
 	-lnetcdf_c++ -lnetcdf -lfftw3 -lboost_regex
 
 all: sinex_analyzer

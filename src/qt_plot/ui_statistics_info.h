@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'statistics_info.ui'
 **
-** Created by: Qt User Interface Compiler version 5.9.5
+** Created by: Qt User Interface Compiler version 5.12.8
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -10,12 +10,9 @@
 #define UI_STATISTICS_INFO_H
 
 #include <QtCore/QVariant>
-#include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QGridLayout>
-#include <QtWidgets/QHeaderView>
 #include <QtWidgets/QTextBrowser>
 
 QT_BEGIN_NAMESPACE
@@ -29,15 +26,15 @@ public:
     void setupUi(QDialog *Statistics_info)
     {
         if (Statistics_info->objectName().isEmpty())
-            Statistics_info->setObjectName(QStringLiteral("Statistics_info"));
+            Statistics_info->setObjectName(QString::fromUtf8("Statistics_info"));
         Statistics_info->resize(236, 164);
-        Statistics_info->setWindowOpacity(1);
+        Statistics_info->setWindowOpacity(1.000000000000000);
         gridLayout = new QGridLayout(Statistics_info);
-        gridLayout->setObjectName(QStringLiteral("gridLayout"));
+        gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
         textBrowser = new QTextBrowser(Statistics_info);
-        textBrowser->setObjectName(QStringLiteral("textBrowser"));
+        textBrowser->setObjectName(QString::fromUtf8("textBrowser"));
         textBrowser->setFocusPolicy(Qt::StrongFocus);
-        textBrowser->setStyleSheet(QLatin1String("background-color: rgba(255, 255, 255, 0);\n"
+        textBrowser->setStyleSheet(QString::fromUtf8("background-color: rgba(255, 255, 255, 0);\n"
 "border-color: rgba(255, 255, 255, 0);"));
 
         gridLayout->addWidget(textBrowser, 0, 0, 1, 1);
@@ -50,7 +47,7 @@ public:
 
     void retranslateUi(QDialog *Statistics_info)
     {
-        Statistics_info->setWindowTitle(QApplication::translate("Statistics_info", "Dialog", Q_NULLPTR));
+        Statistics_info->setWindowTitle(QApplication::translate("Statistics_info", "Dialog", nullptr));
     } // retranslateUi
 
 };

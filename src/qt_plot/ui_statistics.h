@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'statistics.ui'
 **
-** Created by: Qt User Interface Compiler version 5.9.5
+** Created by: Qt User Interface Compiler version 5.12.8
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -10,9 +10,7 @@
 #define UI_STATISTICS_H
 
 #include <QtCore/QVariant>
-#include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QCheckBox>
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QDialogButtonBox>
@@ -78,22 +76,22 @@ public:
     void setupUi(QMainWindow *Statistics)
     {
         if (Statistics->objectName().isEmpty())
-            Statistics->setObjectName(QStringLiteral("Statistics"));
+            Statistics->setObjectName(QString::fromUtf8("Statistics"));
         Statistics->resize(1235, 784);
         Statistics->setMinimumSize(QSize(0, 0));
         central_widget = new QWidget(Statistics);
-        central_widget->setObjectName(QStringLiteral("central_widget"));
+        central_widget->setObjectName(QString::fromUtf8("central_widget"));
         QSizePolicy sizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(central_widget->sizePolicy().hasHeightForWidth());
         central_widget->setSizePolicy(sizePolicy);
         gridLayout_4 = new QGridLayout(central_widget);
-        gridLayout_4->setObjectName(QStringLiteral("gridLayout_4"));
+        gridLayout_4->setObjectName(QString::fromUtf8("gridLayout_4"));
         gridLayout_3 = new QGridLayout();
-        gridLayout_3->setObjectName(QStringLiteral("gridLayout_3"));
+        gridLayout_3->setObjectName(QString::fromUtf8("gridLayout_3"));
         sky_widget = new Plot(central_widget);
-        sky_widget->setObjectName(QStringLiteral("sky_widget"));
+        sky_widget->setObjectName(QString::fromUtf8("sky_widget"));
         sizePolicy.setHeightForWidth(sky_widget->sizePolicy().hasHeightForWidth());
         sky_widget->setSizePolicy(sizePolicy);
         sky_widget->setSizeIncrement(QSize(1, 1));
@@ -101,14 +99,14 @@ public:
         gridLayout_3->addWidget(sky_widget, 0, 0, 1, 1);
 
         crf_widget = new Plot(central_widget);
-        crf_widget->setObjectName(QStringLiteral("crf_widget"));
+        crf_widget->setObjectName(QString::fromUtf8("crf_widget"));
         sizePolicy.setHeightForWidth(crf_widget->sizePolicy().hasHeightForWidth());
         crf_widget->setSizePolicy(sizePolicy);
 
         gridLayout_3->addWidget(crf_widget, 0, 1, 1, 1);
 
         trf_widget = new Plot(central_widget);
-        trf_widget->setObjectName(QStringLiteral("trf_widget"));
+        trf_widget->setObjectName(QString::fromUtf8("trf_widget"));
         sizePolicy.setHeightForWidth(trf_widget->sizePolicy().hasHeightForWidth());
         trf_widget->setSizePolicy(sizePolicy);
 
@@ -119,14 +117,14 @@ public:
 
         Statistics->setCentralWidget(central_widget);
         menubar = new QMenuBar(Statistics);
-        menubar->setObjectName(QStringLiteral("menubar"));
+        menubar->setObjectName(QString::fromUtf8("menubar"));
         menubar->setGeometry(QRect(0, 0, 1235, 24));
         Statistics->setMenuBar(menubar);
         statusbar = new QStatusBar(Statistics);
-        statusbar->setObjectName(QStringLiteral("statusbar"));
+        statusbar->setObjectName(QString::fromUtf8("statusbar"));
         Statistics->setStatusBar(statusbar);
         stats_dockwidget = new QDockWidget(Statistics);
-        stats_dockwidget->setObjectName(QStringLiteral("stats_dockwidget"));
+        stats_dockwidget->setObjectName(QString::fromUtf8("stats_dockwidget"));
         QSizePolicy sizePolicy1(QSizePolicy::Expanding, QSizePolicy::Expanding);
         sizePolicy1.setHorizontalStretch(20);
         sizePolicy1.setVerticalStretch(20);
@@ -135,39 +133,39 @@ public:
         stats_dockwidget->setMinimumSize(QSize(472, 246));
         stats_dockwidget->setMaximumSize(QSize(472, 734));
         stats_contentwidget = new QWidget();
-        stats_contentwidget->setObjectName(QStringLiteral("stats_contentwidget"));
+        stats_contentwidget->setObjectName(QString::fromUtf8("stats_contentwidget"));
         gridLayout_2 = new QGridLayout(stats_contentwidget);
-        gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
+        gridLayout_2->setObjectName(QString::fromUtf8("gridLayout_2"));
         data_tableview = new QTableView(stats_contentwidget);
-        data_tableview->setObjectName(QStringLiteral("data_tableview"));
+        data_tableview->setObjectName(QString::fromUtf8("data_tableview"));
 
         gridLayout_2->addWidget(data_tableview, 0, 0, 1, 1);
 
         gridLayout = new QGridLayout();
-        gridLayout->setObjectName(QStringLiteral("gridLayout"));
+        gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
         errorbar_checkbox = new QCheckBox(stats_contentwidget);
-        errorbar_checkbox->setObjectName(QStringLiteral("errorbar_checkbox"));
+        errorbar_checkbox->setObjectName(QString::fromUtf8("errorbar_checkbox"));
         errorbar_checkbox->setChecked(true);
 
         gridLayout->addWidget(errorbar_checkbox, 2, 1, 1, 1);
 
         histogram_checkbox = new QCheckBox(stats_contentwidget);
-        histogram_checkbox->setObjectName(QStringLiteral("histogram_checkbox"));
+        histogram_checkbox->setObjectName(QString::fromUtf8("histogram_checkbox"));
 
         gridLayout->addWidget(histogram_checkbox, 0, 2, 1, 1);
 
         crosscorr_checkbox = new QCheckBox(stats_contentwidget);
-        crosscorr_checkbox->setObjectName(QStringLiteral("crosscorr_checkbox"));
+        crosscorr_checkbox->setObjectName(QString::fromUtf8("crosscorr_checkbox"));
 
         gridLayout->addWidget(crosscorr_checkbox, 2, 0, 1, 1);
 
         yaxis_label = new QLabel(stats_contentwidget);
-        yaxis_label->setObjectName(QStringLiteral("yaxis_label"));
+        yaxis_label->setObjectName(QString::fromUtf8("yaxis_label"));
 
         gridLayout->addWidget(yaxis_label, 1, 0, 1, 1);
 
         histogram_spinbox = new QSpinBox(stats_contentwidget);
-        histogram_spinbox->setObjectName(QStringLiteral("histogram_spinbox"));
+        histogram_spinbox->setObjectName(QString::fromUtf8("histogram_spinbox"));
         histogram_spinbox->setMinimumSize(QSize(71, 25));
         histogram_spinbox->setMaximumSize(QSize(71, 25));
         histogram_spinbox->setMinimum(0);
@@ -177,28 +175,28 @@ public:
         gridLayout->addWidget(histogram_spinbox, 0, 3, 1, 1);
 
         absolute_checkbox = new QCheckBox(stats_contentwidget);
-        absolute_checkbox->setObjectName(QStringLiteral("absolute_checkbox"));
+        absolute_checkbox->setObjectName(QString::fromUtf8("absolute_checkbox"));
 
         gridLayout->addWidget(absolute_checkbox, 2, 3, 1, 1);
 
         xaxis_label = new QLabel(stats_contentwidget);
-        xaxis_label->setObjectName(QStringLiteral("xaxis_label"));
+        xaxis_label->setObjectName(QString::fromUtf8("xaxis_label"));
 
         gridLayout->addWidget(xaxis_label, 0, 0, 1, 1);
 
         outlier_checkbox = new QCheckBox(stats_contentwidget);
-        outlier_checkbox->setObjectName(QStringLiteral("outlier_checkbox"));
+        outlier_checkbox->setObjectName(QString::fromUtf8("outlier_checkbox"));
         outlier_checkbox->setChecked(true);
 
         gridLayout->addWidget(outlier_checkbox, 2, 2, 1, 1);
 
         boxplot_checkbox = new QCheckBox(stats_contentwidget);
-        boxplot_checkbox->setObjectName(QStringLiteral("boxplot_checkbox"));
+        boxplot_checkbox->setObjectName(QString::fromUtf8("boxplot_checkbox"));
 
         gridLayout->addWidget(boxplot_checkbox, 1, 2, 1, 1);
 
         yaxis_combobox = new QComboBox(stats_contentwidget);
-        yaxis_combobox->setObjectName(QStringLiteral("yaxis_combobox"));
+        yaxis_combobox->setObjectName(QString::fromUtf8("yaxis_combobox"));
         QSizePolicy sizePolicy2(QSizePolicy::Fixed, QSizePolicy::Fixed);
         sizePolicy2.setHorizontalStretch(0);
         sizePolicy2.setVerticalStretch(0);
@@ -209,7 +207,7 @@ public:
         gridLayout->addWidget(yaxis_combobox, 1, 1, 1, 1);
 
         xaxis_combobox = new QComboBox(stats_contentwidget);
-        xaxis_combobox->setObjectName(QStringLiteral("xaxis_combobox"));
+        xaxis_combobox->setObjectName(QString::fromUtf8("xaxis_combobox"));
         QSizePolicy sizePolicy3(QSizePolicy::Preferred, QSizePolicy::Fixed);
         sizePolicy3.setHorizontalStretch(0);
         sizePolicy3.setVerticalStretch(0);
@@ -220,7 +218,7 @@ public:
         gridLayout->addWidget(xaxis_combobox, 0, 1, 1, 1);
 
         plot_buttonbox = new QDialogButtonBox(stats_contentwidget);
-        plot_buttonbox->setObjectName(QStringLiteral("plot_buttonbox"));
+        plot_buttonbox->setObjectName(QString::fromUtf8("plot_buttonbox"));
         sizePolicy2.setHeightForWidth(plot_buttonbox->sizePolicy().hasHeightForWidth());
         plot_buttonbox->setSizePolicy(sizePolicy2);
         plot_buttonbox->setStandardButtons(QDialogButtonBox::Ok);
@@ -228,7 +226,7 @@ public:
         gridLayout->addWidget(plot_buttonbox, 2, 5, 1, 1);
 
         cbreak_pushbutton = new QPushButton(stats_contentwidget);
-        cbreak_pushbutton->setObjectName(QStringLiteral("cbreak_pushbutton"));
+        cbreak_pushbutton->setObjectName(QString::fromUtf8("cbreak_pushbutton"));
         cbreak_pushbutton->setEnabled(false);
         sizePolicy2.setHeightForWidth(cbreak_pushbutton->sizePolicy().hasHeightForWidth());
         cbreak_pushbutton->setSizePolicy(sizePolicy2);
@@ -236,9 +234,9 @@ public:
         gridLayout->addWidget(cbreak_pushbutton, 1, 3, 1, 1);
 
         horizontalLayout = new QHBoxLayout();
-        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
+        horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
         residUp_pushbotton = new QPushButton(stats_contentwidget);
-        residUp_pushbotton->setObjectName(QStringLiteral("residUp_pushbotton"));
+        residUp_pushbotton->setObjectName(QString::fromUtf8("residUp_pushbotton"));
         sizePolicy.setHeightForWidth(residUp_pushbotton->sizePolicy().hasHeightForWidth());
         residUp_pushbotton->setSizePolicy(sizePolicy);
         residUp_pushbotton->setMaximumSize(QSize(35, 16777215));
@@ -246,7 +244,7 @@ public:
         horizontalLayout->addWidget(residUp_pushbotton);
 
         residDown_pushbotton = new QPushButton(stats_contentwidget);
-        residDown_pushbotton->setObjectName(QStringLiteral("residDown_pushbotton"));
+        residDown_pushbotton->setObjectName(QString::fromUtf8("residDown_pushbotton"));
         sizePolicy.setHeightForWidth(residDown_pushbotton->sizePolicy().hasHeightForWidth());
         residDown_pushbotton->setSizePolicy(sizePolicy);
         residDown_pushbotton->setMaximumSize(QSize(35, 16777215));
@@ -257,7 +255,7 @@ public:
         gridLayout->addLayout(horizontalLayout, 1, 5, 1, 1);
 
         save_pushbutton = new QPushButton(stats_contentwidget);
-        save_pushbutton->setObjectName(QStringLiteral("save_pushbutton"));
+        save_pushbutton->setObjectName(QString::fromUtf8("save_pushbutton"));
         sizePolicy2.setHeightForWidth(save_pushbutton->sizePolicy().hasHeightForWidth());
         save_pushbutton->setSizePolicy(sizePolicy2);
 
@@ -269,7 +267,7 @@ public:
         stats_dockwidget->setWidget(stats_contentwidget);
         Statistics->addDockWidget(static_cast<Qt::DockWidgetArea>(4), stats_dockwidget);
         plot_dockwidget = new QDockWidget(Statistics);
-        plot_dockwidget->setObjectName(QStringLiteral("plot_dockwidget"));
+        plot_dockwidget->setObjectName(QString::fromUtf8("plot_dockwidget"));
         QSizePolicy sizePolicy4(QSizePolicy::Expanding, QSizePolicy::Expanding);
         sizePolicy4.setHorizontalStretch(70);
         sizePolicy4.setVerticalStretch(70);
@@ -278,17 +276,17 @@ public:
         plot_dockwidget->setMinimumSize(QSize(157, 94));
         plot_dockwidget->setFocusPolicy(Qt::ClickFocus);
         plot_contentwidget = new QWidget();
-        plot_contentwidget->setObjectName(QStringLiteral("plot_contentwidget"));
+        plot_contentwidget->setObjectName(QString::fromUtf8("plot_contentwidget"));
         plot_contentwidget->setMinimumSize(QSize(0, 0));
         gridLayout_5 = new QGridLayout(plot_contentwidget);
-        gridLayout_5->setObjectName(QStringLiteral("gridLayout_5"));
+        gridLayout_5->setObjectName(QString::fromUtf8("gridLayout_5"));
         plot_tabwidget = new QTabWidget(plot_contentwidget);
-        plot_tabwidget->setObjectName(QStringLiteral("plot_tabwidget"));
+        plot_tabwidget->setObjectName(QString::fromUtf8("plot_tabwidget"));
         tab = new QWidget();
-        tab->setObjectName(QStringLiteral("tab"));
+        tab->setObjectName(QString::fromUtf8("tab"));
         plot_tabwidget->addTab(tab, QString());
         tab_2 = new QWidget();
-        tab_2->setObjectName(QStringLiteral("tab_2"));
+        tab_2->setObjectName(QString::fromUtf8("tab_2"));
         plot_tabwidget->addTab(tab_2, QString());
 
         gridLayout_5->addWidget(plot_tabwidget, 0, 0, 1, 1);
@@ -296,7 +294,7 @@ public:
         plot_dockwidget->setWidget(plot_contentwidget);
         Statistics->addDockWidget(static_cast<Qt::DockWidgetArea>(4), plot_dockwidget);
         hist_dockwidget = new QDockWidget(Statistics);
-        hist_dockwidget->setObjectName(QStringLiteral("hist_dockwidget"));
+        hist_dockwidget->setObjectName(QString::fromUtf8("hist_dockwidget"));
         QSizePolicy sizePolicy5(QSizePolicy::Expanding, QSizePolicy::Expanding);
         sizePolicy5.setHorizontalStretch(0);
         sizePolicy5.setVerticalStretch(0);
@@ -304,7 +302,7 @@ public:
         hist_dockwidget->setSizePolicy(sizePolicy5);
         hist_dockwidget->setMinimumSize(QSize(79, 44));
         dockWidgetContents = new QWidget();
-        dockWidgetContents->setObjectName(QStringLiteral("dockWidgetContents"));
+        dockWidgetContents->setObjectName(QString::fromUtf8("dockWidgetContents"));
         dockWidgetContents->setMinimumSize(QSize(0, 0));
         hist_dockwidget->setWidget(dockWidgetContents);
         Statistics->addDockWidget(static_cast<Qt::DockWidgetArea>(4), hist_dockwidget);
@@ -316,21 +314,21 @@ public:
 
     void retranslateUi(QMainWindow *Statistics)
     {
-        Statistics->setWindowTitle(QApplication::translate("Statistics", "MainWindow", Q_NULLPTR));
-        errorbar_checkbox->setText(QApplication::translate("Statistics", "Errorbar", Q_NULLPTR));
-        histogram_checkbox->setText(QApplication::translate("Statistics", "Histogram", Q_NULLPTR));
-        crosscorr_checkbox->setText(QApplication::translate("Statistics", "CrCo", Q_NULLPTR));
-        yaxis_label->setText(QApplication::translate("Statistics", "Y-Axis:", Q_NULLPTR));
-        absolute_checkbox->setText(QApplication::translate("Statistics", "absolute", Q_NULLPTR));
-        xaxis_label->setText(QApplication::translate("Statistics", "X-Axis:", Q_NULLPTR));
-        outlier_checkbox->setText(QApplication::translate("Statistics", "Outlier", Q_NULLPTR));
-        boxplot_checkbox->setText(QApplication::translate("Statistics", "BoxPlot", Q_NULLPTR));
-        cbreak_pushbutton->setText(QApplication::translate("Statistics", "CBreak", Q_NULLPTR));
-        residUp_pushbotton->setText(QApplication::translate("Statistics", "^", Q_NULLPTR));
-        residDown_pushbotton->setText(QApplication::translate("Statistics", "v", Q_NULLPTR));
-        save_pushbutton->setText(QApplication::translate("Statistics", "save", Q_NULLPTR));
-        plot_tabwidget->setTabText(plot_tabwidget->indexOf(tab), QApplication::translate("Statistics", "Tab 1", Q_NULLPTR));
-        plot_tabwidget->setTabText(plot_tabwidget->indexOf(tab_2), QApplication::translate("Statistics", "Tab 2", Q_NULLPTR));
+        Statistics->setWindowTitle(QApplication::translate("Statistics", "MainWindow", nullptr));
+        errorbar_checkbox->setText(QApplication::translate("Statistics", "Errorbar", nullptr));
+        histogram_checkbox->setText(QApplication::translate("Statistics", "Histogram", nullptr));
+        crosscorr_checkbox->setText(QApplication::translate("Statistics", "CrCo", nullptr));
+        yaxis_label->setText(QApplication::translate("Statistics", "Y-Axis:", nullptr));
+        absolute_checkbox->setText(QApplication::translate("Statistics", "absolute", nullptr));
+        xaxis_label->setText(QApplication::translate("Statistics", "X-Axis:", nullptr));
+        outlier_checkbox->setText(QApplication::translate("Statistics", "Outlier", nullptr));
+        boxplot_checkbox->setText(QApplication::translate("Statistics", "BoxPlot", nullptr));
+        cbreak_pushbutton->setText(QApplication::translate("Statistics", "CBreak", nullptr));
+        residUp_pushbotton->setText(QApplication::translate("Statistics", "^", nullptr));
+        residDown_pushbotton->setText(QApplication::translate("Statistics", "v", nullptr));
+        save_pushbutton->setText(QApplication::translate("Statistics", "save", nullptr));
+        plot_tabwidget->setTabText(plot_tabwidget->indexOf(tab), QApplication::translate("Statistics", "Tab 1", nullptr));
+        plot_tabwidget->setTabText(plot_tabwidget->indexOf(tab_2), QApplication::translate("Statistics", "Tab 2", nullptr));
     } // retranslateUi
 
 };

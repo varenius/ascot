@@ -34,7 +34,7 @@ LIBS =						\
 	$(LIBBLAS) \
 	$(LIBLAPACK) -lmatio -lhdf5 -L/usr/include/mysql -lmysqlclient \
 	$(LIBQT) \
-	-lgmp -lCGAL  \
+	-lgmp  \
 	-lboost_regex \
 	-lnetcdf_c++ -lnetcdf -lfftw3 `gsl-config --libs`
 

@@ -53,7 +53,7 @@ LIBS =						\
 	$(LIBBLAS) \
         -lmatio -lhdf5 -L/usr/include/mysql -lmysqlclient \
 	$(LIBQT) \
-	-lgmp -lCGAL \
+	-lgmp \
 	-lnetcdf_c++ -lnetcdf -lfftw3 `gsl-config --libs` -lboost_regex \
 	-L$(GUROBI_HOME)/lib -lgurobi_c++ -lgurobi91
 

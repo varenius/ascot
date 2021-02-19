@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'projection.ui'
 **
-** Created by: Qt User Interface Compiler version 5.9.5
+** Created by: Qt User Interface Compiler version 5.12.8
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -10,16 +10,13 @@
 #define UI_PROJECTION_H
 
 #include <QtCore/QVariant>
-#include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QCheckBox>
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QDialogButtonBox>
 #include <QtWidgets/QDoubleSpinBox>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QGroupBox>
-#include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QRadioButton>
 #include <QtWidgets/QTabWidget>
@@ -69,45 +66,45 @@ public:
     void setupUi(QDialog *Projection)
     {
         if (Projection->objectName().isEmpty())
-            Projection->setObjectName(QStringLiteral("Projection"));
+            Projection->setObjectName(QString::fromUtf8("Projection"));
         Projection->resize(645, 415);
         gridLayout_5 = new QGridLayout(Projection);
-        gridLayout_5->setObjectName(QStringLiteral("gridLayout_5"));
+        gridLayout_5->setObjectName(QString::fromUtf8("gridLayout_5"));
         buttonBox = new QDialogButtonBox(Projection);
-        buttonBox->setObjectName(QStringLiteral("buttonBox"));
+        buttonBox->setObjectName(QString::fromUtf8("buttonBox"));
         buttonBox->setOrientation(Qt::Horizontal);
         buttonBox->setStandardButtons(QDialogButtonBox::Cancel|QDialogButtonBox::Ok);
 
         gridLayout_5->addWidget(buttonBox, 2, 0, 1, 1);
 
         tabWidget = new QTabWidget(Projection);
-        tabWidget->setObjectName(QStringLiteral("tabWidget"));
+        tabWidget->setObjectName(QString::fromUtf8("tabWidget"));
         symbolTab = new QWidget();
-        symbolTab->setObjectName(QStringLiteral("symbolTab"));
+        symbolTab->setObjectName(QString::fromUtf8("symbolTab"));
         gridLayout_3 = new QGridLayout(symbolTab);
-        gridLayout_3->setObjectName(QStringLiteral("gridLayout_3"));
+        gridLayout_3->setObjectName(QString::fromUtf8("gridLayout_3"));
         groupBox = new QGroupBox(symbolTab);
-        groupBox->setObjectName(QStringLiteral("groupBox"));
+        groupBox->setObjectName(QString::fromUtf8("groupBox"));
         gridLayout_2 = new QGridLayout(groupBox);
-        gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
+        gridLayout_2->setObjectName(QString::fromUtf8("gridLayout_2"));
         mollweide = new QRadioButton(groupBox);
-        mollweide->setObjectName(QStringLiteral("mollweide"));
+        mollweide->setObjectName(QString::fromUtf8("mollweide"));
 
         gridLayout_2->addWidget(mollweide, 0, 0, 1, 1);
 
         naturalearth = new QRadioButton(groupBox);
-        naturalearth->setObjectName(QStringLiteral("naturalearth"));
+        naturalearth->setObjectName(QString::fromUtf8("naturalearth"));
 
         gridLayout_2->addWidget(naturalearth, 1, 0, 1, 1);
 
         robinson = new QRadioButton(groupBox);
-        robinson->setObjectName(QStringLiteral("robinson"));
+        robinson->setObjectName(QString::fromUtf8("robinson"));
         robinson->setCheckable(false);
 
         gridLayout_2->addWidget(robinson, 2, 0, 1, 1);
 
         mercator = new QRadioButton(groupBox);
-        mercator->setObjectName(QStringLiteral("mercator"));
+        mercator->setObjectName(QString::fromUtf8("mercator"));
         mercator->setCheckable(false);
 
         gridLayout_2->addWidget(mercator, 3, 0, 1, 1);
@@ -116,35 +113,35 @@ public:
         gridLayout_3->addWidget(groupBox, 0, 0, 1, 1);
 
         groupBox_2 = new QGroupBox(symbolTab);
-        groupBox_2->setObjectName(QStringLiteral("groupBox_2"));
+        groupBox_2->setObjectName(QString::fromUtf8("groupBox_2"));
         gridLayout_4 = new QGridLayout(groupBox_2);
-        gridLayout_4->setObjectName(QStringLiteral("gridLayout_4"));
+        gridLayout_4->setObjectName(QString::fromUtf8("gridLayout_4"));
         qrb_line = new QRadioButton(groupBox_2);
-        qrb_line->setObjectName(QStringLiteral("qrb_line"));
+        qrb_line->setObjectName(QString::fromUtf8("qrb_line"));
         qrb_line->setCheckable(true);
 
         gridLayout_4->addWidget(qrb_line, 3, 0, 1, 1);
 
         qrb_disc = new QRadioButton(groupBox_2);
-        qrb_disc->setObjectName(QStringLiteral("qrb_disc"));
+        qrb_disc->setObjectName(QString::fromUtf8("qrb_disc"));
         qrb_disc->setCheckable(true);
 
         gridLayout_4->addWidget(qrb_disc, 4, 0, 1, 1);
 
         qrb_flat = new QRadioButton(groupBox_2);
-        qrb_flat->setObjectName(QStringLiteral("qrb_flat"));
+        qrb_flat->setObjectName(QString::fromUtf8("qrb_flat"));
         qrb_flat->setCheckable(true);
 
         gridLayout_4->addWidget(qrb_flat, 1, 0, 1, 1);
 
         qrb_spike = new QRadioButton(groupBox_2);
-        qrb_spike->setObjectName(QStringLiteral("qrb_spike"));
+        qrb_spike->setObjectName(QString::fromUtf8("qrb_spike"));
         qrb_spike->setCheckable(true);
 
         gridLayout_4->addWidget(qrb_spike, 2, 0, 1, 1);
 
         qrb_none = new QRadioButton(groupBox_2);
-        qrb_none->setObjectName(QStringLiteral("qrb_none"));
+        qrb_none->setObjectName(QString::fromUtf8("qrb_none"));
         qrb_none->setCheckable(true);
 
         gridLayout_4->addWidget(qrb_none, 0, 0, 1, 1);
@@ -153,35 +150,35 @@ public:
         gridLayout_3->addWidget(groupBox_2, 0, 1, 1, 1);
 
         groupBox_3 = new QGroupBox(symbolTab);
-        groupBox_3->setObjectName(QStringLiteral("groupBox_3"));
+        groupBox_3->setObjectName(QString::fromUtf8("groupBox_3"));
         gridLayout_6 = new QGridLayout(groupBox_3);
-        gridLayout_6->setObjectName(QStringLiteral("gridLayout_6"));
+        gridLayout_6->setObjectName(QString::fromUtf8("gridLayout_6"));
         stepright = new QRadioButton(groupBox_3);
-        stepright->setObjectName(QStringLiteral("stepright"));
+        stepright->setObjectName(QString::fromUtf8("stepright"));
         stepright->setCheckable(false);
 
         gridLayout_6->addWidget(stepright, 3, 0, 1, 1);
 
         impulse = new QRadioButton(groupBox_3);
-        impulse->setObjectName(QStringLiteral("impulse"));
+        impulse->setObjectName(QString::fromUtf8("impulse"));
         impulse->setCheckable(false);
 
         gridLayout_6->addWidget(impulse, 4, 0, 1, 1);
 
         line = new QRadioButton(groupBox_3);
-        line->setObjectName(QStringLiteral("line"));
+        line->setObjectName(QString::fromUtf8("line"));
         line->setCheckable(false);
 
         gridLayout_6->addWidget(line, 1, 0, 1, 1);
 
         stepleft = new QRadioButton(groupBox_3);
-        stepleft->setObjectName(QStringLiteral("stepleft"));
+        stepleft->setObjectName(QString::fromUtf8("stepleft"));
         stepleft->setCheckable(false);
 
         gridLayout_6->addWidget(stepleft, 2, 0, 1, 1);
 
         none = new QRadioButton(groupBox_3);
-        none->setObjectName(QStringLiteral("none"));
+        none->setObjectName(QString::fromUtf8("none"));
         none->setCheckable(false);
 
         gridLayout_6->addWidget(none, 0, 0, 1, 1);
@@ -190,49 +187,49 @@ public:
         gridLayout_3->addWidget(groupBox_3, 0, 2, 1, 1);
 
         gridLayout = new QGridLayout();
-        gridLayout->setObjectName(QStringLiteral("gridLayout"));
+        gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
         label = new QLabel(symbolTab);
-        label->setObjectName(QStringLiteral("label"));
+        label->setObjectName(QString::fromUtf8("label"));
 
         gridLayout->addWidget(label, 0, 0, 1, 1);
 
         gridwidth = new QDoubleSpinBox(symbolTab);
-        gridwidth->setObjectName(QStringLiteral("gridwidth"));
+        gridwidth->setObjectName(QString::fromUtf8("gridwidth"));
 
         gridLayout->addWidget(gridwidth, 0, 1, 1, 1);
 
         label_3 = new QLabel(symbolTab);
-        label_3->setObjectName(QStringLiteral("label_3"));
+        label_3->setObjectName(QString::fromUtf8("label_3"));
 
         gridLayout->addWidget(label_3, 0, 2, 1, 1);
 
         gridextension = new QDoubleSpinBox(symbolTab);
-        gridextension->setObjectName(QStringLiteral("gridextension"));
+        gridextension->setObjectName(QString::fromUtf8("gridextension"));
 
         gridLayout->addWidget(gridextension, 0, 3, 1, 1);
 
         label_2 = new QLabel(symbolTab);
-        label_2->setObjectName(QStringLiteral("label_2"));
+        label_2->setObjectName(QString::fromUtf8("label_2"));
 
         gridLayout->addWidget(label_2, 0, 4, 1, 1);
 
         lamspace = new QDoubleSpinBox(symbolTab);
-        lamspace->setObjectName(QStringLiteral("lamspace"));
+        lamspace->setObjectName(QString::fromUtf8("lamspace"));
 
         gridLayout->addWidget(lamspace, 0, 5, 1, 1);
 
         label_4 = new QLabel(symbolTab);
-        label_4->setObjectName(QStringLiteral("label_4"));
+        label_4->setObjectName(QString::fromUtf8("label_4"));
 
         gridLayout->addWidget(label_4, 1, 4, 1, 1);
 
         phispace = new QDoubleSpinBox(symbolTab);
-        phispace->setObjectName(QStringLiteral("phispace"));
+        phispace->setObjectName(QString::fromUtf8("phispace"));
 
         gridLayout->addWidget(phispace, 1, 5, 1, 1);
 
         textlabels = new QCheckBox(symbolTab);
-        textlabels->setObjectName(QStringLiteral("textlabels"));
+        textlabels->setObjectName(QString::fromUtf8("textlabels"));
 
         gridLayout->addWidget(textlabels, 2, 5, 1, 1);
 
@@ -256,33 +253,33 @@ public:
 
     void retranslateUi(QDialog *Projection)
     {
-        Projection->setWindowTitle(QApplication::translate("Projection", "Dialog", Q_NULLPTR));
-        groupBox->setTitle(QApplication::translate("Projection", "Projection", Q_NULLPTR));
-        mollweide->setText(QApplication::translate("Projection", "Mollweide", Q_NULLPTR));
-        naturalearth->setText(QApplication::translate("Projection", "Natural Earth", Q_NULLPTR));
-        robinson->setText(QApplication::translate("Projection", "Robinson", Q_NULLPTR));
-        mercator->setText(QApplication::translate("Projection", "Mercator", Q_NULLPTR));
-        groupBox_2->setTitle(QApplication::translate("Projection", "Arrow Ending", Q_NULLPTR));
-        qrb_line->setText(QApplication::translate("Projection", "line", Q_NULLPTR));
-        qrb_disc->setText(QApplication::translate("Projection", "disc", Q_NULLPTR));
-        qrb_flat->setText(QApplication::translate("Projection", "flat", Q_NULLPTR));
-        qrb_spike->setText(QApplication::translate("Projection", "spike", Q_NULLPTR));
-        qrb_none->setText(QApplication::translate("Projection", "none", Q_NULLPTR));
-        groupBox_3->setTitle(QApplication::translate("Projection", "Line Style", Q_NULLPTR));
-        stepright->setText(QApplication::translate("Projection", "StepRight", Q_NULLPTR));
-        impulse->setText(QApplication::translate("Projection", "Impulse", Q_NULLPTR));
-        line->setText(QApplication::translate("Projection", "Line", Q_NULLPTR));
-        stepleft->setText(QApplication::translate("Projection", "StepLeft", Q_NULLPTR));
-        none->setText(QApplication::translate("Projection", "None", Q_NULLPTR));
-        label->setText(QApplication::translate("Projection", "Grid Width:", Q_NULLPTR));
+        Projection->setWindowTitle(QApplication::translate("Projection", "Dialog", nullptr));
+        groupBox->setTitle(QApplication::translate("Projection", "Projection", nullptr));
+        mollweide->setText(QApplication::translate("Projection", "Mollweide", nullptr));
+        naturalearth->setText(QApplication::translate("Projection", "Natural Earth", nullptr));
+        robinson->setText(QApplication::translate("Projection", "Robinson", nullptr));
+        mercator->setText(QApplication::translate("Projection", "Mercator", nullptr));
+        groupBox_2->setTitle(QApplication::translate("Projection", "Arrow Ending", nullptr));
+        qrb_line->setText(QApplication::translate("Projection", "line", nullptr));
+        qrb_disc->setText(QApplication::translate("Projection", "disc", nullptr));
+        qrb_flat->setText(QApplication::translate("Projection", "flat", nullptr));
+        qrb_spike->setText(QApplication::translate("Projection", "spike", nullptr));
+        qrb_none->setText(QApplication::translate("Projection", "none", nullptr));
+        groupBox_3->setTitle(QApplication::translate("Projection", "Line Style", nullptr));
+        stepright->setText(QApplication::translate("Projection", "StepRight", nullptr));
+        impulse->setText(QApplication::translate("Projection", "Impulse", nullptr));
+        line->setText(QApplication::translate("Projection", "Line", nullptr));
+        stepleft->setText(QApplication::translate("Projection", "StepLeft", nullptr));
+        none->setText(QApplication::translate("Projection", "None", nullptr));
+        label->setText(QApplication::translate("Projection", "Grid Width:", nullptr));
         gridwidth->setPrefix(QString());
-        label_3->setText(QApplication::translate("Projection", "Grid Extension:", Q_NULLPTR));
+        label_3->setText(QApplication::translate("Projection", "Grid Extension:", nullptr));
         gridextension->setPrefix(QString());
-        label_2->setText(QApplication::translate("Projection", "Lambda Space:", Q_NULLPTR));
+        label_2->setText(QApplication::translate("Projection", "Lambda Space:", nullptr));
         lamspace->setPrefix(QString());
-        label_4->setText(QApplication::translate("Projection", "Phi Space:", Q_NULLPTR));
-        textlabels->setText(QApplication::translate("Projection", "Textlabels", Q_NULLPTR));
-        tabWidget->setTabText(tabWidget->indexOf(symbolTab), QApplication::translate("Projection", "Style", Q_NULLPTR));
+        label_4->setText(QApplication::translate("Projection", "Phi Space:", nullptr));
+        textlabels->setText(QApplication::translate("Projection", "Textlabels", nullptr));
+        tabWidget->setTabText(tabWidget->indexOf(symbolTab), QApplication::translate("Projection", "Style", nullptr));
     } // retranslateUi
 
 };

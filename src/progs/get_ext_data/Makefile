@@ -44,7 +44,7 @@ LIBS =						\
 	$(LIBBLAS) \
         -lmatio -lhdf5 -L/usr/include/mysql -lmysqlclient \
 	$(LIBQT) \
-	-lgmp -lCGAL  \
+	-lgmp  \
 	-lnetcdf_c++ -lnetcdf -lfftw3 `gsl-config --libs`  -lboost_regex -lconfig++
 
 all: get_ext_data

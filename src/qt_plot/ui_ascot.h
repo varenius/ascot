@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'ascot.ui'
 **
-** Created by: Qt User Interface Compiler version 5.9.5
+** Created by: Qt User Interface Compiler version 5.12.8
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -12,7 +12,6 @@
 #include <QtCore/QVariant>
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QCheckBox>
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QDialogButtonBox>
@@ -95,41 +94,41 @@ public:
     void setupUi(QMainWindow *Ascot)
     {
         if (Ascot->objectName().isEmpty())
-            Ascot->setObjectName(QStringLiteral("Ascot"));
+            Ascot->setObjectName(QString::fromUtf8("Ascot"));
         Ascot->resize(777, 443);
         cfg_load_action = new QAction(Ascot);
-        cfg_load_action->setObjectName(QStringLiteral("cfg_load_action"));
+        cfg_load_action->setObjectName(QString::fromUtf8("cfg_load_action"));
         eph_load_action = new QAction(Ascot);
-        eph_load_action->setObjectName(QStringLiteral("eph_load_action"));
+        eph_load_action->setObjectName(QString::fromUtf8("eph_load_action"));
         warning_action = new QAction(Ascot);
-        warning_action->setObjectName(QStringLiteral("warning_action"));
+        warning_action->setObjectName(QString::fromUtf8("warning_action"));
         warning_action->setCheckable(false);
         result_action = new QAction(Ascot);
-        result_action->setObjectName(QStringLiteral("result_action"));
+        result_action->setObjectName(QString::fromUtf8("result_action"));
         result_action->setCheckable(false);
         result_action->setChecked(false);
         info_action = new QAction(Ascot);
-        info_action->setObjectName(QStringLiteral("info_action"));
+        info_action->setObjectName(QString::fromUtf8("info_action"));
         detail_action = new QAction(Ascot);
-        detail_action->setObjectName(QStringLiteral("detail_action"));
+        detail_action->setObjectName(QString::fromUtf8("detail_action"));
         all_action = new QAction(Ascot);
-        all_action->setObjectName(QStringLiteral("all_action"));
+        all_action->setObjectName(QString::fromUtf8("all_action"));
         centralwidget = new QWidget(Ascot);
-        centralwidget->setObjectName(QStringLiteral("centralwidget"));
+        centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         gridLayout_7 = new QGridLayout(centralwidget);
-        gridLayout_7->setObjectName(QStringLiteral("gridLayout_7"));
+        gridLayout_7->setObjectName(QString::fromUtf8("gridLayout_7"));
         cfg_label = new QLabel(centralwidget);
-        cfg_label->setObjectName(QStringLiteral("cfg_label"));
+        cfg_label->setObjectName(QString::fromUtf8("cfg_label"));
 
         gridLayout_7->addWidget(cfg_label, 0, 0, 1, 1);
 
         cfg_lineedit = new QLineEdit(centralwidget);
-        cfg_lineedit->setObjectName(QStringLiteral("cfg_lineedit"));
+        cfg_lineedit->setObjectName(QString::fromUtf8("cfg_lineedit"));
 
         gridLayout_7->addWidget(cfg_lineedit, 0, 1, 1, 1);
 
         cfg_pushbutton = new QPushButton(centralwidget);
-        cfg_pushbutton->setObjectName(QStringLiteral("cfg_pushbutton"));
+        cfg_pushbutton->setObjectName(QString::fromUtf8("cfg_pushbutton"));
 
         gridLayout_7->addWidget(cfg_pushbutton, 0, 2, 1, 1);
 
@@ -138,25 +137,30 @@ public:
         gridLayout_7->addItem(horizontalSpacer, 0, 3, 1, 1);
 
         loglevel_combobox = new QComboBox(centralwidget);
-        loglevel_combobox->setObjectName(QStringLiteral("loglevel_combobox"));
+        loglevel_combobox->addItem(QString());
+        loglevel_combobox->addItem(QString());
+        loglevel_combobox->addItem(QString());
+        loglevel_combobox->addItem(QString());
+        loglevel_combobox->addItem(QString());
+        loglevel_combobox->setObjectName(QString::fromUtf8("loglevel_combobox"));
 
         gridLayout_7->addWidget(loglevel_combobox, 0, 4, 1, 1);
 
         main_tabwidget = new QTabWidget(centralwidget);
-        main_tabwidget->setObjectName(QStringLiteral("main_tabwidget"));
+        main_tabwidget->setObjectName(QString::fromUtf8("main_tabwidget"));
         QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(main_tabwidget->sizePolicy().hasHeightForWidth());
         main_tabwidget->setSizePolicy(sizePolicy);
         log_tab = new QWidget();
-        log_tab->setObjectName(QStringLiteral("log_tab"));
+        log_tab->setObjectName(QString::fromUtf8("log_tab"));
         gridLayout = new QGridLayout(log_tab);
-        gridLayout->setObjectName(QStringLiteral("gridLayout"));
+        gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
         output_plaintextedit = new QPlainTextEdit(log_tab);
-        output_plaintextedit->setObjectName(QStringLiteral("output_plaintextedit"));
+        output_plaintextedit->setObjectName(QString::fromUtf8("output_plaintextedit"));
         QFont font;
-        font.setFamily(QStringLiteral("Arial"));
+        font.setFamily(QString::fromUtf8("Arial"));
         output_plaintextedit->setFont(font);
         output_plaintextedit->setReadOnly(true);
 
@@ -164,11 +168,11 @@ public:
 
         main_tabwidget->addTab(log_tab, QString());
         properties_tab = new QWidget();
-        properties_tab->setObjectName(QStringLiteral("properties_tab"));
+        properties_tab->setObjectName(QString::fromUtf8("properties_tab"));
         gridLayout_3 = new QGridLayout(properties_tab);
-        gridLayout_3->setObjectName(QStringLiteral("gridLayout_3"));
+        gridLayout_3->setObjectName(QString::fromUtf8("gridLayout_3"));
         paraminfo_tablewidget = new QTableWidget(properties_tab);
-        paraminfo_tablewidget->setObjectName(QStringLiteral("paraminfo_tablewidget"));
+        paraminfo_tablewidget->setObjectName(QString::fromUtf8("paraminfo_tablewidget"));
         QSizePolicy sizePolicy1(QSizePolicy::Expanding, QSizePolicy::Expanding);
         sizePolicy1.setHorizontalStretch(70);
         sizePolicy1.setVerticalStretch(0);
@@ -178,66 +182,66 @@ public:
         gridLayout_3->addWidget(paraminfo_tablewidget, 0, 0, 1, 1);
 
         refframe_tabwidget = new QTabWidget(properties_tab);
-        refframe_tabwidget->setObjectName(QStringLiteral("refframe_tabwidget"));
+        refframe_tabwidget->setObjectName(QString::fromUtf8("refframe_tabwidget"));
         sizePolicy1.setHeightForWidth(refframe_tabwidget->sizePolicy().hasHeightForWidth());
         refframe_tabwidget->setSizePolicy(sizePolicy1);
         tab_4 = new QWidget();
-        tab_4->setObjectName(QStringLiteral("tab_4"));
+        tab_4->setObjectName(QString::fromUtf8("tab_4"));
         refframe_tabwidget->addTab(tab_4, QString());
         tab_5 = new QWidget();
-        tab_5->setObjectName(QStringLiteral("tab_5"));
+        tab_5->setObjectName(QString::fromUtf8("tab_5"));
         refframe_tabwidget->addTab(tab_5, QString());
 
         gridLayout_3->addWidget(refframe_tabwidget, 0, 1, 1, 1);
 
         main_tabwidget->addTab(properties_tab, QString());
         config_tab = new QWidget();
-        config_tab->setObjectName(QStringLiteral("config_tab"));
+        config_tab->setObjectName(QString::fromUtf8("config_tab"));
         control_toolbox = new QToolBox(config_tab);
-        control_toolbox->setObjectName(QStringLiteral("control_toolbox"));
+        control_toolbox->setObjectName(QString::fromUtf8("control_toolbox"));
         control_toolbox->setGeometry(QRect(10, 10, 961, 441));
         definitions_page = new QWidget();
-        definitions_page->setObjectName(QStringLiteral("definitions_page"));
+        definitions_page->setObjectName(QString::fromUtf8("definitions_page"));
         definitions_page->setGeometry(QRect(0, 0, 961, 354));
         comboBox = new QComboBox(definitions_page);
-        comboBox->setObjectName(QStringLiteral("comboBox"));
+        comboBox->setObjectName(QString::fromUtf8("comboBox"));
         comboBox->setGeometry(QRect(0, 10, 161, 25));
-        control_toolbox->addItem(definitions_page, QStringLiteral("Page 1"));
+        control_toolbox->addItem(definitions_page, QString::fromUtf8("Page 1"));
         page_3 = new QWidget();
-        page_3->setObjectName(QStringLiteral("page_3"));
+        page_3->setObjectName(QString::fromUtf8("page_3"));
         page_3->setGeometry(QRect(0, 0, 100, 30));
-        control_toolbox->addItem(page_3, QStringLiteral("Seite"));
+        control_toolbox->addItem(page_3, QString::fromUtf8("Seite"));
         page_2 = new QWidget();
-        page_2->setObjectName(QStringLiteral("page_2"));
+        page_2->setObjectName(QString::fromUtf8("page_2"));
         page_2->setGeometry(QRect(0, 0, 100, 30));
-        control_toolbox->addItem(page_2, QStringLiteral("Page 2"));
+        control_toolbox->addItem(page_2, QString::fromUtf8("Page 2"));
         main_tabwidget->addTab(config_tab, QString());
         tab = new QWidget();
-        tab->setObjectName(QStringLiteral("tab"));
+        tab->setObjectName(QString::fromUtf8("tab"));
         gridLayout_4 = new QGridLayout(tab);
-        gridLayout_4->setObjectName(QStringLiteral("gridLayout_4"));
+        gridLayout_4->setObjectName(QString::fromUtf8("gridLayout_4"));
         data_tableview = new QTableView(tab);
-        data_tableview->setObjectName(QStringLiteral("data_tableview"));
+        data_tableview->setObjectName(QString::fromUtf8("data_tableview"));
         sizePolicy.setHeightForWidth(data_tableview->sizePolicy().hasHeightForWidth());
         data_tableview->setSizePolicy(sizePolicy);
 
         gridLayout_4->addWidget(data_tableview, 0, 0, 1, 1);
 
         plot_tabwidget = new QTabWidget(tab);
-        plot_tabwidget->setObjectName(QStringLiteral("plot_tabwidget"));
+        plot_tabwidget->setObjectName(QString::fromUtf8("plot_tabwidget"));
         tab_2 = new QWidget();
-        tab_2->setObjectName(QStringLiteral("tab_2"));
+        tab_2->setObjectName(QString::fromUtf8("tab_2"));
         plot_tabwidget->addTab(tab_2, QString());
         tab_3 = new QWidget();
-        tab_3->setObjectName(QStringLiteral("tab_3"));
+        tab_3->setObjectName(QString::fromUtf8("tab_3"));
         plot_tabwidget->addTab(tab_3, QString());
 
         gridLayout_4->addWidget(plot_tabwidget, 0, 1, 2, 1);
 
         gridLayout_2 = new QGridLayout();
-        gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
+        gridLayout_2->setObjectName(QString::fromUtf8("gridLayout_2"));
         xaxis_label = new QLabel(tab);
-        xaxis_label->setObjectName(QStringLiteral("xaxis_label"));
+        xaxis_label->setObjectName(QString::fromUtf8("xaxis_label"));
         QSizePolicy sizePolicy2(QSizePolicy::Fixed, QSizePolicy::Fixed);
         sizePolicy2.setHorizontalStretch(0);
         sizePolicy2.setVerticalStretch(0);
@@ -247,7 +251,7 @@ public:
         gridLayout_2->addWidget(xaxis_label, 0, 0, 1, 1);
 
         xaxis_combobox = new QComboBox(tab);
-        xaxis_combobox->setObjectName(QStringLiteral("xaxis_combobox"));
+        xaxis_combobox->setObjectName(QString::fromUtf8("xaxis_combobox"));
         sizePolicy2.setHeightForWidth(xaxis_combobox->sizePolicy().hasHeightForWidth());
         xaxis_combobox->setSizePolicy(sizePolicy2);
         xaxis_combobox->setMinimumSize(QSize(111, 25));
@@ -255,14 +259,14 @@ public:
         gridLayout_2->addWidget(xaxis_combobox, 0, 1, 1, 1);
 
         histogram_checkbox = new QCheckBox(tab);
-        histogram_checkbox->setObjectName(QStringLiteral("histogram_checkbox"));
+        histogram_checkbox->setObjectName(QString::fromUtf8("histogram_checkbox"));
         sizePolicy2.setHeightForWidth(histogram_checkbox->sizePolicy().hasHeightForWidth());
         histogram_checkbox->setSizePolicy(sizePolicy2);
 
         gridLayout_2->addWidget(histogram_checkbox, 0, 2, 1, 1);
 
         histogram_spinbox = new QSpinBox(tab);
-        histogram_spinbox->setObjectName(QStringLiteral("histogram_spinbox"));
+        histogram_spinbox->setObjectName(QString::fromUtf8("histogram_spinbox"));
         sizePolicy2.setHeightForWidth(histogram_spinbox->sizePolicy().hasHeightForWidth());
         histogram_spinbox->setSizePolicy(sizePolicy2);
         histogram_spinbox->setMinimumSize(QSize(20, 25));
@@ -274,14 +278,14 @@ public:
         gridLayout_2->addWidget(histogram_spinbox, 0, 3, 1, 1);
 
         yaxis_label = new QLabel(tab);
-        yaxis_label->setObjectName(QStringLiteral("yaxis_label"));
+        yaxis_label->setObjectName(QString::fromUtf8("yaxis_label"));
         sizePolicy2.setHeightForWidth(yaxis_label->sizePolicy().hasHeightForWidth());
         yaxis_label->setSizePolicy(sizePolicy2);
 
         gridLayout_2->addWidget(yaxis_label, 1, 0, 1, 1);
 
         yaxis_combobox = new QComboBox(tab);
-        yaxis_combobox->setObjectName(QStringLiteral("yaxis_combobox"));
+        yaxis_combobox->setObjectName(QString::fromUtf8("yaxis_combobox"));
         sizePolicy2.setHeightForWidth(yaxis_combobox->sizePolicy().hasHeightForWidth());
         yaxis_combobox->setSizePolicy(sizePolicy2);
         yaxis_combobox->setMinimumSize(QSize(111, 25));
@@ -289,14 +293,14 @@ public:
         gridLayout_2->addWidget(yaxis_combobox, 1, 1, 1, 1);
 
         boxplot_checkbox = new QCheckBox(tab);
-        boxplot_checkbox->setObjectName(QStringLiteral("boxplot_checkbox"));
+        boxplot_checkbox->setObjectName(QString::fromUtf8("boxplot_checkbox"));
         sizePolicy2.setHeightForWidth(boxplot_checkbox->sizePolicy().hasHeightForWidth());
         boxplot_checkbox->setSizePolicy(sizePolicy2);
 
         gridLayout_2->addWidget(boxplot_checkbox, 1, 2, 1, 1);
 
         errorbar_checkbox = new QCheckBox(tab);
-        errorbar_checkbox->setObjectName(QStringLiteral("errorbar_checkbox"));
+        errorbar_checkbox->setObjectName(QString::fromUtf8("errorbar_checkbox"));
         sizePolicy2.setHeightForWidth(errorbar_checkbox->sizePolicy().hasHeightForWidth());
         errorbar_checkbox->setSizePolicy(sizePolicy2);
         errorbar_checkbox->setChecked(true);
@@ -304,7 +308,7 @@ public:
         gridLayout_2->addWidget(errorbar_checkbox, 2, 1, 1, 1);
 
         outlier_checkbox = new QCheckBox(tab);
-        outlier_checkbox->setObjectName(QStringLiteral("outlier_checkbox"));
+        outlier_checkbox->setObjectName(QString::fromUtf8("outlier_checkbox"));
         sizePolicy2.setHeightForWidth(outlier_checkbox->sizePolicy().hasHeightForWidth());
         outlier_checkbox->setSizePolicy(sizePolicy2);
         outlier_checkbox->setChecked(true);
@@ -312,14 +316,14 @@ public:
         gridLayout_2->addWidget(outlier_checkbox, 2, 2, 1, 1);
 
         absolute_checkbox = new QCheckBox(tab);
-        absolute_checkbox->setObjectName(QStringLiteral("absolute_checkbox"));
+        absolute_checkbox->setObjectName(QString::fromUtf8("absolute_checkbox"));
         sizePolicy2.setHeightForWidth(absolute_checkbox->sizePolicy().hasHeightForWidth());
         absolute_checkbox->setSizePolicy(sizePolicy2);
 
         gridLayout_2->addWidget(absolute_checkbox, 2, 3, 1, 1);
 
         plot_buttonbox = new QDialogButtonBox(tab);
-        plot_buttonbox->setObjectName(QStringLiteral("plot_buttonbox"));
+        plot_buttonbox->setObjectName(QString::fromUtf8("plot_buttonbox"));
         sizePolicy2.setHeightForWidth(plot_buttonbox->sizePolicy().hasHeightForWidth());
         plot_buttonbox->setSizePolicy(sizePolicy2);
         plot_buttonbox->setStandardButtons(QDialogButtonBox::Ok);
@@ -348,7 +352,7 @@ public:
         session_tablewidget->setHorizontalHeaderItem(4, __qtablewidgetitem4);
         QTableWidgetItem *__qtablewidgetitem5 = new QTableWidgetItem();
         session_tablewidget->setHorizontalHeaderItem(5, __qtablewidgetitem5);
-        session_tablewidget->setObjectName(QStringLiteral("session_tablewidget"));
+        session_tablewidget->setObjectName(QString::fromUtf8("session_tablewidget"));
         QSizePolicy sizePolicy3(QSizePolicy::Preferred, QSizePolicy::Fixed);
         sizePolicy3.setHorizontalStretch(0);
         sizePolicy3.setVerticalStretch(0);
@@ -360,13 +364,13 @@ public:
 
         Ascot->setCentralWidget(centralwidget);
         menubar = new QMenuBar(Ascot);
-        menubar->setObjectName(QStringLiteral("menubar"));
+        menubar->setObjectName(QString::fromUtf8("menubar"));
         menubar->setGeometry(QRect(0, 0, 777, 23));
         main_menu = new QMenu(menubar);
-        main_menu->setObjectName(QStringLiteral("main_menu"));
+        main_menu->setObjectName(QString::fromUtf8("main_menu"));
         Ascot->setMenuBar(menubar);
         statusbar = new QStatusBar(Ascot);
-        statusbar->setObjectName(QStringLiteral("statusbar"));
+        statusbar->setObjectName(QString::fromUtf8("statusbar"));
         Ascot->setStatusBar(statusbar);
 
         menubar->addAction(main_menu->menuAction());
@@ -385,53 +389,51 @@ public:
 
     void retranslateUi(QMainWindow *Ascot)
     {
-        Ascot->setWindowTitle(QApplication::translate("Ascot", "MainWindow", Q_NULLPTR));
-        cfg_load_action->setText(QApplication::translate("Ascot", "Load *.cfg", Q_NULLPTR));
-        eph_load_action->setText(QApplication::translate("Ascot", "Load Ephemerides", Q_NULLPTR));
-        warning_action->setText(QApplication::translate("Ascot", "WARNING", Q_NULLPTR));
-        result_action->setText(QApplication::translate("Ascot", "RESULT", Q_NULLPTR));
-        info_action->setText(QApplication::translate("Ascot", "INFO", Q_NULLPTR));
-        detail_action->setText(QApplication::translate("Ascot", "DETAIL", Q_NULLPTR));
-        all_action->setText(QApplication::translate("Ascot", "ALL", Q_NULLPTR));
-        cfg_label->setText(QApplication::translate("Ascot", "selected *.cfg:", Q_NULLPTR));
-        cfg_pushbutton->setText(QApplication::translate("Ascot", "Load", Q_NULLPTR));
-        loglevel_combobox->clear();
-        loglevel_combobox->insertItems(0, QStringList()
-         << QApplication::translate("Ascot", "WARNING", "1")
-         << QApplication::translate("Ascot", "RESULT", "2")
-         << QApplication::translate("Ascot", "INFO", "3")
-         << QApplication::translate("Ascot", "DETAIL", "4")
-         << QApplication::translate("Ascot", "ALL", "5")
-        );
-        main_tabwidget->setTabText(main_tabwidget->indexOf(log_tab), QApplication::translate("Ascot", "Tab 1", Q_NULLPTR));
-        refframe_tabwidget->setTabText(refframe_tabwidget->indexOf(tab_4), QApplication::translate("Ascot", "Tab 1", Q_NULLPTR));
-        refframe_tabwidget->setTabText(refframe_tabwidget->indexOf(tab_5), QApplication::translate("Ascot", "Tab 2", Q_NULLPTR));
-        main_tabwidget->setTabText(main_tabwidget->indexOf(properties_tab), QApplication::translate("Ascot", "Seite", Q_NULLPTR));
-        control_toolbox->setItemText(control_toolbox->indexOf(definitions_page), QApplication::translate("Ascot", "Page 1", Q_NULLPTR));
-        control_toolbox->setItemText(control_toolbox->indexOf(page_3), QApplication::translate("Ascot", "Seite", Q_NULLPTR));
-        control_toolbox->setItemText(control_toolbox->indexOf(page_2), QApplication::translate("Ascot", "Page 2", Q_NULLPTR));
-        main_tabwidget->setTabText(main_tabwidget->indexOf(config_tab), QApplication::translate("Ascot", "Tab 2", Q_NULLPTR));
-        plot_tabwidget->setTabText(plot_tabwidget->indexOf(tab_2), QApplication::translate("Ascot", "Tab 1", Q_NULLPTR));
-        plot_tabwidget->setTabText(plot_tabwidget->indexOf(tab_3), QApplication::translate("Ascot", "Tab 2", Q_NULLPTR));
-        xaxis_label->setText(QApplication::translate("Ascot", "X-Axis:", Q_NULLPTR));
-        histogram_checkbox->setText(QApplication::translate("Ascot", "Hist", Q_NULLPTR));
-        yaxis_label->setText(QApplication::translate("Ascot", "Y-Axis:", Q_NULLPTR));
-        boxplot_checkbox->setText(QApplication::translate("Ascot", "BoxPlot", Q_NULLPTR));
-        errorbar_checkbox->setText(QApplication::translate("Ascot", "Errorbar", Q_NULLPTR));
-        outlier_checkbox->setText(QApplication::translate("Ascot", "Outlier", Q_NULLPTR));
-        absolute_checkbox->setText(QApplication::translate("Ascot", "abs", Q_NULLPTR));
-        main_tabwidget->setTabText(main_tabwidget->indexOf(tab), QApplication::translate("Ascot", "Seite", Q_NULLPTR));
+        Ascot->setWindowTitle(QApplication::translate("Ascot", "MainWindow", nullptr));
+        cfg_load_action->setText(QApplication::translate("Ascot", "Load *.cfg", nullptr));
+        eph_load_action->setText(QApplication::translate("Ascot", "Load Ephemerides", nullptr));
+        warning_action->setText(QApplication::translate("Ascot", "WARNING", nullptr));
+        result_action->setText(QApplication::translate("Ascot", "RESULT", nullptr));
+        info_action->setText(QApplication::translate("Ascot", "INFO", nullptr));
+        detail_action->setText(QApplication::translate("Ascot", "DETAIL", nullptr));
+        all_action->setText(QApplication::translate("Ascot", "ALL", nullptr));
+        cfg_label->setText(QApplication::translate("Ascot", "selected *.cfg:", nullptr));
+        cfg_pushbutton->setText(QApplication::translate("Ascot", "Load", nullptr));
+        loglevel_combobox->setItemText(0, QApplication::translate("Ascot", "WARNING", "1"));
+        loglevel_combobox->setItemText(1, QApplication::translate("Ascot", "RESULT", "2"));
+        loglevel_combobox->setItemText(2, QApplication::translate("Ascot", "INFO", "3"));
+        loglevel_combobox->setItemText(3, QApplication::translate("Ascot", "DETAIL", "4"));
+        loglevel_combobox->setItemText(4, QApplication::translate("Ascot", "ALL", "5"));
+
+        main_tabwidget->setTabText(main_tabwidget->indexOf(log_tab), QApplication::translate("Ascot", "Tab 1", nullptr));
+        refframe_tabwidget->setTabText(refframe_tabwidget->indexOf(tab_4), QApplication::translate("Ascot", "Tab 1", nullptr));
+        refframe_tabwidget->setTabText(refframe_tabwidget->indexOf(tab_5), QApplication::translate("Ascot", "Tab 2", nullptr));
+        main_tabwidget->setTabText(main_tabwidget->indexOf(properties_tab), QApplication::translate("Ascot", "Seite", nullptr));
+        control_toolbox->setItemText(control_toolbox->indexOf(definitions_page), QApplication::translate("Ascot", "Page 1", nullptr));
+        control_toolbox->setItemText(control_toolbox->indexOf(page_3), QApplication::translate("Ascot", "Seite", nullptr));
+        control_toolbox->setItemText(control_toolbox->indexOf(page_2), QApplication::translate("Ascot", "Page 2", nullptr));
+        main_tabwidget->setTabText(main_tabwidget->indexOf(config_tab), QApplication::translate("Ascot", "Tab 2", nullptr));
+        plot_tabwidget->setTabText(plot_tabwidget->indexOf(tab_2), QApplication::translate("Ascot", "Tab 1", nullptr));
+        plot_tabwidget->setTabText(plot_tabwidget->indexOf(tab_3), QApplication::translate("Ascot", "Tab 2", nullptr));
+        xaxis_label->setText(QApplication::translate("Ascot", "X-Axis:", nullptr));
+        histogram_checkbox->setText(QApplication::translate("Ascot", "Hist", nullptr));
+        yaxis_label->setText(QApplication::translate("Ascot", "Y-Axis:", nullptr));
+        boxplot_checkbox->setText(QApplication::translate("Ascot", "BoxPlot", nullptr));
+        errorbar_checkbox->setText(QApplication::translate("Ascot", "Errorbar", nullptr));
+        outlier_checkbox->setText(QApplication::translate("Ascot", "Outlier", nullptr));
+        absolute_checkbox->setText(QApplication::translate("Ascot", "abs", nullptr));
+        main_tabwidget->setTabText(main_tabwidget->indexOf(tab), QApplication::translate("Ascot", "Seite", nullptr));
         QTableWidgetItem *___qtablewidgetitem = session_tablewidget->horizontalHeaderItem(0);
-        ___qtablewidgetitem->setText(QApplication::translate("Ascot", "DBNAME", Q_NULLPTR));
+        ___qtablewidgetitem->setText(QApplication::translate("Ascot", "DBNAME", nullptr));
         QTableWidgetItem *___qtablewidgetitem1 = session_tablewidget->horizontalHeaderItem(1);
-        ___qtablewidgetitem1->setText(QApplication::translate("Ascot", "ANALYSE", Q_NULLPTR));
+        ___qtablewidgetitem1->setText(QApplication::translate("Ascot", "ANALYSE", nullptr));
         QTableWidgetItem *___qtablewidgetitem2 = session_tablewidget->horizontalHeaderItem(2);
-        ___qtablewidgetitem2->setText(QApplication::translate("Ascot", "RESIDUALS", Q_NULLPTR));
+        ___qtablewidgetitem2->setText(QApplication::translate("Ascot", "RESIDUALS", nullptr));
         QTableWidgetItem *___qtablewidgetitem3 = session_tablewidget->horizontalHeaderItem(3);
-        ___qtablewidgetitem3->setText(QApplication::translate("Ascot", "RESULTS", Q_NULLPTR));
+        ___qtablewidgetitem3->setText(QApplication::translate("Ascot", "RESULTS", nullptr));
         QTableWidgetItem *___qtablewidgetitem4 = session_tablewidget->horizontalHeaderItem(4);
-        ___qtablewidgetitem4->setText(QApplication::translate("Ascot", "SNX", Q_NULLPTR));
-        main_menu->setTitle(QApplication::translate("Ascot", "Main", Q_NULLPTR));
+        ___qtablewidgetitem4->setText(QApplication::translate("Ascot", "SNX", nullptr));
+        main_menu->setTitle(QApplication::translate("Ascot", "Main", nullptr));
     } // retranslateUi
 
 };

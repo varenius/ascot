@@ -22,7 +22,7 @@ LIBS =						\
 	$(LIBBLAS) \
 	-lQt5Gui -lQt5Core -lQt5Widgets -lQt5PrintSupport \
         -L/usr/lib/x86_64-linux-gnu/hdf5/serial \
-	-lgmp -lCGAL -lgsl  \
+	-lgmp -lgsl  \
 	-lmatio -lhdf5 -L/usr/include/mysql -lmysqlclient
 
 all: arc_file_generator

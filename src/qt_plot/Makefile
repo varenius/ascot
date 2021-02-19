@@ -162,6 +162,7 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt_config.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exclusive_builds.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/toolchain.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf \
@@ -281,6 +282,7 @@ Makefile: lib.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf /us
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt_config.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exclusive_builds.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/toolchain.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf \
@@ -359,6 +361,7 @@ Makefile: lib.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf /us
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt_config.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_post.prf:
+.qmake.stash:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exclusive_builds.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/toolchain.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf:
@@ -573,13 +576,43 @@ moc_plot.cpp: plot.h \
 
 moc_analyzer.cpp: analyzer.h \
 		ui_analyzer.h \
-		plot.h \
-		qcustomplot.h \
+		$(ASCOT_DIR)/src/analysistools/station_analysis.h \
+		$(ASCOT_DIR)/src/ivg/tictoc.h \
 		$(ASCOT_DIR)/src/ivg/matrix.h \
 		../ivg/auxfunc.h \
 		../ivg/matrix.h \
 		../ivg/lapack_wrapper.h \
 		../ivg/funother.h \
+		$(ASCOT_DIR)/src/ivg/trf.h \
+		../ivg/logger.h \
+		../ivg/station.h \
+		../ivg/date.h \
+		$(ASCOT_DIR)/src/ivg/auxfunc.h \
+		$(ASCOT_DIR)/include/iers_wrapper.h \
+		$(ASCOT_DIR)/src/ivg/ivg_const.h \
+		../ivg/analysis_station.h \
+		../ivg/eop_series.h \
+		../ivg/ivg_const.h \
+		../ivg/structs.h \
+		../ivg/parser.h \
+		../ivg/trf.h \
+		../ivg/sinex.h \
+		../ivg/param.h \
+		../ivg/tictoc.h \
+		../ivg/crf.h \
+		../ivg/source.h \
+		$(ASCOT_DIR)/src/projectpluto/include/jpleph.h \
+		$(ASCOT_DIR)/src/projectpluto/include/norad.h \
+		../ivg/ls_neq.h \
+		../ivg/ls_solution.h \
+		$(ASCOT_DIR)/src/sofa/include/sofa.h \
+		../sofa/include/sofam.h \
+		../analysistools/fit.h \
+		$(ASCOT_DIR)/src/ivg/lsa.h \
+		../analysistools/transformation.h \
+		$(ASCOT_DIR)/src/ivg/masterfile.h \
+		plot.h \
+		qcustomplot.h \
 		exportdialog.h \
 		ui_export.h \
 		graphdialog.h \
@@ -589,39 +622,9 @@ moc_analyzer.cpp: analyzer.h \
 		ui_plot.h \
 		ui_axisrange.h \
 		ui_highlight.h \
-		$(ASCOT_DIR)/src/ivg/ivg_const.h \
 		ui_statistics_info.h \
 		ui_movfise.h \
 		$(ASCOT_DIR)/src/analysistools/tsa.h \
-		$(ASCOT_DIR)/src/ivg/masterfile.h \
-		../ivg/date.h \
-		$(ASCOT_DIR)/src/ivg/auxfunc.h \
-		$(ASCOT_DIR)/include/iers_wrapper.h \
-		../ivg/trf.h \
-		../ivg/logger.h \
-		../ivg/station.h \
-		../ivg/analysis_station.h \
-		../ivg/eop_series.h \
-		../ivg/ivg_const.h \
-		../ivg/structs.h \
-		../ivg/parser.h \
-		../ivg/source.h \
-		$(ASCOT_DIR)/src/projectpluto/include/jpleph.h \
-		$(ASCOT_DIR)/src/projectpluto/include/norad.h \
-		../ivg/crf.h \
-		../ivg/sinex.h \
-		../ivg/param.h \
-		../ivg/tictoc.h \
-		../ivg/ls_neq.h \
-		../ivg/ls_solution.h \
-		$(ASCOT_DIR)/src/sofa/include/sofa.h \
-		../sofa/include/sofam.h \
-		$(ASCOT_DIR)/src/analysistools/station_analysis.h \
-		$(ASCOT_DIR)/src/ivg/tictoc.h \
-		$(ASCOT_DIR)/src/ivg/trf.h \
-		../analysistools/fit.h \
-		$(ASCOT_DIR)/src/ivg/lsa.h \
-		../analysistools/transformation.h \
 		eopseries.h \
 		$(ASCOT_DIR)/src/ivg/date.h \
 		$(ASCOT_DIR)/src/ivg/eop_series.h \
@@ -1344,13 +1347,43 @@ plot.o: plot.cpp plot.h \
 
 analyzer.o: analyzer.cpp analyzer.h \
 		ui_analyzer.h \
-		plot.h \
-		qcustomplot.h \
+		$(ASCOT_DIR)/src/analysistools/station_analysis.h \
+		$(ASCOT_DIR)/src/ivg/tictoc.h \
 		$(ASCOT_DIR)/src/ivg/matrix.h \
 		../ivg/auxfunc.h \
 		../ivg/matrix.h \
 		../ivg/lapack_wrapper.h \
 		../ivg/funother.h \
+		$(ASCOT_DIR)/src/ivg/trf.h \
+		../ivg/logger.h \
+		../ivg/station.h \
+		../ivg/date.h \
+		$(ASCOT_DIR)/src/ivg/auxfunc.h \
+		$(ASCOT_DIR)/include/iers_wrapper.h \
+		$(ASCOT_DIR)/src/ivg/ivg_const.h \
+		../ivg/analysis_station.h \
+		../ivg/eop_series.h \
+		../ivg/ivg_const.h \
+		../ivg/structs.h \
+		../ivg/parser.h \
+		../ivg/trf.h \
+		../ivg/sinex.h \
+		../ivg/param.h \
+		../ivg/tictoc.h \
+		../ivg/crf.h \
+		../ivg/source.h \
+		$(ASCOT_DIR)/src/projectpluto/include/jpleph.h \
+		$(ASCOT_DIR)/src/projectpluto/include/norad.h \
+		../ivg/ls_neq.h \
+		../ivg/ls_solution.h \
+		$(ASCOT_DIR)/src/sofa/include/sofa.h \
+		../sofa/include/sofam.h \
+		../analysistools/fit.h \
+		$(ASCOT_DIR)/src/ivg/lsa.h \
+		../analysistools/transformation.h \
+		$(ASCOT_DIR)/src/ivg/masterfile.h \
+		plot.h \
+		qcustomplot.h \
 		exportdialog.h \
 		ui_export.h \
 		graphdialog.h \
@@ -1360,39 +1393,9 @@ analyzer.o: analyzer.cpp analyzer.h \
 		ui_plot.h \
 		ui_axisrange.h \
 		ui_highlight.h \
-		$(ASCOT_DIR)/src/ivg/ivg_const.h \
 		ui_statistics_info.h \
 		ui_movfise.h \
 		$(ASCOT_DIR)/src/analysistools/tsa.h \
-		$(ASCOT_DIR)/src/ivg/masterfile.h \
-		../ivg/date.h \
-		$(ASCOT_DIR)/src/ivg/auxfunc.h \
-		$(ASCOT_DIR)/include/iers_wrapper.h \
-		../ivg/trf.h \
-		../ivg/logger.h \
-		../ivg/station.h \
-		../ivg/analysis_station.h \
-		../ivg/eop_series.h \
-		../ivg/ivg_const.h \
-		../ivg/structs.h \
-		../ivg/parser.h \
-		../ivg/source.h \
-		$(ASCOT_DIR)/src/projectpluto/include/jpleph.h \
-		$(ASCOT_DIR)/src/projectpluto/include/norad.h \
-		../ivg/crf.h \
-		../ivg/sinex.h \
-		../ivg/param.h \
-		../ivg/tictoc.h \
-		../ivg/ls_neq.h \
-		../ivg/ls_solution.h \
-		$(ASCOT_DIR)/src/sofa/include/sofa.h \
-		../sofa/include/sofam.h \
-		$(ASCOT_DIR)/src/analysistools/station_analysis.h \
-		$(ASCOT_DIR)/src/ivg/tictoc.h \
-		$(ASCOT_DIR)/src/ivg/trf.h \
-		../analysistools/fit.h \
-		$(ASCOT_DIR)/src/ivg/lsa.h \
-		../analysistools/transformation.h \
 		eopseries.h \
 		$(ASCOT_DIR)/src/ivg/date.h \
 		$(ASCOT_DIR)/src/ivg/eop_series.h \

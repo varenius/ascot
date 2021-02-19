@@ -14,9 +14,9 @@
 # ============================================================================
 #
 # you might want to change some paths
-TEST_DIR = ./test
-LIBDIR = ./
-INCDIR = $(ASCOT_DIR)/include/
+TEST_DIR=./test
+LIBDIR=./
+INCDIR=$(ASCOT_DIR)/include/
 
 # ============================================================================
 # build objects and library

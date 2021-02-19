@@ -1,7 +1,6 @@
 # ===========================================================================
 # Project File for QT-plot lib
 # ===========================================================================
-# CXXFLAGS      = -pipe -O2 -std=c++0x -w -D_REENTRANT $(DEFINES)
 
 LIBS         = -L$(OB_DIR)/lib/ -llapack
 
@@ -26,7 +25,7 @@ INCLUDEPATH +=  $(ASCOT_DIR)/src/ivg \
 QT       += core gui 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
-QMAKE_CXXFLAGS += -std=c++0x
+QMAKE_CXXFLAGS += -std=c++14 -DBOOST_MATH_DISABLE_FLOAT128
 
 TEMPLATE = lib
 
