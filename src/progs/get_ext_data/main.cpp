@@ -389,43 +389,45 @@ int main( int argc, char *argv[] )
     // download_save_vmf1("http://ggosatm.hg.tuwien.ac.at/DELAY/SITE/VLBI/", directory+"/VMF/", directory+"/VMF/station_matrices/");
     download_save_vmf1("https://vmf.geo.tuwien.ac.at/trop_products/VLBI/VMF1/VMF1_OP/daily/", directory+"/VMF/", directory+"/VMF/station_matrices/");
     //download_save_vmf3("https://vmf.geo.tuwien.ac.at/trop_products/VLBI/VMF3/VMF3_EI/daily/", directory+"/VMF3/", directory+"/VMF3/station_matrices/",1980);
-    //download_save_vmf3("https://vmf.geo.tuwien.ac.at/trop_products/VLBI/VMF3/VMF3_OP/daily/", directory+"/VMF3/", directory+"/VMF3/station_matrices/");
+    download_save_vmf3("https://vmf.geo.tuwien.ac.at/trop_products/VLBI/VMF3/VMF3_OP/daily/", directory+"/VMF3/", directory+"/VMF3/station_matrices/");
     //get latest non tidal atmospheric pressure loading files (single tar-file, containing station-wise bindisp files) 
     //creates "bds" folder
+    // NO LONGER USED?
     // DON'T UPDATE AUTOMATICALLY DUE TO MANUAL CHANGES AND COPIES OF BDS FILES
     // download_file("http://lacerta.gsfc.nasa.gov/aplo/aplo_bds.tar.bz2", directory+"/aplo_bds.tar.bz2");
     
     //get latest ocars file (single ascii file)
+    // NO LONGER USED?
     // DON'T UPDATE OCARS AUTOMATICALLY DUE TO FORMAT CHANGES
     // download_file("http://www.gao.spb.ru/english/as/ac_vlbi/ocars.txt", directory+"/ocars.txt");
     
     //get latest antenna-info file from vlbi.geod.uni-bonn.de (single ascii file)
-    // DON'T UPDATE AUTOMATICALLY DUE TO MANUAL CHANGES WITHIN FILE
+    // DON'T UPDATE: DONE BY CRONJOB
     // download_file("http://vlbi.geod.uni-bonn.de/Analysis/Thermal/antenna-info.txt", directory+"/antenna_info.txt");
     
     //get latest ns-codes file from CDDIS (single ascii file)
-    // DON'T UPDATE AUTOMATICALLY DUE TO MANUAL CHANGES WITHIN FILE
-    // download_file("ftp://cddis.gsfc.nasa.gov/vlbi/ivscontrol/ns-codes.txt", directory+"/ns-codes.txt");
+    // DON'T UPDATE: DONE BY CRONJOB
+    // download_file("ftp://ivs.bkg.bund.de/pub/vlbi/ivscontrol/ns-codes.txt", directory+"/ns-codes.txt");
     
     //get latest last.erp file from GSFC (single ascii file)
-    // GNOME-SCHEDULE IS ALREADY UPDATING IT ONCE A DAY
+    // NOT USED; USING USNOFINALS INSTEAD
     // download_file("http://gemini.gsfc.nasa.gov/500/oper/solve_save_files/last.erp", directory+"/last.erp");
 
     //get latest c04 eop series file from IERS (single ascii file)
-    // GNOME-SCHEDULE IS ALREADY UPDATING IT ONCE A DAY
+    // NO LONGER USED?
     // download_file("http://datacenter.iers.org/eop/-/somos/5Rgv/latest/214", directory+"/eopc04_IAU2000.txt");
     
     //get latest c04 opa eop series file from IERS (single ascii file)
-    // GNOME-SCHEDULE IS ALREADY UPDATING IT ONCE A DAY
+    // DON'T UPDATE: DONE BY CRONJOB
     // download_file("ftp://hpiers.obspm.fr/iers/series/opa/eopc04_IAU2000", directory+"/eopc04_IAU2000");
     
     //get latest c04 eop series file from IERS (single ascii file)
-    // GNOME-SCHEDULE IS ALREADY UPDATING IT ONCE A DAY
+    // DON'T UPDATE: DONE BY CRONJOB
     // download_file("http://hpiers.obspm.fr/iers/eop/eopc04/eopc04_IAU2000.62-now", directory+"/eopc04_IAU2000.62-now");
 
     //get latest finals Bulletin A (single ascii file)
-    // GNOME-SCHEDULE IS ALREADY UPDATING IT ONCE A DAY
-    // download_file("http://toshi.nofs.navy.mil/ser7/finals2000A.all", directory+"/finals2000A.all");
+    // DON'T UPDATE: DONE BY CRONJOB
+    // download_file("ftp://ftp.iers.org/products/eop/rapid/standard/finals2000A.all", directory+"/finals2000A.all");
     
     //get latest hydrology data of total earth (single zip-file, containing station-wise ascii files)
     //creates "hydlo" folder
