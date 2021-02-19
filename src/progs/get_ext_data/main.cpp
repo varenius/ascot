@@ -120,7 +120,7 @@ void download_save_vmf1(string http_path, string save_path,
             final_day = 365;
 
         if(year == now.get_int_year())
-            final_day = now.get_int_doy()-1;
+            final_day = now.get_int_doy()-2; // Ensure data has been processed, is released in evening
         
         string year_folder = save_path + "/" + std::to_string(year);
         
