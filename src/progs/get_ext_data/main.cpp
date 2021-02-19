@@ -386,9 +386,10 @@ int main( int argc, char *argv[] )
     
     // ALWAYS CHECK IF PERMISSIONS ARE CORRECT OF STATION MATRICES! READ AND WRITE!
     //check and get new VMF files from server and update VMF station matrices files (single ascii file each day)
-    // download_save_vmf1("http://ggosatm.hg.tuwien.ac.at/DELAY/SITE/VLBI/", directory+"/VMF/", directory+"/VMF/station_matrices/");
+    //VMF1
     download_save_vmf1("https://vmf.geo.tuwien.ac.at/trop_products/VLBI/VMF1/VMF1_OP/daily/", directory+"/VMF/", directory+"/VMF/station_matrices/");
-    //download_save_vmf3("https://vmf.geo.tuwien.ac.at/trop_products/VLBI/VMF3/VMF3_EI/daily/", directory+"/VMF3/", directory+"/VMF3/station_matrices/",1980);
+    //VMF3, two locations to get data from both before and after 2008
+    download_save_vmf3("https://vmf.geo.tuwien.ac.at/trop_products/VLBI/VMF3/VMF3_EI/daily/", directory+"/VMF3/", directory+"/VMF3/station_matrices/",1980);
     download_save_vmf3("https://vmf.geo.tuwien.ac.at/trop_products/VLBI/VMF3/VMF3_OP/daily/", directory+"/VMF3/", directory+"/VMF3/station_matrices/");
     //get latest non tidal atmospheric pressure loading files (single tar-file, containing station-wise bindisp files) 
     //creates "bds" folder
@@ -439,6 +440,5 @@ int main( int argc, char *argv[] )
     // WE DON'T USE HYDROLOGICAL LOADING
     // download_file("http://lacerta.gsfc.nasa.gov/hydlo/loadingfiles/cmse_series.zip", directory+"/cmse_series.zip");
 
-    
     return 0;
 }
