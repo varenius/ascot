@@ -60,10 +60,10 @@ namespace ivg {
         *        The directory must contain all masterXX.txt files between requestet time range.
         *        Timerange can be defined with start- and end-year. Directory has to contain ns-codes.txt file.
         *  \param [in] [string] directory to masterfiles
-        *  \param [in] [int] start year, default 1994
-        *  \param [in] [int] end year, default 2016
+        *  \param [in] [int] start year, default 1992
+        *  \param [in] [int] end year, default 2021
         */
-        Masterfile(string directory,ivg::mastertype type ,int start_year = 2019, int end_year = 2019);
+        Masterfile(string directory,ivg::mastertype type ,int start_year = 1992, int end_year = 2021);
         
         /**
         *  \b Description: \n

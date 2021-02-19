@@ -127,8 +127,13 @@ ifstream inStream(path.c_str(), ios::in);
 
                 // erase first trash token
                 tokens.erase(tokens.begin());
-                // erase last trash token
-                tokens.erase(tokens.end());
+		// For some new mastefiles, there is an empty token at the end
+		// Quickfix:
+                if(tokens.size() == 16)
+		{
+                    // erase last trash token
+                    tokens.erase(tokens.end());
+		}
                 // only in case of correct number of fields extract the information
                 if(tokens.size() == 15)
                 {
