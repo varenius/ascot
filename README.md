@@ -12,20 +12,22 @@ ASCOT is somewhat tricky to compile. Hopefully this will be improved in the near
 
 ### Install all required libraries (versions noted are tested, others may work):
 - gfortran (7.5.0)
-- lapack (sudo apt-get install liblapack-dev)
-- OpenBLAS (sudo apt-get install libopenblas-dev)
-- qt5 (5.9.5)
-- hdf5 (1.10.0-patch1+docs-4)
+- liblapack-dev (3.9.0-1build1)
+- libopenblas-dev (0.3.8+ds-1ubuntu0.20.04.1)
+- qtbase5-dev (5.9.5)
+- libhdf5-dev (1.10.0-patch1+docs-4)
 - curl (7.58.0)
-- libconfig++ (1.5-0.4; sudo apt-get install libconfig++-dev)
-- boost (sudo apt-get install libboost-dev libboost-regex-dev)
-- matio (sudo apt-get install libmatio-dev)
-- netcdf (The old version which has c++ headers is needed: sudo apt-get install libnetcdf-cxx-legacy-dev)
-- cgal (4.11-2build1; sudo apt-get install libcgal-dev)
+- libconfig++-dev (1.5-0.4build1)
+- libboost-dev (1.71.0-6ubuntu6)
+- libboost-regex-dev (1.71.0-6ubuntu6)
+- libmatio-dev (1.5.17-3)
+- libnetcdf-cxx-legacy-dev (4.2-11build2; This old version which has c++ headers is needed)
+- libcgal-dev (5.0.2-3)
 - gurobi (8.0 or 9.1.1 seems to work both)
 - libfftw3-dev (3.3.7-1)
-- tclap (sudo apt-get install libtclap-dev)
-- doxygen (sudo apt-get install doxygen)
+- libtclap-dev (1.2.2-1)
+- doxygen (1.8.17-0ubuntu2)
+- libgsl-dev (2.5+dfsg-6build1)
 
 ### Set variables 
 - $OB_DIR to where OpenBLAS is installed, if not in standard location
@@ -34,7 +36,12 @@ ASCOT is somewhat tricky to compile. Hopefully this will be improved in the near
 - Edit Makefiles in subdirectories of src, and make_ascot, to correct paths etc.
 - Can find qt-header locations by e.g. "qmake -query QT_INSTALL_HEADERS"
   and then set as "export CPATH=/usr/include/x86_64-linux-gnu/qt5"
-- May need to "cd src/qt_plot && rm .qmake.stash && qmake" to refresh qmake stash
+- Need to "cd src/qt_plot && rm .qmake.stash && qmake" to refresh qmake stash
+- Don't forget to add gurobi to your path, e.g.
+  export GUROBI_HOME="/opt/gurobi911/linux64"
+  export PATH="${PATH}:${GUROBI_HOME}/bin"
+  export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${GUROBI_HOME}/lib"
+  export GRB_LICENSE_FILE="/opt/gurobi911/gurobi.lic"
 
 ### Run "make_ascot all", alternatively "make_ascot all n" to run n paralell jobs - might work, if so it's faster.
 
@@ -46,5 +53,5 @@ ASCOT is somewhat tricky to compile. Hopefully this will be improved in the near
   i.e. running "cd /opt/gurobi911/linux64/src/build && make && cp libgurobi_c++.a ../../lib/"
 - If Segmentation Fault occurs when running ascot, please double check input config file very carefully.
 - Note that "ivssrc" reference frame appears always required to be defined e.g. as 
-  ("ivssrc"     , "IVSSRC", "/opt/ascot/apriori_files/IVS_SrcNamesTable.txt"),
-  in your config.
+  ("ivssrc"     , "IVSSRC", "/opt/ascot/apriori_files/IVS_SrcNamesTable.txt"), in your config.
+- If ivg compilation fails with QtCore/QString problems, remember to "cd src/qt_plot && rm .qmake.stash && qmake" to refresh qmake stash.
