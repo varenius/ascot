@@ -16,7 +16,7 @@ CC            = gcc
 CXX           = g++
 DEFINES       = -DQT_NO_DEBUG -DQT_PRINTSUPPORT_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
 CFLAGS        = -pipe -O2 -fPIC -w -D_REENTRANT $(DEFINES)
-CXXFLAGS      = -pipe -std=c++14 -O2 -fPIC -w -D_REENTRANT $(DEFINES) -DBOOST_MATH_DISABLE_FLOAT128
+CXXFLAGS      = -pipe -std=c++14 -DBOOST_MATH_DISABLE_FLOAT128 -O2 -fPIC -w -D_REENTRANT $(DEFINES)
 INCPATH       = -I. -I$(ASCOT_DIR)/src/ivg -I$(ASCOT_DIR)/src/ivg/lpSked -I$(ASCOT_DIR)/src/analysistools -I$(OB_DIR)/include -I$(ASCOT_DIR)/src/projectpluto/include -I$(ASCOT_DIR)/src/sofa/include -I$(ASCOT_DIR)/include -I$(GUROBI_HOME)/include -isystem /usr/include/x86_64-linux-gnu/qt5/QtPrintSupport -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I. -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++
 QMAKE         = /usr/lib/qt5/bin/qmake
 DEL_FILE      = rm -f
@@ -162,7 +162,6 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt_config.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_post.prf \
-		.qmake.stash \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exclusive_builds.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/toolchain.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf \
@@ -282,7 +281,6 @@ Makefile: lib.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf /us
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt_config.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_post.prf \
-		.qmake.stash \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exclusive_builds.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/toolchain.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf \
@@ -361,7 +359,6 @@ Makefile: lib.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf /us
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt_config.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_post.prf:
-.qmake.stash:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exclusive_builds.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/toolchain.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf:
@@ -428,7 +425,7 @@ compiler_moc_predefs_make_all: moc_predefs.h
 compiler_moc_predefs_clean:
 	-$(DEL_FILE) moc_predefs.h
 moc_predefs.h: /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp
-	g++ -pipe -std=c++0x -O2 -fPIC -w -dM -E -o moc_predefs.h /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp
+	g++ -pipe -std=c++14 -DBOOST_MATH_DISABLE_FLOAT128 -O2 -fPIC -w -dM -E -o moc_predefs.h /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp
 
 compiler_moc_header_make_all: moc_qcustomplot.cpp moc_exportdialog.cpp moc_statistics.cpp moc_graphdialog.cpp moc_plot.cpp moc_analyzer.cpp moc_projection.cpp moc_eopseries.cpp moc_ascot.cpp moc_ascotizer.cpp moc_movfise.cpp moc_lp_sked_gui.cpp moc_lp_sked_station.cpp moc_lp_sked_worker.cpp
 compiler_moc_header_clean:
@@ -856,6 +853,8 @@ moc_movfise.cpp: movfise.h \
 
 moc_lp_sked_gui.cpp: lp_sked_gui.h \
 		lp_sked_worker.h \
+		$(GUROBI_HOME)/include/gurobi_c++.h \
+		../../../gurobi911/linux64/include/gurobi_c.h \
 		$(ASCOT_DIR)/src/ivg/session.h \
 		../ivg/logger.h \
 		../ivg/obs.h \
@@ -988,6 +987,8 @@ moc_lp_sked_station.cpp: lp_sked_station.h \
 	/usr/lib/qt5/bin/moc $(DEFINES) --include /opt/ascot/src/qt_plot/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/opt/ascot/src/qt_plot -I'/opt/ascot/src/qt_plot/$(ASCOT_DIR)/src/ivg' -I'/opt/ascot/src/qt_plot/$(ASCOT_DIR)/src/ivg/lpSked' -I'/opt/ascot/src/qt_plot/$(ASCOT_DIR)/src/analysistools' -I'/opt/ascot/src/qt_plot/$(OB_DIR)/include' -I'/opt/ascot/src/qt_plot/$(ASCOT_DIR)/src/projectpluto/include' -I'/opt/ascot/src/qt_plot/$(ASCOT_DIR)/src/sofa/include' -I'/opt/ascot/src/qt_plot/$(ASCOT_DIR)/include' -I'/opt/ascot/src/qt_plot/$(GUROBI_HOME)/include' -I/usr/include/x86_64-linux-gnu/qt5/QtPrintSupport -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include lp_sked_station.h -o moc_lp_sked_station.cpp
 
 moc_lp_sked_worker.cpp: lp_sked_worker.h \
+		$(GUROBI_HOME)/include/gurobi_c++.h \
+		../../../gurobi911/linux64/include/gurobi_c.h \
 		$(ASCOT_DIR)/src/ivg/session.h \
 		../ivg/logger.h \
 		../ivg/obs.h \
@@ -1611,6 +1612,8 @@ movfise.o: movfise.cpp movfise.h \
 
 lp_sked_gui.o: lp_sked_gui.cpp lp_sked_gui.h \
 		lp_sked_worker.h \
+		$(GUROBI_HOME)/include/gurobi_c++.h \
+		../../../gurobi911/linux64/include/gurobi_c.h \
 		$(ASCOT_DIR)/src/ivg/session.h \
 		../ivg/logger.h \
 		../ivg/obs.h \
@@ -1739,6 +1742,8 @@ lp_sked_station.o: lp_sked_station.cpp lp_sked_station.h \
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o lp_sked_station.o lp_sked_station.cpp
 
 lp_sked_worker.o: lp_sked_worker.cpp lp_sked_worker.h \
+		$(GUROBI_HOME)/include/gurobi_c++.h \
+		../../../gurobi911/linux64/include/gurobi_c.h \
 		$(ASCOT_DIR)/src/ivg/session.h \
 		../ivg/logger.h \
 		../ivg/obs.h \
