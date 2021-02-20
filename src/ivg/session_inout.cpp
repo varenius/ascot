@@ -1119,7 +1119,7 @@ void Session_inout::_read_vgosdb(ivg::Session *session_ptr, Setting *setup, cons
     if( use_wrapper  && _wrapper_ptr->file_exists(ivg::wrapper_entries::Phase,session_ptr->_band_type) )
         phase_filename = _wrapper_ptr->get_file(ivg::wrapper_entries::Phase,session_ptr->_band_type);
     else
-        phase_filename = "Phase"+band_str;
+        phase_filename = "Phase_b"+band_str;
     
     if(vgosdb.does_file_exist("Observables",phase_filename))
     {
@@ -1168,7 +1168,7 @@ void Session_inout::_read_vgosdb(ivg::Session *session_ptr, Setting *setup, cons
 	     }
 	   }
     } else if (vgosdb.does_file_exist("Observables",phase_filename)){ // Calulate phase delay from phases
-      log<WARNING>("!!! No PhasesDelays found (/ObsEdit/" +phase_delay_filename+ ".nc not existent). Calculating from phase");
+      log<WARNING>("!!! No PhaseDelays found (/ObsEdit/" +phase_delay_filename+ ".nc not existent). Calculating from phase");
       try {
       if (ref_freq.size()==1) {
 	for (int j=0;j<ref_freq.size();j++) {
