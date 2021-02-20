@@ -541,7 +541,7 @@ void Wrapper::write_wrapper( std::string editing, unsigned short version)
 
 
         char ver [4];
-	if (version>999) version=_version;
+	if (version>999) version=_version+1;
         sprintf(ver, "%03d",version );
         string wrapperFile = _dbName + "_V" + ver;
         if(!editing.empty())
