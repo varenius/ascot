@@ -1146,7 +1146,7 @@ void Session_inout::_read_vgosdb(ivg::Session *session_ptr, Setting *setup, cons
      if( use_wrapper  && _wrapper_ptr->file_exists(ivg::wrapper_entries::PhaseDelayFull,session_ptr->_band_type)  )
         phase_delay_filename = _wrapper_ptr->get_file(ivg::wrapper_entries::PhaseDelayFull,session_ptr->_band_type);
     else
-        phase_delay_filename = "PhaseDelayFull"+band_str;
+        phase_delay_filename = "PhaseDelayFull_b"+band_str;
     if(vgosdb.does_file_exist("ObsEdit",phase_delay_filename)&& !session_ptr->_ambigRes)
     {
       
