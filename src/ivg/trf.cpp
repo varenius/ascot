@@ -347,7 +347,7 @@ void Trf::log_data_info_table()
 #endif
    
     // generate output-table
-    vector<string> data_types = {"XYZ","OPTL","OLC","VMF1","NTAPL","TAPL","ECC","ANT_I","HYDLO","ANT_C","SEFD","FREQ","MASK","CHA_I"};
+    vector<string> data_types = {"XYZ","OPTL","OLC","VMF1","VMF3","NTAPL","TAPL","ECC","ANT_I","HYDLO","ANT_C","SEFD","FREQ","MASK","CHA_I"};
     stringstream ssds; // stringstream_data_status
     ssds << "*** TRF " << _name << " Data Information Table (W: Warning, E: Error, X: Set, Empty: Not Set)" << endl;
     ssds << "***          ";
