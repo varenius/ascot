@@ -253,7 +253,6 @@ void Wrapper::_read_wrapper(std::string wrp_path, std::string dbName, std::strin
                             }
 			    else if( line.find("SBDelay")  !=std::string::npos && line.find("_b" + ivg::band_to_string((ivg::band) i) )!=std::string::npos )
                             {
-			     
                                 _association[ivg::wrapper_entries::SBDelay][(ivg::band) i] = _create_wrapper_entry(line, row, (ivg::band) i );
                             }
 			    else if( line.find("SNR")  !=std::string::npos && line.find("_b" + ivg::band_to_string((ivg::band) i) )!=std::string::npos )
@@ -425,6 +424,10 @@ std::string Wrapper::wrapper_entries_to_string(ivg::wrapper_entries entry )
                 return "ClockBreak";
 	    case ivg:: wrapper_entries::Met:
                 return "Met"; 	
+	    case ivg:: wrapper_entries::Phase:
+                return "Phase"; 	
+	    case ivg:: wrapper_entries::RefFreq:
+                return "RefFreq"; 	
             default:
                 return "n/a";
         }
