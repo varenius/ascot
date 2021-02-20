@@ -261,7 +261,7 @@ void download_save_vmf3(string http_path, string save_path,
             final_day = 365;
 
         if(year == now.get_int_year())
-            final_day = now.get_int_doy()-1;
+            final_day = now.get_int_doy()-2;
         
         string year_folder = save_path + "/" + std::to_string(year);
         
@@ -389,7 +389,7 @@ int main( int argc, char *argv[] )
     //VMF1
     download_save_vmf1("https://vmf.geo.tuwien.ac.at/trop_products/VLBI/VMF1/VMF1_OP/daily/", directory+"/VMF/", directory+"/VMF/station_matrices/");
     //VMF3, two locations to get data from both before and after 2008
-    download_save_vmf3("https://vmf.geo.tuwien.ac.at/trop_products/VLBI/VMF3/VMF3_EI/daily/", directory+"/VMF3/", directory+"/VMF3/station_matrices/",1980);
+    //download_save_vmf3("https://vmf.geo.tuwien.ac.at/trop_products/VLBI/VMF3/VMF3_EI/daily/", directory+"/VMF3/", directory+"/VMF3/station_matrices/",1980);
     download_save_vmf3("https://vmf.geo.tuwien.ac.at/trop_products/VLBI/VMF3/VMF3_OP/daily/", directory+"/VMF3/", directory+"/VMF3/station_matrices/");
     //get latest non tidal atmospheric pressure loading files (single tar-file, containing station-wise bindisp files) 
     //creates "bds" folder
