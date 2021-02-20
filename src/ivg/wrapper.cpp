@@ -296,7 +296,6 @@ void Wrapper::_read_wrapper(std::string wrp_path, std::string dbName, std::strin
                             {   
                                 _association[ivg::wrapper_entries::Phase][(ivg::band) i] = _create_wrapper_entry(line, row, (ivg::band) i );
                             }
-			    
                             else if(line.find("Edit")  !=std::string::npos ){
                                 _association[ivg::wrapper_entries::Edit][ivg::band::X] = _create_wrapper_entry(line, row);
                                 _association[ivg::wrapper_entries::Edit][ivg::band::S] = _create_wrapper_entry(line, row);
@@ -397,6 +396,8 @@ std::string Wrapper::wrapper_entries_to_string(ivg::wrapper_entries entry )
                 return "CorrInfo";
             case ivg:: wrapper_entries::GroupDelayFull:
                 return "GroupDelayFull";
+            case ivg:: wrapper_entries::PhaseDelayFull:
+                return "PhaseDelayFull";
 	    case ivg:: wrapper_entries::GroupDelay:
                 return "GroupDelay";
 	    case ivg:: wrapper_entries::SBDelay:
