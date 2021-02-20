@@ -1137,16 +1137,18 @@ void Session_inout::_read_vgosdb(ivg::Session *session_ptr, Setting *setup, cons
       log<WARNING>("!!! No Phases available (/Observables/" +phase_filename+ ".nc not existent).");
     }
     
-    
-     
     // read phase delays only if file exists
     vector<double> phase_delay, phase_delay_sigma;
-     std::string phase_delay_filename;
-        
-     if( use_wrapper  && _wrapper_ptr->file_exists(ivg::wrapper_entries::PhaseDelayFull,session_ptr->_band_type)  )
+    std::string phase_delay_filename;
+    
+    if( use_wrapper  && _wrapper_ptr->file_exists(ivg::wrapper_entries::PhaseDelayFull,session_ptr->_band_type)  )
+    {
         phase_delay_filename = _wrapper_ptr->get_file(ivg::wrapper_entries::PhaseDelayFull,session_ptr->_band_type);
+    }
     else
+    {
         phase_delay_filename = "PhaseDelayFull_b"+band_str;
+    }
     if(vgosdb.does_file_exist("ObsEdit",phase_delay_filename)&& !session_ptr->_ambigRes)
     {
       
