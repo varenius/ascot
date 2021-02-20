@@ -1168,15 +1168,13 @@ void Session_inout::_read_vgosdb(ivg::Session *session_ptr, Setting *setup, cons
 	     }
 	   }
     } else if (vgosdb.does_file_exist("Observables",phase_filename)){ // Calulate phase delay from phases
-      log<WARNING>("!!! No PhaseDelays found (/ObsEdit/" +phase_delay_filename+ ".nc not existent). Calculating from phase");
+      log<WARNING>("!!! No PhaseDelays found (/ObsEdit/" +phase_delay_filename+ ".nc not existent). Calculating from Phase.");
       try {
       if (ref_freq.size()==1) {
 	for (int j=0;j<ref_freq.size();j++) {
 	  phase_delay.push_back(phase.at(j)/(2*M_PI*ref_freq.at(0)*1.0e6));
 	  phase_delay_sigma.push_back(phase_sigma.at(j)/(2*M_PI*ref_freq.at(0)*1.0e6));
 	  phase_delay[j]+=round((delay[j]-phase_delay[j])*ref_freq.at(j)*1.0e6)/(ref_freq.at(j)*1.0e6);
-	  
-	  
 	}
       } else {
 
