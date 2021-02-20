@@ -550,7 +550,7 @@ void Wrapper::write_wrapper( std::string editing, unsigned short version)
         }
         wrapperFile += "_kall.wrp";
         
-        log<DETAIL> ("*** writing wrapper file") % _directory % wrapperFile;
+        log<DETAIL> ("*** writing wrapper file ") % _directory % wrapperFile;
 
         f.open(_directory + wrapperFile, ios::trunc);
 
