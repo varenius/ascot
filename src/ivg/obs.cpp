@@ -511,7 +511,7 @@ void Obs::calc_delay( vector<double>::iterator design_iter, vector<double>::iter
    
     double gravdef_1 = 0.0;
     double gravdef_2 = 0.0;
-    if((*(_session->_setup)).exists("gravtational_deformation")&&(bool)(*(_session->_setup))["gravtational_deformation"])
+    if((*(_session->_setup)).exists("gravitational_deformation")&&(bool)(*(_session->_setup))["gravitational_deformation"])
     {
       gravdef_1 = _scan->calc_gravdef_delay( _sta1_scan_idx, k1_trf );
       gravdef_2 = _scan->calc_gravdef_delay( _sta2_scan_idx, k2_trf  );
