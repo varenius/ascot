@@ -168,6 +168,7 @@ bool Wrapper::_get_latest_version(short version)
 void Wrapper::_read_wrapper(std::string wrp_path, std::string dbName, std::string editing)
 // ...........................................................................
 {
+	log<NOTHING>("*** Reading wrapper " + wrp_path);
         ifstream inStream;
         std::string line;
         std::string current_station; 

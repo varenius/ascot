@@ -74,7 +74,7 @@ public:
     std::string get_file(ivg::wrapper_entries entry, ivg::band band){return _association[entry][band].ncfile;};
     std::string get_file(ivg::wrapper_entries entry, std::string sta){return _association_sta[entry][sta].ncfile;};
     void set_file(ivg::wrapper_entries entry, ivg::band band, std::string file){ _association[entry][band].ncfile = file;};
-  void set_file(ivg::wrapper_entries entry,  std::string station, std::string file){ _association_sta[entry][station].ncfile = file;};
+    void set_file(ivg::wrapper_entries entry,  std::string station, std::string file){ _association_sta[entry][station].ncfile = file;};
     void set_created_flag(ivg::wrapper_entries entry, ivg::band band, bool b = true){ _association[entry][band].new_version_created = b;};
     void set_created_flag(ivg::wrapper_entries entry, std::string station, bool b = true){ _association_sta[entry][station].new_version_created = b;};
     
