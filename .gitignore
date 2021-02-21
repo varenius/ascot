@@ -36,6 +36,8 @@ apriori_files/VMF*
 
 # Files for testing
 apriori_files/TEST*
+src/projectpluto/lunar/astcheck
+src/projectpluto/lunar/jsattest
 
 # IVS masterfiles, should get from IVS with update-script
 apriori_files/masterfiles/master*

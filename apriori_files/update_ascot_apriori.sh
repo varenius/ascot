@@ -1,5 +1,6 @@
 EMAIL_ADDR=eskil.varenius@chalmers.se
 ASCOT_APRIORI=/opt/ascot/apriori_files/
+#ECCDAT.ecc not updated automatically due to manual modifications (added dome numbers for OTT)
 curl https://raw.githubusercontent.com/anothnagel/antenna-info/master/antenna-info.txt > $ASCOT_APRIORI/antenna-info.txt
 curl ftp://hpiers.obspm.fr/iers/series/opa/eopc04_IAU2000 > $ASCOT_APRIORI/eopc04_IAU2000
 curl ftp://hpiers.obspm.fr/iers/series/opa/eopc04 > $ASCOT_APRIORI/eopc04
@@ -16,9 +17,13 @@ curl -u anonymous:$EMAIL_ADDR --ftp-ssl ftp://gdc.cddis.eosdis.nasa.gov/vlbi/gsf
 # Update VMF1 and VMF3 files
 /opt/ascot/bin/get_ext_data -d $ASCOT_APRIORI
 
-for i in {1979..2021}
+# Get all masterfiles
+startyear=1979
+endyear=$(date +%Y)
+for i in $(seq $startyear $endyear)
   do
     yy=${i:2:2}
+    echo $yy
     # Get masterfile for this year
     curl ftp://ivs.bkg.bund.de/pub/vlbi/ivscontrol/master$yy.txt > $ASCOT_APRIORI/masterfiles/master$yy.txt
     # Get INT-masterfile for this year, if it exists
