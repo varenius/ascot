@@ -1,0 +1,47 @@
+%=SNX 2.00 BKG 20:343:55993 BKG 80:208:00000 20:182:00059 R 00906 2 S
++FILE/REFERENCE
+ DESCRIPTION       Federal Agency for Cartography and Geodesy (BKG), Germany
+ OUTPUT            Accumulated NEQs of VLBI-session 17NOV30XB
+ CONTACT           S. Bachmann (sabine.bachmann@bkg.bund.de)
+ SOFTWARE          combine_sinex (IGGB/BKG), dogs-cs (DGFI)
+ HARDWARE          Intel Xeon 2.5 GHz, RedHat EP Linux Server 5.5
+ INPUT             Data from ASI/CGS BKG DGFI-TUM GFZ GSFC IAA OPAR USNO
+-FILE/REFERENCE
+*
+* -----------------------------------------------------------------------------------------------------
+*
++SITE/ID
+*CODE PT __DOMES__ T _STATION DESCRIPTION__ APPROX_LON_ APPROX_LAT_ _APP_H_
+ 7213  A 10402S002 R ONSALA60 20 m  Onsala,  11 55 34.8  57 23 45.0    59.3
+ 7636  A 10402S014 R ONSA13NE 13.2m Onsala,  11 55 34.8  57 23 45.0    59.3 
+ 7637  A 10402S015 R ONSA13SW 13.2m Onsala,  11 55 34.8  57 23 45.0    59.3
+-SITE/ID
+*-------------------------------------------------------------------------------
++SOLUTION/EPOCHS
+*Code PT SOLN T Data_start__ Data_end____ Mean_epoch__
+ 7213  A   01 R 80:208:00000 20:182:00000 00:194:00000
+-SOLUTION/EPOCHS
+*-------------------------------------------------------------------------------
++SOLUTION/ESTIMATE
+*INDEX TYPE__ CODE PT SOLN _REF_EPOCH__ UNIT S __ESTIMATED VALUE____ _STD_DEV___
+     1 STAX   7213  A   01 10:001:00000   m  2  3.37060584048810E+06 7.91900E-05
+     2 STAY   7213  A   01 10:001:00000   m  2  7.11917675775510E+05 6.60600E-05
+     3 STAZ   7213  A   01 10:001:00000   m  2  5.34983086785990E+06 1.10200E-04
+     4 VELX   7213  A   01 10:001:00000 m/y  2 -1.40372648774040E-02 6.79900E-06
+     5 VELY   7213  A   01 10:001:00000 m/y  2  1.47346560471950E-02 5.29800E-06
+     6 VELZ   7213  A   01 10:001:00000 m/y  2  1.07913290765810E-02 1.00700E-05
+     7 STAX   7636  A   01 10:001:00000   m  2  3.37088929800000E+06 6.00000E-05
+     8 STAY   7636  A   01 10:001:00000   m  2  7.11571199000000E+05 5.00000E-05
+     9 STAZ   7636  A   01 10:001:00000   m  2  5.34969204900000E+06 1.00000E-04
+    10 VELX   7636  A   01 10:001:00000 m/y  2 -1.41057477004830E-02 5.78700E-06
+    11 VELY   7636  A   01 10:001:00000 m/y  2  1.46113353068300E-02 4.55200E-06
+    12 VELZ   7636  A   01 10:001:00000 m/y  2  1.07655356552600E-02 9.06900E-06
+    13 STAX   7637  A   01 10:001:00000   m  2  3.37094678000000E+06 6.24200E-05
+    14 STAY   7637  A   01 10:001:00000   m  2  7.11534507000000E+05 5.48600E-05
+    15 STAZ   7637  A   01 10:001:00000   m  2  5.34966092600000E+06 8.74600E-05
+    16 VELX   7637  A   01 10:001:00000 m/y  2 -1.41057477004830E-02 5.78700E-06
+    17 VELY   7637  A   01 10:001:00000 m/y  2  1.46113353068300E-02 4.55200E-06
+    18 VELZ   7637  A   01 10:001:00000 m/y  2  1.07655356552600E-02 9.06900E-06
+-SOLUTION/ESTIMATE
+*-------------------------------------------------------------------------------
+%ENDSNX
