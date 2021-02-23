@@ -1830,6 +1830,7 @@ void Session_inout::write_results(ivg::Session *session_ptr, string outfile, boo
 
     outstream<<session_ptr->_name<<endl;
     outstream<<"---------"<<endl;
+    outstream<<" IDX   #  STATION  TYPE O         MJD                  TOTAL                APRIORI               ESTIMATE     STD-DEVIATION   UNIT"<<endl;
     int i = 0;
     for (auto &para : session_ptr->_param_list)
     {
