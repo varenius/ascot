@@ -406,6 +406,8 @@ std::string Wrapper::wrapper_entries_to_string(ivg::wrapper_entries entry )
                 return "SNR";
             case ivg:: wrapper_entries::NumGroupAmbig:
                 return "NumGroupAmbig";
+            case ivg:: wrapper_entries::NumPhaseAmbig:
+                return "NumPhaseAmbig";
 	    case ivg:: wrapper_entries::AmbigSize:
                 return "AmbigSize";
 	    case ivg:: wrapper_entries::QualityCode:
