@@ -1149,6 +1149,7 @@ void Session_inout::_read_vgosdb(ivg::Session *session_ptr, Setting *setup, cons
     {
         phase_delay_filename = "PhaseDelayFull_b"+band_str;
     }
+    
     if(vgosdb.does_file_exist("ObsEdit",phase_delay_filename)&& !session_ptr->_ambigRes)
     {
       
@@ -1171,28 +1172,66 @@ void Session_inout::_read_vgosdb(ivg::Session *session_ptr, Setting *setup, cons
 	   }
     } else if (vgosdb.does_file_exist("Observables",phase_filename)){ // Calulate phase delay from phases
       log<WARNING>("!!! No PhaseDelays found (/ObsEdit/" +phase_delay_filename+ ".nc not existent). Calculating from Phase.");
-      try {
-      if (ref_freq.size()==1) {
-	for (int j=0;j<ref_freq.size();j++) {
-	  phase_delay.push_back(phase.at(j)/(2*M_PI*ref_freq.at(0)*1.0e6));
-	  phase_delay_sigma.push_back(phase_sigma.at(j)/(2*M_PI*ref_freq.at(0)*1.0e6));
-	  phase_delay[j]+=round((delay[j]-phase_delay[j])*ref_freq.at(j)*1.0e6)/(ref_freq.at(j)*1.0e6);
-	}
-      } else {
+	std::string phase_numamb_filename;
+	if( use_wrapper  && _wrapper_ptr->file_exists(ivg::wrapper_entries::NumPhaseAmbig,session_ptr->_band_type)  )
+   	 {
+      	 	phase_numamb_filename = _wrapper_ptr->get_file(ivg::wrapper_entries::NumPhaseAmbig,session_ptr->_band_type);
+   	 }
+    	else
+   	 {
+    	    phase_numamb_filename = "NumPhaseAmbig_b"+band_str;
+   	 }
+	if(vgosdb.does_file_exist("ObsEdit",phase_numamb_filename)&& !session_ptr->_ambigRes)
+	{
+		vector<short> ph_amb;
+	       ph_amb=vgosdb.get_vector<short>("ObsEdit",phase_numamb_filename, "NumPhaseAmbig"); // unit microsecond
+	      
+	       if (ref_freq.size()==1) {
+		for (int j=0;j<phase.size();j++) {
+	    
+		  phase_delay.push_back(phase.at(j)/(2*M_PI*ref_freq.at(0)*1.0e6));
+		  phase_delay_sigma.push_back(phase_sigma.at(j)/(2*M_PI*ref_freq.at(0)*1.0e6));
+		  phase_delay[j]+=round((delay[j]-phase_delay[j])*ref_freq.at(j)*1.0e6)/(ref_freq.at(j)*1.0e6);
+		  phase_delay[j]+=((double)ph_amb.at(j))/(ref_freq.at(j)*1.0e6);
+		}
+      		} else {
 
 
-	for (int j=0;j<ref_freq.size();j++) {
-	  phase_delay.push_back(phase.at(j)/(2*M_PI*ref_freq.at(j)*1.0e6));
-	  phase_delay_sigma.push_back(phase_sigma.at(j)/(2*M_PI*ref_freq.at(j)*1.0e6));
-	  phase_delay[j]+=round((delay[j]-phase_delay[j])*ref_freq.at(j)*1.0e6)/(ref_freq.at(j)*1.0e6);
-	  
+	  	    for (int j=0;j<ref_freq.size();j++) {
+		
+	  		phase_delay.push_back(phase.at(j)/(2*M_PI*ref_freq.at(j)*1.0e6));
+	  		phase_delay_sigma.push_back(phase_sigma.at(j)/(2*M_PI*ref_freq.at(j)*1.0e6));
+			phase_delay[j]+=round((delay[j]-phase_delay[j])*ref_freq.at(j)*1.0e6)/(ref_freq.at(j)*1.0e6);
+	  		phase_delay[j]+=((double)ph_amb.at(j))/(ref_freq.at(j)*1.0e6);
+		    }
+
+	    }	       
 	}
+	else
+	{
+		try {
+      		if (ref_freq.size()==1) {
+		for (int j=0;j<phase.size();j++) {
+		  phase_delay.push_back(phase.at(j)/(2*M_PI*ref_freq.at(0)*1.0e6));
+		  phase_delay_sigma.push_back(phase_sigma.at(j)/(2*M_PI*ref_freq.at(0)*1.0e6));
+		  phase_delay[j]+=round((delay[j]-phase_delay[j])*ref_freq.at(j)*1.0e6)/(ref_freq.at(j)*1.0e6);
+		}
+      		} else {
+
+
+	  	    for (int j=0;j<ref_freq.size();j++) {
+	  		phase_delay.push_back(phase.at(j)/(2*M_PI*ref_freq.at(j)*1.0e6));
+	  		phase_delay_sigma.push_back(phase_sigma.at(j)/(2*M_PI*ref_freq.at(j)*1.0e6));
+	  		phase_delay[j]+=round((delay[j]-phase_delay[j])*ref_freq.at(j)*1.0e6)/(ref_freq.at(j)*1.0e6);
+
+		}
       
-        
-      }
-      } catch (exception& e) {
-	log<WARNING>("!!! Error in calculating phase delays from phases");
-      }
+
+      		}
+      		} catch (exception& e) {
+			log<WARNING>("!!! Error in calculating phase delays from phases");
+      		}
+	}
 
       } else {
            log<WARNING>("!!! No PhasesDelays found (/ObsEdit/" +phase_delay_filename+ ".nc not existent and no raw phases found (/Observables/" +phase_filename+ ".nc not existent). No phase delays availible!" );
