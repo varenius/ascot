@@ -1153,9 +1153,10 @@ void Session_inout::_read_vgosdb(ivg::Session *session_ptr, Setting *setup, cons
     if(vgosdb.does_file_exist("ObsEdit",phase_delay_filename)&& !session_ptr->_ambigRes)
     {
       
-	phase_delay = vgosdb.get_vector<double>("ObsEdit",phase_delay_filename, "PhaseDelayFull"); // unit microsecond
-	for (int j=0;j<phase_delay.size();j++)
-	  phase_delay[j]*=1e-6;
+	phase_delay = vgosdb.get_vector<double>("ObsEdit",phase_delay_filename, "PhaseDelayFull"); // unit second
+	//phase_delay = vgosdb.get_vector<double>("ObsEdit",phase_delay_filename, "PhaseDelayFull"); // unit microsecond
+	//for (int j=0;j<phase_delay.size();j++)
+	  //phase_delay[j]*=1e-6;
 	 try
 	   {
 	     phase_delay_sigma = vgosdb.get_vector<double>("ObsEdit",phase_delay_filename, "PhaseDelayFullSig");// unit second
