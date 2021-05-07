@@ -3128,6 +3128,7 @@ void Session_inout::write_snx(ivg::Session *session_ptr,string outfile, bool inc
     std::vector<Analysis_station>::iterator it_trf;
     for (it_trf = trf_ptr->begin(); it_trf<trf_ptr->end(); it_trf++)
     {
+      if (it_trf->get_num_obs()>0) {
         //don't create redundant entries
         if (sta_src_assignment[it_trf->get_name(ivg::staname::ivs_name)].empty())
         {
@@ -3136,22 +3137,23 @@ void Session_inout::write_snx(ivg::Session *session_ptr,string outfile, bool inc
             llh = it_trf->calc_lat_lon_h();
             int lon_grad,lon_min,lat_grad,lat_min;
             double lon_sec,lat_sec;
-            _dec_lat_2_grad_min_sec(llh(0),lat_grad,lat_min,lat_sec);
-            _dec_lon_2_grad_min_sec(llh(1),lon_grad,lon_min,lon_sec);
+            _dec_lat_2_grad_min_sec(llh(0)*180/M_PI,lat_grad,lat_min,lat_sec);
+            _dec_lon_2_grad_min_sec(llh(1)*180/M_PI,lon_grad,lon_min,lon_sec);
 
             outstream<<setiosflags(ios::left)<<setiosflags(ios::fixed)
                     <<" "<<setfill(' ')<<setw(4)<<it_trf->get_name(ivg::staname::cdp)<<"  A"
                     <<" "<<setfill(' ')<<setw(9)<<it_trf->get_name(ivg::staname::domes_no)<<" R"
                     <<" "<<setfill(' ')<<setw(8)<<left<<it_trf->get_name(ivg::staname::ivs_name)
                     <<" "<<setfill(' ')<<setw(13)<<(it_trf->get_name(ivg::staname::description)).substr(0,13)
-                    <<" "<<right<<setfill(' ')<<setw(3)<<lon_grad
-                    <<" "<<setfill(' ')<<setw(2)<<lon_min
+                    <<" "<<right<<setfill(' ')<<setw(3)<<fixed<<lon_grad
+                    <<" "<<setfill(' ')<<setw(2)<<fixed<<lon_min
                     <<" "<<right<<setw(3)<<fixed<<setprecision(1)<<right<<lon_sec
-                    <<" "<<right<<setfill(' ')<<setw(3)<<lat_grad
-                    <<" "<<setfill(' ')<<setw(2)<<lat_min
+                    <<" "<<right<<setfill(' ')<<setw(3)<<fixed<<lat_grad
+                    <<" "<<setfill(' ')<<setw(2)<<fixed<<lat_min
                     <<" "<<right<<setw(3)<<fixed<<setprecision(1)<<right<<lat_sec
                     <<" "<<setfill(' ')<<setw(7)<<setprecision(1)<<llh(2)<<endl;
         }
+      }
     }
     outstream<<"-SITE/ID"<<endl;
 
@@ -3164,6 +3166,7 @@ void Session_inout::write_snx(ivg::Session *session_ptr,string outfile, bool inc
 
     for (it_trf = trf_ptr->begin(); it_trf<trf_ptr->end(); it_trf++)
     {
+       if (it_trf->get_num_obs()>0) {
         outstream<<setiosflags(ios::left)<<setiosflags(ios::fixed)
                 <<" "<<setfill(' ')<<setw(4)<<it_trf->get_name(ivg::staname::cdp)<<"  A"
                 <<" "<<setfill(' ')<<setw(4)<<1<<" R"
@@ -3171,6 +3174,7 @@ void Session_inout::write_snx(ivg::Session *session_ptr,string outfile, bool inc
                 <<" "<<setfill(' ')<<setw(20)<<"----VLBI Station----"
                 <<" "<<setfill(' ')<<setw(5)<<"--NM-"
                 <<" "<<setfill(' ')<<setw(11)<<"-----NA----"<<endl;
+       }
     }
     outstream<<"-SITE/RECEIVER"<<endl;
 
@@ -3183,12 +3187,14 @@ void Session_inout::write_snx(ivg::Session *session_ptr,string outfile, bool inc
 
     for (it_trf = trf_ptr->begin(); it_trf<trf_ptr->end(); it_trf++)
     {
+      if (it_trf->get_num_obs()>0) {
         outstream<<setiosflags(ios::left)<<setiosflags(ios::fixed)
                 <<" "<<setfill(' ')<<setw(4)<<it_trf->get_name(ivg::staname::cdp)<<"  A"
                 <<" "<<setfill(' ')<<setw(4)<<1<<" R"
                 <<" "<<start.get_date_time("YY:DOY:SSSSS")<<" "<<end.get_date_time("YY:DOY:SSSSS")
                 <<" "<<setfill(' ')<<setw(20)<<"----VLBI Station----"
                 <<" "<<setfill(' ')<<setw(5)<<"--NM-"<<endl;
+      }
     }
     outstream<<"-SITE/ANTENNA"<<endl;
     // -------------------------
@@ -3199,15 +3205,17 @@ void Session_inout::write_snx(ivg::Session *session_ptr,string outfile, bool inc
     outstream << "*Code PT SOLN T Data_Start__ Data_End____ typ Apr --> Benchmark (m)_______" <<endl;
     for (it_trf = trf_ptr->begin(); it_trf<trf_ptr->end(); it_trf++)
     {
-      ivg::Matrix ecc = it_trf->get_eccentricity(start);
+      if (it_trf->get_num_obs()>0) {
+        ivg::Matrix ecc = it_trf->get_eccentricity(start);
         outstream<<setiosflags(ios::left)<<setiosflags(ios::fixed)
                 <<" "<<setfill(' ')<<setw(4)<<it_trf->get_name(ivg::staname::cdp)<<"  A"
                 <<" "<<setfill(' ')<<setw(4)<<1<<" R"
                 <<" "<<start.get_date_time("YY:DOY:SSSSS")<<" "<<end.get_date_time("YY:DOY:SSSSS")
-		 <<" "<<"XYZ " << setfill(' ')<<setw(8)<<right<< ecc(0)
+		 <<" "<<"XYZ " << setfill(' ')<<setw(8)<<fixed  <<setprecision(4)<<right<< ecc(0)
 	         << " " <<setfill(' ')<<setw(8)<<right<< ecc(1)
 		 << " " <<setfill(' ')<<setw(8)<<right<< ecc(2)
 		 <<endl;
+      }
     }
     outstream<<"-SITE/ECCENTRICITY"<<endl;
     
@@ -3315,6 +3323,7 @@ void Session_inout::write_snx(ivg::Session *session_ptr,string outfile, bool inc
     outstream << "*Code PT SOLN T Data_start__ Data_end____ Mean_epoch__" <<endl;
     for (it_trf = trf_ptr->begin(); it_trf<trf_ptr->end(); it_trf++)
     {
+       if (it_trf->get_num_obs()>0) {
       ivg::Date start_st=it_trf->get_first_epoch();
       ivg::Date end_st=it_trf->get_last_epoch();
       ivg::Date mean_ep = ivg::Date((start_st.get_double_mjd()+end_st.get_double_mjd())/2);
@@ -3323,6 +3332,7 @@ void Session_inout::write_snx(ivg::Session *session_ptr,string outfile, bool inc
                 <<" "<<setfill(' ')<<setw(4)<<1<<" R"
                 <<" "<<start_st.get_date_time("YY:DOY:SSSSS")<<" "<<end_st.get_date_time("YY:DOY:SSSSS")
 		 <<" "<<mean_ep.get_date_time("YY:DOY:SSSSS")<<endl;
+       }
     }
     outstream<<"-SOLUTION/EPOCHS"<<endl;
     // ------------------------------
