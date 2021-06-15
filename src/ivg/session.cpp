@@ -646,6 +646,11 @@ void Session::init_vgosdb_ngs_solution()
         _lsa_solution.reinit();
         _eliminate_obs_period();
     }
+    if((bool)(*_setup).exists("elevation_angle_cutoff"))
+    {    
+        _lsa_solution.reinit();
+        _apply_elevation_cutoff();
+    }
 
     // check whether the session has a specific reference lock or not
     if((bool)(*_handling).exists("handling") && (bool)((*_handling)["handling"]).exists("ref_clock"))
@@ -790,7 +795,7 @@ void Session::init_snx_solution(string adjustment_options, ivg::Date t_0)
             log<INFO>("*** Running apriori transformation");
             
             ivg::Matrix new_aprioris = _param_list.extract_apriori_vector();  
-
+	    
             //show old, new and difference of aprioris
             // just uncomment this block and you can see the differences between old and new aprioris
             //ivg::Matrix tmp = old_aprioris;
@@ -801,15 +806,19 @@ void Session::init_snx_solution(string adjustment_options, ivg::Date t_0)
 
             // now _neq_solution (_n) need to be adjusted (apriori transformation)
             _neq_solution.apriori_transformation(new_aprioris, old_aprioris);
-            
+           
             // in case of global modus, we use a specific reference epoch
             // and might want to introduce velocities for the stations
             string global_str = (const char*)(*_setup)["PARAMS"]["stations"][0]["stacking"][ "type" ];
             if( global_str == "global" && (bool)(*_setup)["PARAMS"]["stations"][0]["stacking"][ "insert_velocities" ])
             {
+	      
                 ivg::Date ref_epoch;
+		
                 ref_epoch.set_decimal_date((double)(*_setup)["PARAMS"]["stations"][0]["stacking"][ "ref_epoch" ]);
-                _param_list.insert_station_velocities(_neq_solution,ref_epoch, _trf);
+		 
+		_param_list.insert_station_velocities(_neq_solution,ref_epoch, _trf);
+		
             }
         }
         
@@ -851,7 +860,7 @@ void Session::init_snx_solution(string adjustment_options, ivg::Date t_0)
         {
         // epoch transformation based on t_0 
         old_aprioris = _param_list.extract_apriori_vector();
-
+	
         // getindexes of XPO, YPO, UT1 and XPOR, YPOR, LOD
         vector<ivg::paramtype> types = {xpo,ypo,ut1};
         vector<int> idxO_vec, idxR_vec;
@@ -869,7 +878,7 @@ void Session::init_snx_solution(string adjustment_options, ivg::Date t_0)
                 }
             }
         }
-
+	
         if(idxO_vec.size() != idxR_vec.size())
             throw runtime_error("void Session::init_snx_solution(): EOPs and rates does not correspond for epoch transformation.");
 
@@ -945,7 +954,7 @@ void Session::init_snx_solution(string adjustment_options, ivg::Date t_0)
             vector<string> eops = {"pm","ut1","nut"};
             for(int i=0; i<eops.size(); i++){
                 string new_handling = (*_handling)["handling"];
-                (*_setup)["PARAMS"].lookup(eops.at(i))[0]["handling"] = new_handling;
+                (*_setup)["PARAMS"][eops.at(i)][0]["handling"] = new_handling;
             }
         }
         
@@ -2342,7 +2351,7 @@ void Session::create_solution_info()
        //
        // matrix for obs data 
        // (mjd, residual, sigma_tau, sigma_oc, weight_factors, sigma_resid, partial redundancies, az1, el1, az2, el2, dist_rays)
-       data.resize( _nobs,14,0.0 );
+       data.resize( _nobs,16,0.0 );
        vector<string> first_station,source_names;
        
        // get residuals
@@ -2437,7 +2446,9 @@ void Session::create_solution_info()
                   data( obs_counter,11 ) = calc_dist_between_rays( obs_ptr );
                   data( obs_counter,12 ) = obs_ptr->get_snr_bx();
                   data( obs_counter,13 ) = obs_ptr->get_snr_bs();
-                          
+                  data( obs_counter,14 ) = scan_it-_scans.begin();
+		  data( obs_counter,15 ) = obs_i;
+		    
                   obs_counter++;
                }
             }
@@ -2662,6 +2673,15 @@ void Session::_eliminate_data()
              rem_par.insert( rem_par.end(), idx.begin(), idx.end() );
           }
        }
+    }
+    for (int i=0;i<sta_elim.size();i++) {
+      ivg::Analysis_station *tmp;
+    
+      vector<string>::iterator it1 = find( sta_names.begin(), sta_names.end(), sta_elim[i] );
+      tmp=_trf.get_station(it1-sta_names.begin());
+      tmp->set_num_obs(0);
+      
+      
     }
 
     for( int i=0; i<(*_setup)["elim_src"].getLength(); ++i )
@@ -2989,6 +3009,84 @@ void Session::_eliminate_obs_period()
          << " : " << tim.toc() << " s " << endl;
 #endif 
 }
+
+// ...........................................................................
+void Session::_apply_elevation_cutoff()
+// ...........................................................................
+{
+#if DEBUG_VLBI >=2
+   cerr << "+++ void Session::_eliminate_obs_period( ivg::Date, ivg::Date )" << endl; 
+   tictoc tim;
+   tim.tic();
+#endif
+
+    
+    
+    double elev_cutoff=((double)(*_setup)["elevation_angle_cutoff"])*M_PI/180.0;
+
+    // loop over scans and observations therein and remove observations
+    // remember indexes to remove them later form Lsa-object
+    vector<int> rem_obs;
+    
+        int cur_idx = 0;
+        for( int i=0; i <= _scans.size()-1; i++ )
+        { 
+            int nobs = _scans.at(i).get_nobs();
+            cur_idx += nobs-1;  // index of last obs in current scan
+            for( int j=_scans.at(i).get_nobs()-1; j>=0; --j )
+            {
+	      ivg::Matrix azel1=_scans.at(i).get_obs_ptr(j)->get_az_el(1);
+	      ivg::Matrix azel2=_scans.at(i).get_obs_ptr(j)->get_az_el(2);
+	      
+	      if( (azel1(1)<elev_cutoff) || (azel2(1)<elev_cutoff))
+                {
+                    _origin_obs_idxs.at(cur_idx) = -1;
+                    rem_obs.push_back( cur_idx );
+                    _scans.at(i).rem_obs(j);
+                }
+                // index of prior observation; after for loop it is the index of the last observation in the previous scan
+                cur_idx--;  
+            }
+            // index of 1st obs in next scan
+            cur_idx += nobs+1;    
+        }
+    
+    
+    sort( rem_obs.begin(), rem_obs.end() );
+    
+    int new_nobs = _nobs - rem_obs.size();
+    log<INFO>("*** Data elimination: ") % rem_obs.size() % " of " % _nobs % " observations. New #nobs " % new_nobs; 
+   
+    log<INFO>("*** Removed data below ") % (elev_cutoff*180/M_PI) % " degrees elevation angle";
+
+    // re-calculate number of observations, stations and sources
+    _nobs -= rem_obs.size();
+
+    // get original positions of the observations after observations have been eliminated
+    sort( _origin_obs_idxs.begin(), _origin_obs_idxs.end() );
+    _origin_obs_idxs.erase( unique( _origin_obs_idxs.begin(), _origin_obs_idxs.end() ), _origin_obs_idxs.end() );
+    if( _origin_obs_idxs.at( 0 ) == -1 )
+         _origin_obs_idxs.erase( _origin_obs_idxs.begin() );
+
+    // remove rows (observations) and columns (parameters) from Lsa-object
+    _lsa_solution.remove_observations( rem_obs );
+    _aprioris.rem_r( rem_obs );
+     
+    // check if max_obs defined in configfile is reached or not
+    if( new_nobs > (int)(*_setup)["max_obs"] )
+    {
+        stringstream ss;
+        ss << "void Session::_eliminate_obs_period( ivg::Date start, ivg::Date end ): Maximum number of observation reached after elimination(" 
+           << new_nobs << ">" << (int)(*_setup)["max_obs"] << ")";
+        throw runtime_error(ss.str());
+    }
+   
+#if DEBUG_VLBI >=2
+    cerr << "--- void Session:_apply_elevation_cutoff()" 
+         << " : " << tim.toc() << " s " << endl;
+#endif 
+}
+
 
 // ...........................................................................
 string Session::_create_configuration_textblock(Setting *setup)

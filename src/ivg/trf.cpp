@@ -103,14 +103,14 @@ Trf::Trf( Setting &setup, vector<string> station_names,
     }
     
     _name = (const char *)setup["trf"];
-
+   
     // if a station could not be initialized
     if(_stations.size() != station_names.size())
     {   
         for(auto &station : station_names)
         {
             ivg::Analysis_station * pointer_station;
-	    
+	
             // only compare station up to staname::description-level. Comparing staname::corres would be critical!!
             if(!_get_station(_stations, &pointer_station, station, ivg::staname::MINSTA, ivg::staname::description))
             {
@@ -155,7 +155,7 @@ Trf::Trf( Setting &setup, vector<string> station_names,
             throw runtime_error( "Trf::Trf():Constructor: Not all stations could be initialized correctly!" );
 	}
     }
-    
+   
     // add all activated displacements to the analysis_stations
     if(init_disps)
         init_displacements(setup, start, end);
@@ -168,7 +168,7 @@ Trf::Trf( Setting &setup, vector<string> station_names,
             ivg::parser::psd_coefficients(this,(const char *)get_list_element(setup["stadisp"], "PSD" )[2]);
         }
     }
-    
+   
     // only add further information like equip.cat and antenna.cat if simulation is activated
     if( ( setup.exists( "SIM" ) && (bool)setup[ "SIM" ]["apply"]) || (setup.exists( "SKED" ) && (bool)setup[ "SKED" ]["apply"]) 
         || ((setup).exists( "SKED" ) && !(bool)setup[ "SKED" ]["apply"] &&  (bool)(setup)[ "SKED" ]["createPlots"] && ( !(setup).exists( "SIM" ) || !(bool)(setup)[ "SIM" ]["apply"]))
@@ -262,7 +262,7 @@ void Trf::init_displacements(Setting &setup, ivg::Date start, ivg::Date end)
 #endif 
                   
     Setting &definitions = setup["definitions"];
-    
+   
     //Antenna Information
     // -> based on ivs_name
     ivg::parser::antenna_info(this, definitions["stadisp"]["antenna"]);
@@ -273,16 +273,29 @@ void Trf::init_displacements(Setting &setup, ivg::Date start, ivg::Date end)
     ivg::parser::gravdef(this, definitions["stadisp"]["grav_deform"], start);
     //Ocean Pole Tide Loading Coefficients
     // -> based on ivs_name
+   
     if((bool)get_list_element(setup["stadisp"], "OCEAN POLE TIDE LOADING" )[1])
         ivg::parser::optl(this, definitions["stadisp"]["optl"]);
     //Ocean Loading Coefficients
     // -> based on ivs_name
+    
     if((bool)get_list_element(setup["stadisp"], "OCEAN LOADING" )[1])
         ivg::parser::blq(this, definitions["stadisp"]["ol"][(const char *)get_list_element(setup["stadisp"], "OCEAN LOADING")[2]]);
+    
     //Non-Tidal Athmospheric Pressure Loading
     // -> based on ivs_name or corres (corres not stored anymore!! only used once here) (from vlbi_to_vsgd.inp file)
-    if((bool)get_list_element(setup["stadisp"], "NON TIDAL APLO" )[1])
+    if((bool)get_list_element(setup["stadisp"], "NON TIDAL APLO" )[1]) {
+
+      if (!(definitions["stadisp"].exists("ntapl_fmt")))
         ivg::parser::bindisp(this, definitions["stadisp"]["ntapl"], ivg::parser::correspondence(definitions["corres"]), start, end);
+      else if (string((const char*) definitions["stadisp"]["ntapl_fmt"])=="bindisp")
+	ivg::parser::bindisp(this, definitions["stadisp"]["ntapl"], ivg::parser::correspondence(definitions["corres"]), start, end);
+      else if (string((const char*) definitions["stadisp"]["ntapl_fmt"])=="vienna")
+	ivg::parser::vie_atm(this, definitions["stadisp"]["ntapl"], ivg::parser::correspondence(definitions["corres"]), start, end);
+      else
+	cerr << "Unknown ATMO Loading format: " << string((const char*) definitions["stadisp"]["ntapl_fmt"])<<"!!! No corrections applied!!!" << endl;
+    }
+   
     //Tidal Athmospheric Pressure Loading
     // -> based on difference less than 3km in case of hps
     if((bool)get_list_element(setup["stadisp"], "TIDAL APLO" )[1])
@@ -295,13 +308,25 @@ void Trf::init_displacements(Setting &setup, ivg::Date start, ivg::Date end)
     }
     // Mapping functions (VMF)
     // -> based on ivs_name
+    
     if((bool)setup.exists("troposphere"))
     {
-        if( string((const char*)setup["troposphere"]["mapping_function"]) == "vmf1")
-            ivg::parser::external_met_data(this, definitions["troposphere"]["mapping_function"]["vmf1"], start, end, ivg::extdata::MAPPING);
+      if (((bool)definitions["troposphere"].exists("mf_format"))&&(string((const char*)definitions["troposphere"]["mf_format"]) == "ascii")){
+
+	if( string((const char*)setup["troposphere"]["mapping_function"]) == "vmf1")
+	  ivg::parser::external_met_data_ascii(this, definitions["troposphere"]["mapping_function"]["vmf1"], start, end, ivg::extdata::MAPPING);
 	if( string((const char*)setup["troposphere"]["mapping_function"]) == "vmf3")
-            ivg::parser::external_met_data(this, definitions["troposphere"]["mapping_function"]["vmf3"], start, end, ivg::extdata::MAPPING3);
+	  ivg::parser::external_met_data_ascii(this, definitions["troposphere"]["mapping_function"]["vmf3"], start, end, ivg::extdata::MAPPING3);
+
+      } else {
+	
+        if( string((const char*)setup["troposphere"]["mapping_function"]) == "vmf1")
+	  ivg::parser::external_met_data(this, definitions["troposphere"]["mapping_function"]["vmf1"], start, end, ivg::extdata::MAPPING);
+	if( string((const char*)setup["troposphere"]["mapping_function"]) == "vmf3")
+	  ivg::parser::external_met_data(this, definitions["troposphere"]["mapping_function"]["vmf3"], start, end, ivg::extdata::MAPPING3);
+      }
     }
+   
     // External Meteorology Data (e.g., ECMWF/VMF, MERRA, GPS,...)
     // -> based on ivs_name   
     if((bool)setup.exists("troposphere"))

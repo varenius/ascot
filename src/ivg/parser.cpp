@@ -330,6 +330,108 @@ void bindisp(ivg::Trf * trf_ptr, const string folder_path, map<string,string> co
 #endif
 }
 
+  // ...........................................................................
+void vie_atm(ivg::Trf * trf_ptr, const string folder_path, map<string,string> correspondence, ivg::Date start, ivg::Date end)
+// ...........................................................................
+{
+#if DEBUG_REFFRAME >=2
+   cerr << "+++ void bindisp(ivg::Trf * , const string , ivg::Date , ivg::Date )" << endl; 
+   tictoc tim;
+   tim.tic();
+#endif
+   
+    double start_mjd = start.get_double_mjd();
+    double end_mjd = end.get_double_mjd();
+
+    vector<string> station_names = trf_ptr->get_station_names(ivg::staname::ivs_name);
+    int yr1 = start.get_int_year();
+    int yr2 = end.get_int_year();
+    vector<vector<double>> exyz_vec; //Epoch, x, y, z
+    vector<double> du,de,dn;
+    for (int i=0 ; i<station_names.size(); i++)
+      {
+
+	 ivg::Analysis_station * station;
+         trf_ptr->get_station(&station, station_names.at(i), ivg::staname::lettercode);
+	 ivg::Matrix llh=station->calc_lat_lon_h();
+	 du.push_back(cos(llh(1))*cos(llh(0)));
+	 du.push_back(sin(llh(1))*cos(llh(0)));
+	 du.push_back(sin(llh(0)));
+	 dn.push_back(-cos(llh(1))*sin(llh(0)));
+	 dn.push_back(-sin(llh(1))*sin(llh(0)));
+	 dn.push_back(cos(llh(0)));
+	 de.push_back(-sin(llh(1)));
+	 de.push_back(cos(llh(1)));
+	 de.push_back(0.0);
+	 exyz_vec.push_back({});
+	
+
+
+      }
+    
+    for (int yr=yr1;yr<=yr2;yr++)
+      {
+	
+	string path = folder_path + "/y" + std::to_string(yr) + ".apl_r";
+	
+	if (file_exists(path))
+	  {
+	    
+	    ifstream infile(path);
+	    string line,sta;
+	    double mjd,up,east,north;
+	    while (getline(infile,line))
+	      {
+		if (line.substr(0,1)!="!")
+		  {
+		    stringstream ss(line);
+		    ss >> sta >> mjd >> up >> east >> north;
+		    if ((mjd>=start_mjd)&&(mjd<=end_mjd)) {
+		      for (int i=0 ; i<station_names.size(); i++) {
+			
+			if ((station_names[i]==sta)||(correspondence[station_names[i]]==sta)){
+			 
+			  exyz_vec[i].push_back(mjd);
+			  
+			  exyz_vec[i].push_back(up*du[i*3]+east*de[i*3]+north*dn[i*3]);
+			  
+			  exyz_vec[i].push_back(up*du[i*3+1]+east*de[i*3+1]+north*dn[i*3+1]);
+			  
+			  exyz_vec[i].push_back(up*du[i*3+2]+east*de[i*3+2]+north*dn[i*3+2]);
+			 
+			  
+			}
+			  
+		      }
+
+		    }
+		  }
+		
+	      }
+	    infile.close();
+	  }
+	else
+	  cerr << "Atmp loading file " << path << " does not exist" <<endl;
+      }
+    for (int i=0 ; i<station_names.size(); i++)
+      {
+	 ivg::Analysis_station * station;
+         trf_ptr->get_station(&station, station_names.at(i), ivg::staname::lettercode);
+	 ivg::Matrix exyz(exyz_vec[i]);
+         exyz.resize(4,int(exyz_vec[i].size()/4));
+	 for (int j=1;j<exyz.cols();j++) {
+	   if (exyz(0,j)<=exyz(0,j-1))
+	     exyz.rem_c(j);
+	 }
+	 station->set_nontidal_aplo(exyz);
+      }
+    
+  
+#if DEBUG_REFFRAME >=2
+   cerr << "--- void vie_atm(ivg::Trf * , const string , ivg::Date , ivg::Date )" << " : " << tim.toc() << " s " << endl;
+#endif
+}
+
 // ...........................................................................
 void hps(ivg::Trf * trf_ptr, const string path)
 // ...........................................................................
@@ -458,19 +560,19 @@ void dat(ivg::Trf * trf_ptr, const string path)
         ivg::Analysis_station * station;
         if(trf_ptr->get_station(&station, ivs_name, ivg::staname::lettercode))
         {
-            vector<string> tokens = get_tokens(line.substr(38));
+            vector<string> tokens = get_tokens(line.substr(11));
 
             ivg::Wave S1;
             S1.name = "S1";
             S1.accel = 0.0;
-            S1.phase = 0.0;
-            S1.freq = 7.272205216643D-05;
+            S1.phase = M_PI;
+            S1.freq = 7.272205216643e-05;
 
             ivg::Wave S2;
             S2.name = "S2";
             S2.accel = 0.0;
             S2.phase = 0.0;
-            S2.freq = 1.454441043329D-04;
+            S2.freq = 1.454441043329e-04;
 
             S1.up_cos = s2d(tokens.at(0))/1000.0;
             S1.up_sin = s2d(tokens.at(1))/1000.0;
@@ -485,8 +587,8 @@ void dat(ivg::Trf * trf_ptr, const string path)
             S1.north_cos = s2d(tokens.at(12))/1000.0;
             S1.north_sin = s2d(tokens.at(13))/1000.0;
             S2.north_cos = s2d(tokens.at(14))/1000.0;
-            S2.north_sin = s2d(tokens.at(1))/1000.0;
-            
+            S2.north_sin = s2d(tokens.at(15))/1000.0;
+	   
             waves[S1.name] = S1;
             waves[S2.name] = S2;
             
@@ -593,6 +695,94 @@ void external_met_data( ivg::Trf * trf_ptr, const string path, ivg::Date start,
     }
 #if DEBUG_REFFRAME >=2
    cerr << "--- void external_met_data(ivg::Trf * , const string , ivg::Date , ivg::Date )" << " : " << tim.toc() << " s " << endl;
+#endif
+}
+// ...........................................................................
+void external_met_data_ascii( ivg::Trf * trf_ptr, const string path, ivg::Date start,
+                        ivg::Date end, ivg::extdata type )
+// ...........................................................................
+{
+#if DEBUG_REFFRAME >=2
+   cerr << "+++ void external_met_data_ascii(ivg::Trf * , const string , ivg::Date , ivg::Date )" << endl; 
+   tictoc tim;
+   tim.tic();
+#endif
+   
+    double start_mjd = start.get_double_mjd();
+    double end_mjd = end.get_double_mjd();
+
+    vector<string> station_names = trf_ptr->get_station_names(ivg::staname::ivs_name);
+    vector<ivg::Matrix> vmf(station_names.size(),ivg::Matrix(0,10));
+    
+    int yr1 = start.get_int_year();
+    int yr2 = end.get_int_year();
+    
+    for (int yr=yr1;yr<=yr2;yr++)
+      {
+	string vmffile;
+	if (type ==  ivg::extdata::MAPPING )
+	  vmffile=path + "/y" + std::to_string(yr) + ".vmf1_r";
+	else if (type ==  ivg::extdata::MAPPING3 )
+	  vmffile=path + "/y" + std::to_string(yr) + ".vmf3_r";
+	else
+	  vmffile=path + "/y" + std::to_string(yr) + ".vmf1_r";
+
+        if (file_exists(vmffile))
+          {
+
+            ifstream infile(vmffile);
+            string line,sta;
+	    double mjd;
+	     while (getline(infile,line))
+              {
+                if (line.substr(0,1)!="#")
+		  {
+		    stringstream ss(line);
+		    ss >> sta;
+		    ss >> mjd;
+		    if ((mjd>=start_mjd)&&(mjd<=end_mjd)) {
+                      for (int i=0 ; i<station_names.size(); i++) {
+			
+                        if (station_names[i]==sta)
+			  {
+			   
+			    ivg::Matrix row(1,10);
+			    row(0,0)=mjd;
+			    for (int j=1;j<6;j++)
+			      ss >> row(0,j);
+			    row(0,6)=0;
+			    for (int j=7;j<8;j++)
+			      ss >> row(0,j);
+			    row(0,9)=0;
+			    vmf[i].append_rows(row);
+			  }
+		      }
+		    }
+		  }
+	      }
+	  }
+	else
+	  cerr << "File does not exist: " << vmffile << endl;
+      }
+    
+    
+    for (int i=0 ; i<station_names.size(); i++)
+    {
+        ivg::Analysis_station * station;
+        if(trf_ptr->get_station(&station, station_names.at(i), ivg::staname::lettercode))
+        {
+            
+            
+            if( type == ivg::extdata::MAPPING )
+                station->set_vmf1_data(vmf[i]);
+	    else if( type == ivg::extdata::MAPPING3 )
+                station->set_vmf3_data(vmf[i]);
+            else if( type == ivg::extdata::HYDROSTATIC )
+                station->set_zhd_data(vmf[i]);
+        }
+    }
+#if DEBUG_REFFRAME >=2
+   cerr << "--- void external_met_data_ascii(ivg::Trf * , const string , ivg::Date , ivg::Date )" << " : " << tim.toc() << " s " << endl;
 #endif
 }
 
@@ -1406,7 +1596,8 @@ vector<ivg::Analysis_station> ssc_parser(const string path, const vector< map<iv
     ivg::parser::get_line(path, inStream, line);
 
     // first line contains overall reference epoch in format 2008.0
-    ivg::Date _ref_epoch( atoi( line.substr( 58,6 ).c_str() ), 1.0 );
+    int eppos=line.find("STATION POSITIONS AT EPOCH")+27;
+    ivg::Date _ref_epoch( atoi( line.substr( eppos,6 ).c_str() ), 1.0 );
     if(_ref_epoch.get_double_mjd() < 0)
         throw runtime_error( "vector<ivg::Analysis_station> ssc_parser(...): Unexpected reference epoch in SSC-File: "+path );
 

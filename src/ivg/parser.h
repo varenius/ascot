@@ -47,10 +47,12 @@ namespace parser
     void ecc(ivg::Trf * trf_ptr, const string path);
     void gravdef(ivg::Trf * trf_ptr, const string path, ivg::Date ep);
     void bindisp(ivg::Trf * trf_ptr, const string folder_path, map<string,string> correspondence, ivg::Date start, ivg::Date end);
+    void vie_atm(ivg::Trf * trf_ptr, const string folder_path, map<string,string> correspondence, ivg::Date start, ivg::Date end);
     void hps(ivg::Trf * trf_ptr, const string path);
     void dat(ivg::Trf * trf_ptr, const string path);
     void antenna_info(ivg::Trf * trf_ptr, const string path);
     void external_met_data( ivg::Trf * trf_ptr, const string path, ivg::Date start,ivg::Date end, ivg::extdata type );
+    void external_met_data_ascii( ivg::Trf * trf_ptr, const string path, ivg::Date start,ivg::Date end, ivg::extdata type );
     void hydlo(ivg::Trf * trf_ptr, const string folder_path);
     void psd_coefficients(ivg::Trf * trf_ptr, const string path);
     void raytraced_delays( ivg::Trf * trf_ptr, const string path );
