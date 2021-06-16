@@ -954,7 +954,7 @@ void Session::init_snx_solution(string adjustment_options, ivg::Date t_0)
             vector<string> eops = {"pm","ut1","nut"};
             for(int i=0; i<eops.size(); i++){
                 string new_handling = (*_handling)["handling"];
-                (*_setup)["PARAMS"][eops.at(i)][0]["handling"] = new_handling;
+                (*_setup)["PARAMS"].lookup(eops.at(i))[0]["handling"] = new_handling;
             }
         }
         

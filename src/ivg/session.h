@@ -404,7 +404,14 @@ namespace ivg
         *  \param [in] no input parameters needed
         */
         void _eliminate_obs_period();        
-        
+
+	 /**
+        *  \b Description: \n
+        *        Method to eliminate observations below a certain cutoff elevation 
+        *        angle
+        *  \param [in] no input parameters needed
+        */
+        void _apply_elevation_cutoff();
         /**
         *  \b Description: \n
         *        Method to handle the modeling of correlations due to atmospheric 
