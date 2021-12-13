@@ -526,6 +526,7 @@ void Param_list::modify_parameterization( std::string dbname, Setting &setup,
                             //solver.trafo_params2polynomial( order, cur_idx.at( i ), _start_epoch.get_double_mjd() );
                             ivg::Date epo = _params.at( cur_idx.at( i ) ).get_epoch();
 			    
+			    
 			    solver.trafo_params2polynomial( order, cur_idx.at( i ),
                                                             epo.get_double_mjd(), apriori,
                                                             new_apriori );
@@ -615,7 +616,17 @@ void Param_list::modify_parameterization( std::string dbname, Setting &setup,
                             double dt = (double)params.lookup( param_iter->first )[ j ]["cpwlf"][ "int_length" ]/(60.0*24.0);
                     
                             // uses this constructor:  Matrix(double start, double schrittweite, double ende, int cols);
-                            ivg::Matrix t_cpwlf( _start_epoch.get_double_mjd(), dt, _end_epoch.get_double_mjd()+dt/1.01, 1 );
+			    double st_epoch=_start_epoch.get_double_mjd();
+			    if  (((params[ param_iter->first ][ j ]["cpwlf"]).exists("int_hours"))) {
+			      if ((bool(params[ param_iter->first ][ j ]["cpwlf"]["int_hours"]) == true )) {
+				double st_day=floor(st_epoch);
+				double st_int=floor(((st_epoch-st_day))/dt);
+				st_epoch=st_day+st_int*dt;
+			      }
+			    }
+			      
+			    ivg::Matrix t_cpwlf( st_epoch, dt, _end_epoch.get_double_mjd()+dt/1.01, 1 );
+                            
                             
                             // only two CPWLF parameters and observations 
                             // outside interval => increase interval to end of
@@ -648,8 +659,38 @@ void Param_list::modify_parameterization( std::string dbname, Setting &setup,
                             {
                                 ivg::Matrix apr_col_nz = apr_col.get_sub( ind, {0} );
                                 ivg::Matrix obs_epo_nz = obs_epochs.get_sub( ind, {0} );                            
-			
-                                new_apriori = apr_col_nz.estimate_cpwlf( obs_epo_nz, t_cpwlf );
+				if (param_iter->first == "ut1" )
+				  {
+				    double leap=ivg::Date(obs_epochs(0)).get_leap_sec();
+				    vector<double> dutb( 3,0.0 );
+				    for (int ii=0;ii<apr_col_nz.rows();ii++) {
+				      double tb = (obs_epo_nz(ii)-51544.5)/36525.0;
+				      iers::rg_zont2_( &tb, &dutb[0], &dutb[1], &dutb[2] );
+				      
+				      apr_col_nz(ii)-=(-leap+dutb[0])*ivg::s2rad;
+				      
+				    }
+				    
+				  }
+                                new_apriori = apr_col_nz.estimate_cpwlf( obs_epo_nz, t_cpwlf,1e-8 );
+				if (param_iter->first == "ut1" )
+				{
+				    
+				    double leap=ivg::Date(obs_epochs(0)).get_leap_sec();
+				    
+				    vector<double> dutb( 3,0.0 );
+				    for (int ii=0;ii<t_cpwlf.rows();ii++) {
+				       
+				       double tb = (t_cpwlf(ii)-51544.5)/36525.0;
+				       iers::rg_zont2_( &tb, &dutb[0], &dutb[1], &dutb[2] );
+				      
+				      
+					new_apriori(ii)+=(-leap+dutb[0])*ivg::s2rad;
+				 
+				     }
+				   
+				}
+                               
 				
                             }
                             

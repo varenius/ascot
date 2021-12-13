@@ -355,7 +355,7 @@ ivg::Matrix Eop_series::calc_erp( const ivg::Date &epoch,
     if( rg_zont )
     {
         vector<double> dut( 3,0.0 );
-        double t = (epoch.get_double_mjd()-51544.0)/36525.0;
+        double t = (epoch.get_double_mjd()-51544.5)/36525.0;
         iers::rg_zont2_( &t, &dut[0], &dut[1], &dut[2] );
         erp(2) += dut.at( 0 )*ivg::s2rad;
     }
@@ -902,7 +902,7 @@ void Eop_series::_calc_dUT1_zonal_tides()
 
     for( int i=0; i<_erp.rows(); ++i )
     {
-        t = (_mjd(i)-51544.0)/36525.0;
+        t = (_mjd(i)-51544.5)/36525.0;
         iers::rg_zont2_( &t, &dut[0], &dut[1], &dut[2] );
 
         // scale to radian
