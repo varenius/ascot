@@ -617,8 +617,8 @@ void Param_list::modify_parameterization( std::string dbname, Setting &setup,
                     
                             // uses this constructor:  Matrix(double start, double schrittweite, double ende, int cols);
 			    double st_epoch=_start_epoch.get_double_mjd();
-			    if  (((params[ param_iter->first ][ j ]["cpwlf"]).exists("int_hours"))) {
-			      if ((bool(params[ param_iter->first ][ j ]["cpwlf"]["int_hours"]) == true )) {
+			    if  (((params.lookup(param_iter->first)[ j ]["cpwlf"]).exists("int_hours"))) {
+			      if ((bool(params.lookup(param_iter->first )[ j ]["cpwlf"]["int_hours"]) == true )) {
 				double st_day=floor(st_epoch);
 				double st_int=floor(((st_epoch-st_day))/dt);
 				st_epoch=st_day+st_int*dt;
