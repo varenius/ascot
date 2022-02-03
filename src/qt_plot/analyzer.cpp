@@ -293,7 +293,8 @@ void Analyzer::loadLatestSelectedSinex()
             {
                 name = ss.str();
                 break;
-            }
+            } 
+ 	   
         }
         
         // get information about loading-range
@@ -419,6 +420,23 @@ void Analyzer::loadLatestSelectedSinex()
     }
     else
     {
+
+      string tmp= _latest_selected.substr(_latest_selected.find_last_of("/")+1);
+     
+      if (tmp.find("_psd") != std::string::npos || tmp.find("_PSD") != std::string::npos ||tmp.find("-psd") != std::string::npos || tmp.find("-PSD") != std::string::npos) {
+
+	// PSD correction file
+	 if(_latest_reference_row != -1)
+	   {
+	     string ref_name = _ui.session_tablewidget->item(_latest_reference_row,0)->text().toStdString();
+	     _psd_file[ref_name]=_latest_selected;
+	   }
+	 else {
+	   std::cout << "No reference selected for applying the PSD data to" << endl;
+	 }
+	
+      } else {
+
         // if the LOAD button is clicked, load the selected sinex file
         string name = _latest_selected.substr(_latest_selected.find_last_of("/")+1,_latest_selected.find_first_of("_")-_latest_selected.find_last_of("/")-1);
         
@@ -479,8 +497,8 @@ void Analyzer::loadLatestSelectedSinex()
 
             column++;
         }
+      }
     }
-    
     // add new signal-slots to each new pushbutton
     QPushButton* add_estimate = new QPushButton("Add");
     _ui.session_tablewidget->setCellWidget(current_row, column, add_estimate);
@@ -1594,7 +1612,7 @@ void Analyzer::transformSelectedSessions()
     if(_latest_reference_row != -1)
     {
         ref_name = _ui.session_tablewidget->item(_latest_reference_row,0)->text().toStdString();
-    
+	std::ofstream transf_file("transf_params.out",std::ofstream::out);
         // get selected sessions
         vector<string> other_sessions;
         for(int row=0; row<_ui.session_tablewidget->rowCount(); row++)
@@ -1626,10 +1644,21 @@ void Analyzer::transformSelectedSessions()
             stringstream trans_info;
             for(auto &other_name: other_sessions)
             {
+	      vector<ivg::Sinex> othersnxs;
+	      othersnxs=_loaded_sinex_series[other_name];
+	      if (othersnxs.size()==0)
+		othersnxs.push_back(_loaded_sinex[other_name]);
+	     
+	      for (auto &other_snx: othersnxs )
+		{
                 if(_ui.trf_radiobutton->isChecked())
                 {
+		  
                     ivg::Trf ref_trf = _loaded_sinex[ref_name].get_trf(ivg::reftype::estimate);
-                    ivg::Trf other_trf = _loaded_sinex[other_name].get_trf(ivg::reftype::estimate);
+		    if (_psd_file[ref_name].length()>0)
+		      ivg::parser::psd_coefficients(&ref_trf,_psd_file[ref_name]);
+                    //ivg::Trf other_trf = _loaded_sinex[other_name].get_trf(ivg::reftype::estimate);
+		    ivg::Trf other_trf = other_snx.get_trf(ivg::reftype::estimate);
 
                     ivg::Matrix indexes = ref_trf.get_corresponding_stations(other_trf);
                     ivg::Matrix indexes_orig = indexes;
@@ -1639,8 +1668,12 @@ void Analyzer::transformSelectedSessions()
                     
                     for(int i=0; i<indexes.rows(); i++)
                     {
-                        all_system1.append_cols(ref_trf.get_station(indexes(i,0))->get_xyz(ivg::Date(2013,123.5)));
-                        all_system2.append_cols(other_trf.get_station(indexes(i,1))->get_xyz(ivg::Date(2013,123.5)));
+		      // all_system1.append_cols(ref_trf.get_station(indexes(i,0))->get_xyz(ivg::Date(2013,123.5)));
+                      //  all_system2.append_cols(other_trf.get_station(indexes(i,1))->get_xyz(ivg::Date(2013,123.5)));
+		      
+		      ivg::Date tmpep=other_trf.get_station(indexes(i,1))->get_refepoch();
+		      all_system1.append_cols(ref_trf.get_station(indexes(i,0))->calc_xyz(tmpep,{"PSD"}));
+		      all_system2.append_cols(other_trf.get_station(indexes(i,1))->calc_xyz(tmpep));
                     }
                     
                     // now only use stations selected in table for transformation (default = all)
@@ -1656,16 +1689,19 @@ void Analyzer::transformSelectedSessions()
                     // now only set systems used for computation of transformatio parameters
                     for(int i=0; i<indexes.rows(); i++)
                     {
-                        est_system1.append_cols(ref_trf.get_station(indexes(i,0))->get_xyz(ivg::Date(2000,123.5)));
-                        est_system2.append_cols(other_trf.get_station(indexes(i,1))->get_xyz(ivg::Date(2000,123.5)));
+		       ivg::Date tmpep=other_trf.get_station(indexes(i,1))->get_refepoch();
+		       //est_system1.append_cols(ref_trf.get_station(indexes(i,0))->get_xyz(ivg::Date(2000,123.5)));
+		       //est_system2.append_cols(other_trf.get_station(indexes(i,1))->get_xyz(ivg::Date(2000,123.5)));
+		        est_system1.append_cols(ref_trf.get_station(indexes(i,0))->calc_xyz(tmpep,{"PSD"}));
+                        est_system2.append_cols(other_trf.get_station(indexes(i,1))->calc_xyz(tmpep));
                     }
-
+		    
                     est_system1 = est_system1.transpose();
-                    est_system2 = est_system2.transpose();
-
+                    est_system2 = est_system2.transpose(); 
+		    
                     all_system1 = all_system1.transpose();
                     all_system2 = all_system2.transpose();
-
+		   
                     ivgat::Transformation trans(ivgat::t_type::cart_3D);
                     
                     // set the two systems for the parameter estimation
@@ -1683,21 +1719,46 @@ void Analyzer::transformSelectedSessions()
                     ivg::Matrix resids = trans.get_residuals(trans_params,params);
                     cerr << "TRF residuals between system1 / system2 based on cartesian coordinates [m]" << endl;
                     resids.show(4);
-
+		    
                     indexes_orig.append_cols(resids);
                     _trf_residuals[ref_name+"_"+other_name] = indexes_orig;
-
+		    string curpath=other_snx.get_path();
+		    string sess = curpath.substr(curpath.find_last_of("/")+1,curpath.find_first_of("_")-curpath.find_last_of("/")-1);
                     trans_info << "------------------------------------------------------------------" << endl;
-                    trans_info << ref_name << " vs " << other_name << endl;
+                    trans_info << ref_name << " vs " << other_name << " (" << sess << ")" << endl;
                     trans_info << info_block;
 
                     _ui.info_textbrowser->setText(QString::fromStdString(trans_info.str()));
+		    double fak=1,add=0;
+		    int cnt=0;
+		    transf_file << sess << " " << setw(14) << fixed << setprecision(4) << other_trf.get_station(indexes(0,1))->get_refepoch().get_double_mjd() << " " ;
+		    for (auto &tp: trans_params)
+		      {
+			 if( tp <= 2 )
+			   {
+			     fak = 1000.0;
+			     add=0;
+			   }
+			 else if( tp > 2 && tp <= 5)
+			   {
+			     fak = ivg::rad2mas*1000;
+			     add=0;
+			   }
+			 else if( tp == 6 )
+			   {
+			     fak = 1.0e9;
+			     add=-1;
+			   }
+			 transf_file << right << setw(14) << fixed << setprecision(6) << (params(cnt)+add)*fak << " ";
+			 cnt++;
+		      }
+		    transf_file << endl;
                 }
                 else if(_ui.crf_radiobutton->isChecked())
                 {
                     ivg::Crf ref_crf = _loaded_sinex[ref_name].get_crf(ivg::reftype::estimate);
-                    ivg::Crf other_crf = _loaded_sinex[other_name].get_crf(ivg::reftype::estimate);
-                    
+                    //ivg::Crf other_crf = _loaded_sinex[other_name].get_crf(ivg::reftype::estimate);
+                    ivg::Crf other_crf = other_snx.get_crf(ivg::reftype::estimate);
                     ivg::Matrix indexes = ref_crf.get_corresponding_sources(other_crf);
                     
                     ivg::Matrix est_system1,est_system2;
@@ -1761,14 +1822,17 @@ void Analyzer::transformSelectedSessions()
                     trans_info << "------------------------------------------------------------------" << endl;
                     trans_info << ref_name << " vs " << other_name << endl;
                     trans_info << info_block;
+		    
+		      
                 }
-
+		}
             }
 
             _ui.info_textbrowser->setText(QString::fromStdString(trans_info.str()));
         }
         else
             _ui.info_textbrowser->setText(QString("Only reference session selected. No other sessions. Checkbox session names for transformation!"));
+	transf_file.close();
     }
     else
         _ui.info_textbrowser->setText(QString("No reference session selected. Double click on a session name!"));

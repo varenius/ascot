@@ -145,7 +145,8 @@ public:
     
     
     std::set<std::string> get_ref_clock_station( );
-    
+
+    string get_path() {return _path;};
 private:
     
     // funtion to replace D to E within a exponential value

@@ -78,6 +78,7 @@ private:
     map<std::string, ivg::Session> _loaded_sessions;
     map<std::string, ivg::Sinex> _loaded_sinex;
     map<std::string, ivg::Eop_series> _loaded_eops;
+    map<std::string, std::string> _psd_file;
     
     map<std::string, vector<ivg::Sinex> > _loaded_sinex_series;
     

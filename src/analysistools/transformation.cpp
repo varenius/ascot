@@ -282,16 +282,19 @@ string Transformation::get_info_block(vector<t_param> trans_param, ivg::Matrix &
             if( tp <= 2 )
             {
                 fak = 1000.0;
+	
                 unit = "mm";
             }
             else if( tp > 2 && tp <= 5)
             {
                 fak = ivg::rad2mas*1000;
+		
                 unit = "microas";
             }
             else if( tp == 6 )
             {
-                fak = 1.0;
+	      fak = 1.0;
+        
                 unit = "-";
             }
             
