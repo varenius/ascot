@@ -1595,7 +1595,7 @@ vector<double> Session::_adjust_data_storage(int opt)
                                         catalog_xyz = sta_iter->calc_xyz(epoch);
                                     
                                     // in case of itrf2014 and if PSD is set to true, add the PSD
-                                    if( _trf.get_name() == "itrf2014" && (bool)get_list_element((*_setup)["stadisp"], "PSD" )[1] )
+                                    if( (bool)get_list_element((*_setup)["stadisp"], "PSD" )[1] )
                                     {
                                         ivg::Matrix d_tmp( 3,1,0.0 );
                                         d_tmp = sta_iter->calc_psd_displacement( epoch );
@@ -2379,7 +2379,7 @@ void Session::create_solution_info()
            // _nobs is multiplied with 2 in void Session::init_vgosdb_ngs_solution()
            // in _ambigRes mode. In _ambigRes mode there is one data Matrix for group delay and one
            // for single band delay. So the size for data is _nobs/2.
-           data.resize( _nobs/2,14,0.0 );    
+           data.resize( _nobs/2,16,0.0 );    
        }
        
        // vector containing the position of each observation in the ncfile;

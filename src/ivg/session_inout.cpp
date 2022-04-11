@@ -482,6 +482,10 @@ void Session_inout::_read_vgosdb(ivg::Session *session_ptr, Setting *setup, cons
         reffreq_filename = "RefFreq_b"+band_str;
    
     ref_freq = vgosdb.get_vector<double>("Observables",reffreq_filename,"RefFreq");
+    if ((ref_freq.size()>0)&&(ref_freq.size()<nobs))
+      for (int j=ref_freq.size();j<nobs;j++)
+	ref_freq.push_back(ref_freq.at(0));
+
     
     if ( session_ptr->_ambigRes ){
         // get ambiguity_spacing
@@ -1174,42 +1178,42 @@ void Session_inout::_read_vgosdb(ivg::Session *session_ptr, Setting *setup, cons
     } else if (vgosdb.does_file_exist("Observables",phase_filename)){ // Calulate phase delay from phases
       log<WARNING>("!!! No PhaseDelays found (/ObsEdit/" +phase_delay_filename+ ".nc not existent). Calculating from Phase.");
 	std::string phase_numamb_filename;
-	if( use_wrapper  && _wrapper_ptr->file_exists(ivg::wrapper_entries::NumPhaseAmbig,session_ptr->_band_type)  )
-   	 {
-      	 	phase_numamb_filename = _wrapper_ptr->get_file(ivg::wrapper_entries::NumPhaseAmbig,session_ptr->_band_type);
-   	 }
-    	else
-   	 {
-    	    phase_numamb_filename = "NumPhaseAmbig_b"+band_str;
-   	 }
-	if(vgosdb.does_file_exist("ObsEdit",phase_numamb_filename)&& !session_ptr->_ambigRes)
-	{
-		vector<short> ph_amb;
-	       ph_amb=vgosdb.get_vector<short>("ObsEdit",phase_numamb_filename, "NumPhaseAmbig"); // unit microsecond
-	      
-	       if (ref_freq.size()==1) {
-		for (int j=0;j<phase.size();j++) {
+	//	if( use_wrapper  && _wrapper_ptr->file_exists(ivg::wrapper_entries::NumPhaseAmbig,session_ptr->_band_type)  )
+   	// {
+      	// 	phase_numamb_filename = _wrapper_ptr->get_file(ivg::wrapper_entries::NumPhaseAmbig,session_ptr->_band_type);
+	//	 }
+    //else
+   	// {
+	//   phase_numamb_filename = "NumPhaseAmbig_b"+band_str;
+	//}
+	//if(vgosdb.does_file_exist("ObsEdit",phase_numamb_filename)&& !session_ptr->_ambigRes)
+	//{
+	//	vector<short> ph_amb;
+	//       ph_amb=vgosdb.get_vector<short>("ObsEdit",phase_numamb_filename, "NumPhaseAmbig"); // unit microsecond
+       	      
+	//	       if (ref_freq.size()==1) {
+	//	for (int j=0;j<phase.size();j++) {
 	    
-		  phase_delay.push_back(phase.at(j)/(2*M_PI*ref_freq.at(0)*1.0e6));
-		  phase_delay_sigma.push_back(phase_sigma.at(j)/(2*M_PI*ref_freq.at(0)*1.0e6));
-		  phase_delay[j]+=round((delay[j]-phase_delay[j])*ref_freq.at(j)*1.0e6)/(ref_freq.at(j)*1.0e6);
-		  phase_delay[j]+=((double)ph_amb.at(j))/(ref_freq.at(j)*1.0e6);
-		}
-      		} else {
+	//	  phase_delay.push_back(phase.at(j)/(2*M_PI*ref_freq.at(0)*1.0e6));
+	//	  phase_delay_sigma.push_back(phase_sigma.at(j)/(2*M_PI*ref_freq.at(0)*1.0e6));
+	//	  phase_delay[j]+=round((delay[j]-phase_delay[j])*ref_freq.at(j)*1.0e6)/(ref_freq.at(j)*1.0e6);
+		  //	  phase_delay[j]+=((double)ph_amb.at(j))/(ref_freq.at(j)*1.0e6);
+	//	}
+      	//	} else {
 
 
-	  	    for (int j=0;j<ref_freq.size();j++) {
-		
-	  		phase_delay.push_back(phase.at(j)/(2*M_PI*ref_freq.at(j)*1.0e6));
-	  		phase_delay_sigma.push_back(phase_sigma.at(j)/(2*M_PI*ref_freq.at(j)*1.0e6));
-			phase_delay[j]+=round((delay[j]-phase_delay[j])*ref_freq.at(j)*1.0e6)/(ref_freq.at(j)*1.0e6);
-	  		phase_delay[j]+=((double)ph_amb.at(j))/(ref_freq.at(j)*1.0e6);
-		    }
+	//	    for (int j=0;j<ref_freq.size();j++) {
+	//	
+	//  		phase_delay.push_back(phase.at(j)/(2*M_PI*ref_freq.at(j)*1.0e6));
+	//  		phase_delay_sigma.push_back(phase_sigma.at(j)/(2*M_PI*ref_freq.at(j)*1.0e6));
+	//		phase_delay[j]+=round((delay[j]-phase_delay[j])*ref_freq.at(j)*1.0e6)/(ref_freq.at(j)*1.0e6);
+			//	phase_delay[j]+=((double)ph_amb.at(j))/(ref_freq.at(j)*1.0e6);
+	//	    }
 
-	    }	       
-	}
-	else
-	{
+	//     }	       
+	//}
+	//else
+	//{
 		try {
       		if (ref_freq.size()==1) {
 		for (int j=0;j<phase.size();j++) {
@@ -1232,11 +1236,11 @@ void Session_inout::_read_vgosdb(ivg::Session *session_ptr, Setting *setup, cons
       		} catch (exception& e) {
 			log<WARNING>("!!! Error in calculating phase delays from phases");
       		}
-	}
+		//}
 
       } else {
            log<WARNING>("!!! No PhasesDelays found (/ObsEdit/" +phase_delay_filename+ ".nc not existent and no raw phases found (/Observables/" +phase_filename+ ".nc not existent). No phase delays availible!" );
-      }
+    }
 	 
     // information used to decide weather observation should be used or not
     vector<char> qcode;
@@ -1475,15 +1479,18 @@ void Session_inout::_read_vgosdb(ivg::Session *session_ptr, Setting *setup, cons
  //           cerr << "Delay: " << delay.at(cnt) << " SNX_BX: " << snr_bx.at(cnt) << endl;
  //           cerr << "IDX1: " << data_idx1 << " IDX2: " << data_idx2 << " LANG: " <<  aux_data[sta1]["Cal-Cable"].size() << " LANG2: " << aux_data[sta2]["Cal-Cable"].size()<< endl;
 	    
-	    double feedconv;
+	    double feedconv,feerot1,feedrot2;
 	    if (ref_freq.size()==1)
 	      feedconv=1/(2*M_PI*ref_freq.at(0)*1.0e6);
 	    else
 	      feedconv=1/(2*M_PI*ref_freq.at(cnt)*1.0e6);
 	    
-	    double feedrot1 = aux_data[sta1]["FeedRotation"].at(data_idx1)*feedconv; // unit second
-            double feedrot2 = aux_data[sta2]["FeedRotation"].at(data_idx2)*feedconv; // unit second
-
+	    feedrot1 = aux_data[sta1]["FeedRotation"].at(data_idx1)*feedconv; // unit second
+            feedrot2 = aux_data[sta2]["FeedRotation"].at(data_idx2)*feedconv; // unit second
+	    } catch (exception& e) {
+	      feedrot1=0;
+	      feedrot2=0;
+	    }
 	    obs_new.set_feed_rotation( feedrot1, feedrot2 ); 
 	    
             if(data_idx1 >= aux_data[sta1]["Cal-Cable"].size() || data_idx2 >= aux_data[sta2]["Cal-Cable"].size())
@@ -2071,7 +2078,7 @@ void Session_inout::write_groupdelay( ivg::Session *session_ptr )
     ivg::Matrix wgt_facs;
     session_ptr->_lsa_solution.get_wgt_matrix(W,wgt_facs);
 
-    std::vector<double> sim_group_del( session_ptr->_origin_obs_idxs.back()+1 );
+    std::vector<double> sim_group_del( session_ptr->_origin_obs_idxs.back()+1 ,0.0);
 //        cerr << "HHHHH" << sim_group_del.size() << ", size of orig idx vec: " << session_ptr->_origin_obs_idxs.size() << endl;
 
     int c = 0;
@@ -2080,6 +2087,8 @@ void Session_inout::write_groupdelay( ivg::Session *session_ptr )
         for( int j=0; j <= session_ptr->_scans.at(i).get_nobs()-1; j++ )
         {
             sim_group_del.at( session_ptr->_origin_obs_idxs.at( c ) ) = session_ptr->_scans.at(i).get_obs_ptr(j)->get_group_delay();
+	    if (isnan(sim_group_del.at( session_ptr->_origin_obs_idxs.at( c ) )))
+		sim_group_del.at( session_ptr->_origin_obs_idxs.at( c ) )=0.0;
             c++;
         }
     }
@@ -3147,10 +3156,10 @@ void Session_inout::write_snx(ivg::Session *session_ptr,string outfile, bool inc
                     <<" "<<setfill(' ')<<setw(13)<<(it_trf->get_name(ivg::staname::description)).substr(0,13)
                     <<" "<<right<<setfill(' ')<<setw(3)<<fixed<<lon_grad
                     <<" "<<setfill(' ')<<setw(2)<<fixed<<lon_min
-                    <<" "<<right<<setw(3)<<fixed<<setprecision(1)<<right<<lon_sec
+                    <<" "<<right<<setw(4)<<fixed<<setprecision(1)<<right<<lon_sec
                     <<" "<<right<<setfill(' ')<<setw(3)<<fixed<<lat_grad
                     <<" "<<setfill(' ')<<setw(2)<<fixed<<lat_min
-                    <<" "<<right<<setw(3)<<fixed<<setprecision(1)<<right<<lat_sec
+                    <<" "<<right<<setw(4)<<fixed<<setprecision(1)<<right<<lat_sec
                     <<" "<<setfill(' ')<<setw(7)<<setprecision(1)<<llh(2)<<endl;
         }
       }

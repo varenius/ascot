@@ -106,6 +106,77 @@ void blq(ivg::Trf * trf_ptr, const string path)
 }
 
 // ...........................................................................
+void harpos(ivg::Trf * trf_ptr, const string path)
+// ...........................................................................
+{
+#if DEBUG_REFFRAME >=2
+   cerr << "+++ void blq(ivg::Trf * , const string )" << endl; 
+   tictoc tim;
+   tim.tic();
+#endif
+  
+    ifstream inStream;
+    string line;
+    ivg::Matrix phfreq(0,9);
+    vector<string> harmonics;
+    while( ivg::parser::get_line(path, inStream, line) )
+    {
+      if (line.size()>1) {
+      if (line.substr(0,2) == "H ")
+	{
+	  
+	  string nuffs=line.substr(13,46);
+	  replace_string_in_place(nuffs,"D","e");
+	  
+	  stringstream sstrm(nuffs);
+	  ivg::Matrix tmp(1,3);
+	  sstrm >> tmp(0,0) >> tmp(0,1) >> tmp(0,2);
+	  harmonics.push_back(remove_spaces_end(line.substr(3,8)));
+	  phfreq.append_rows(tmp);
+	 
+	}
+      if (line.substr(0,2) == "D ")
+      {
+	std::string ivs_name = remove_spaces_end(line.substr(13,8));
+	replace_string_in_place(ivs_name, " ", "_" );
+
+        ivg::Analysis_station * station;
+	if(trf_ptr->get_station(&station, ivs_name, ivg::staname::lettercode))
+            {
+	      int posid;
+	      ivg::Matrix sta_coef(phfreq.rows(),9,0);
+	      while ((line.size()>13)&&(remove_spaces_end(line.substr(13,8))==ivs_name))
+		{
+		  std::string harm=remove_spaces_end(line.substr(3,8));
+		  int nr;
+		  for (nr=0;nr<harmonics.size();nr++)
+		    if (harmonics.at(nr)==harm)
+		      break;
+		  stringstream sstrm(line.substr(24,55));
+		  sta_coef(nr,0)=phfreq(nr,0);
+		  sta_coef(nr,1)=phfreq(nr,1);
+		  sta_coef(nr,2)=phfreq(nr,2);
+		  
+		  sstrm >> sta_coef(nr,3) >> sta_coef(nr,4) >> sta_coef(nr,5) >> sta_coef(nr,6) >> sta_coef(nr,7) >> sta_coef(nr,8);
+		  posid=inStream.tellg();
+		  ivg::parser::get_line(path, inStream, line);
+		}
+	      inStream.seekg(posid);
+	      station->set_ocean_loading_coeff_harpos(sta_coef);
+	    }
+      }
+      }
+    }
+    inStream.close();
+    
+#if DEBUG_REFFRAME >=2
+   cerr << "--- void blq(ivg::Trf * , const string )" << " : " << tim.toc() << " s " << endl;
+#endif
+}
+
+
+  
+// ...........................................................................
 void ecc(ivg::Trf * trf_ptr, const string path)
 // ...........................................................................
 {
@@ -842,6 +913,79 @@ void hydlo(ivg::Trf * trf_ptr, const string folder_path)
 }
 
 // ...........................................................................
+void seasonals(ivg::Trf * trf_ptr, const string path)
+// ...........................................................................
+{
+  ifstream inStream;
+  string line;
+  vector<double> period;
+  int freqnr;
+  map<string, map<int, map<string, vector<double> > > >  savemap;
+  while(ivg::parser::get_line(path,inStream, line))
+    {
+      if(line.find("Frequency")!=string::npos)
+	{
+	  double tmp;
+	 
+	  stringstream sstr1,sstr2; 
+	  sstr1 << remove_spaces_end(line.substr(10,2)); 
+	  sstr1 >> freqnr;
+	  sstr2 << remove_spaces_end(line.substr(15,7)); 
+	  sstr2 >> tmp;
+	  period.push_back(tmp);
+	 
+	}
+      if (line.substr(0,1)==" " && (line.substr(22,1)=="X" || line.substr(22,1)=="Y" || line.substr(22,1)=="Z"))
+	{
+	  string domes;
+	  domes=line.substr(9,9);
+	  vector<double> coeff(4,0.0);
+	  if (line.size()>36) {
+	    stringstream tokenizer(line.substr(23,32));
+            
+	    double val;
+	    int j=0;
+	    
+	    while(tokenizer >> val)
+	      {
+		coeff.at(j) = val;
+		j++;
+	      }
+	  }
+	  
+	  savemap[domes][period.size()-1][line.substr(22,1)]=coeff;
+	    
+	}
+    }
+  inStream.close();
+  for(auto &station: savemap)
+    {
+      ivg::Analysis_station * station_ptr;
+      if(trf_ptr->get_station(&station_ptr, station.first))
+	{
+	  ivg::Matrix coefs;
+	  for(auto &curper: station.second)
+	    {
+	      vector<double> tmp;
+	      tmp.push_back(period[curper.first]);
+	     
+	      tmp.insert(tmp.end(),curper.second["X"].begin(),curper.second["X"].end());
+	      
+	      tmp.insert(tmp.end(),curper.second["Y"].begin(),curper.second["Y"].end());
+	     
+	      tmp.insert(tmp.end(),curper.second["Z"].begin(),curper.second["Z"].end());
+	      
+	      coefs.append_rows(ivg::Matrix(tmp).transpose());
+	    
+	  
+	    }
+	  station_ptr->set_seasonals(coefs);
+	  
+	}
+    }
+}
+
+// ...........................................................................
 void psd_coefficients(ivg::Trf * trf_ptr, const string path)
 // ...........................................................................
 {
@@ -910,19 +1054,19 @@ void psd_coefficients(ivg::Trf * trf_ptr, const string path)
                         if(mode.first == "EXP" && comp.first == "E")
                             tmp_psd.e_mode += n_modes;
                         else if(mode.first == "LOG" && comp.first == "E")
-                            tmp_psd.e_mode += n_modes -1;
+                            tmp_psd.e_mode += 2*n_modes -3;
                         else if(mode.first == "EXP" && comp.first == "N" )
                             tmp_psd.n_mode += n_modes;
                         else if(mode.first == "LOG" && comp.first == "N")
-                            tmp_psd.n_mode += n_modes -1;
+                            tmp_psd.n_mode += 2*n_modes -3;
                         else if(mode.first == "EXP" && comp.first == "H" )
                             tmp_psd.u_mode += n_modes;
                         else if(mode.first == "LOG" && comp.first == "H")
-                            tmp_psd.u_mode += n_modes -1;
+                            tmp_psd.u_mode += 2*n_modes -3;
                     }                    
                 }
                 
-                // we got four different modes
+                // we got five different modes
                 if(tmp_psd.e_mode == 1 )
                 {
                     tmp_psd.e_a1 = mjd.second["E"]["LOG"].at(0);
@@ -946,6 +1090,13 @@ void psd_coefficients(ivg::Trf * trf_ptr, const string path)
                     tmp_psd.e_t1 = mjd.second["E"]["EXP"].at(1);
                     tmp_psd.e_a2 = mjd.second["E"]["EXP"].at(2);
                     tmp_psd.e_t2 = mjd.second["E"]["EXP"].at(3);
+                }
+		else if(tmp_psd.e_mode == 5)
+                {
+                    tmp_psd.e_a1 = mjd.second["E"]["LOG"].at(0);
+                    tmp_psd.e_t1 = mjd.second["E"]["LOG"].at(1);
+                    tmp_psd.e_a2 = mjd.second["E"]["LOG"].at(2);
+                    tmp_psd.e_t2 = mjd.second["E"]["LOG"].at(3);
                 }
                 
                 // we got four different modes
@@ -973,8 +1124,14 @@ void psd_coefficients(ivg::Trf * trf_ptr, const string path)
                     tmp_psd.n_a2 = mjd.second["N"]["EXP"].at(2);
                     tmp_psd.n_t2 = mjd.second["N"]["EXP"].at(3);
                 }
-                
-                // we got four different modes
+                else if(tmp_psd.n_mode == 5)
+                {
+                    tmp_psd.n_a1 = mjd.second["N"]["LOG"].at(0);
+                    tmp_psd.n_t1 = mjd.second["N"]["LOG"].at(1);
+                    tmp_psd.n_a2 = mjd.second["N"]["LOG"].at(2);
+                    tmp_psd.n_t2 = mjd.second["N"]["LOG"].at(3);
+                }
+                // we got five different modes
                 if(tmp_psd.u_mode == 1 )
                 {
                     tmp_psd.u_a1 = mjd.second["H"]["LOG"].at(0);
@@ -999,7 +1156,13 @@ void psd_coefficients(ivg::Trf * trf_ptr, const string path)
                     tmp_psd.u_a2 = mjd.second["H"]["EXP"].at(2);
                     tmp_psd.u_t2 = mjd.second["H"]["EXP"].at(3);
                 }
-                
+                else if(tmp_psd.u_mode == 5)
+                {
+                    tmp_psd.u_a1 = mjd.second["H"]["LOG"].at(0);
+                    tmp_psd.u_t1 = mjd.second["H"]["LOG"].at(1);
+                    tmp_psd.u_a2 = mjd.second["H"]["LOG"].at(2);
+                    tmp_psd.u_t2 = mjd.second["H"]["LOG"].at(3);
+                }
                 
 //                cerr << "E_mode " << tmp_psd.e_mode << ": " << tmp_psd.e_a1 << "|" << tmp_psd.e_t1 << "|" << tmp_psd.e_a2 << "|" << tmp_psd.e_t2 << endl;
 //                cerr << "N_mode " << tmp_psd.n_mode << ": " << tmp_psd.n_a1 << "|" << tmp_psd.n_t1 << "|" << tmp_psd.n_a2 << "|" << tmp_psd.n_t2 << endl;
@@ -1043,13 +1206,16 @@ void psd_coefficients(ivg::Trf * trf_ptr, const string path)
                 {
                     if(i>0)
                         ivg::parser::get_line(path,inStream, line);
-
-                    stringstream tokenizer(line.substr(36,31));
-                    vector<double> coeff(4,0.0);
-                    double val;
-                    int j=0;
-                    while(tokenizer >> val)
+		   
+		    vector<double> coeff(4,0.0);
+		    if (line.size()>36) {
+		      stringstream tokenizer(line.substr(36,31));
+                   
+		      double val;
+		      int j=0;
+		      while(tokenizer >> val)
                         coeff.at(j++) = val;
+		    }
 
 
                     string comp = line.substr(32,1);

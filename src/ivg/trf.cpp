@@ -162,9 +162,10 @@ Trf::Trf( Setting &setup, vector<string> station_names,
     else
     {
         // in case of itrf2014 and if PSD is set to true, parse the psd_coefficients
-        if( _name == "itrf2014" && (bool)get_list_element(setup["stadisp"], "PSD" )[1] )
+        //if( _name == "itrf2014" && (bool)get_list_element(setup["stadisp"], "PSD" )[1] )
+      if( (bool)get_list_element(setup["stadisp"], "PSD" )[1] ) // Now psd corrections can be used for any TRF. Make sure to use the correct combination
         {
-            log<WARNING>("!!! USING ITRF2014P - Correction of post-seismic deformation - SPECIAL itrf2014 CASE ");
+            log<WARNING>("!!! Using correction of post-seismic deformation ");
             ivg::parser::psd_coefficients(this,(const char *)get_list_element(setup["stadisp"], "PSD" )[2]);
         }
     }
@@ -280,7 +281,14 @@ void Trf::init_displacements(Setting &setup, ivg::Date start, ivg::Date end)
     // -> based on ivs_name
     
     if((bool)get_list_element(setup["stadisp"], "OCEAN LOADING" )[1])
-        ivg::parser::blq(this, definitions["stadisp"]["ol"][(const char *)get_list_element(setup["stadisp"], "OCEAN LOADING")[2]]);
+      {
+		std::string olmodel = definitions["stadisp"]["ol"][(const char *)get_list_element(setup["stadisp"], "OCEAN LOADING")[2]];
+		if (olmodel.find(".hps") != std::string::npos)
+		  ivg::parser::harpos(this, olmodel);
+	else
+	  ivg::parser::blq(this, definitions["stadisp"]["ol"][(const char *)get_list_element(setup["stadisp"], "OCEAN LOADING")[2]]);
+
+      }
     
     //Non-Tidal Athmospheric Pressure Loading
     // -> based on ivs_name or corres (corres not stored anymore!! only used once here) (from vlbi_to_vsgd.inp file)
@@ -351,10 +359,15 @@ void Trf::init_displacements(Setting &setup, ivg::Date start, ivg::Date end)
         ivg::parser::hydlo(this,definitions["stadisp"]["hydlo"][(const char *)get_list_element(setup["stadisp"], "HYDROLOGY LOADING")[3]]);
     
     // in case of itrf2014 and if PSD is set to true, parse the psd_coefficients
-    if( _name == "itrf2014" && (bool)get_list_element(setup["stadisp"], "PSD" )[1] )
+    if((bool)get_list_element(setup["stadisp"], "PSD" )[1] )
     {
-        log<WARNING>("!!! USING ITRF2014P - Correction of post-seismic deformation - SPECIAL itrf2014 CASE ");
+      //log<WARNING>("!!! Using correction of post-seismic deformation - SPECIAL itrf2014 CASE ");
         ivg::parser::psd_coefficients(this,(const char *)get_list_element(setup["stadisp"], "PSD" )[2]);
+    }
+    if(setup["stadisp"].exists("SEASONALS") && (bool)get_list_element(setup["stadisp"], "SEASONALS" )[1] )
+    {
+        log<WARNING>("!!! Reading seasonal variations ");
+        ivg::parser::seasonals(this,(const char *)get_list_element(setup["stadisp"], "SEASONALS" )[2]);
     }
     
 #ifdef DEBUG_REFFRAME

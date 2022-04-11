@@ -122,6 +122,12 @@ class Analysis_station : public Station
         */
         void set_ocean_loading_coeff( std::vector<float> olc );
 
+         /**
+        *  \b Description: \n
+        *        Method to set ocean loading coefficients
+        *  \param [in] [ivg::Matrix] ocean loading coefficients
+        */
+        void set_ocean_loading_coeff_harpos( ivg::Matrix olc );
         /**
         *  \b Description: \n
         *        ITRF2014 specific CATREF psd-model coefficients
@@ -577,7 +583,15 @@ class Analysis_station : public Station
         *  \return [ivg::Matrix] displacements (X,Y,Z) [m]
         */
         ivg::Matrix calc_psd_displacement( ivg::Date epo );
-        
+	/**
+	*  \b Description: \n
+        * Method to calc seasonal displacements
+        * (CATREF Frequency-XYZ.dat) introduced with ITRF2020
+        *  \param [in] [ivg::Date] epoch
+        *  \return [ivg::Matrix] displacements (X,Y,Z) [m]
+        */
+	 ivg::Matrix calc_seas_displacement( ivg::Date epo );
+	
         /**
         *  \b Description: \n
         *        Method to build rotation matrix from tpoocentric (up, east north)
@@ -641,7 +655,9 @@ class Analysis_station : public Station
         void set_num_obs(int n) {_num_obs=n;};
         void set_first_epoch(ivg::Date ep){_first_epoch=ep;};
         void set_last_epoch(ivg::Date ep){_last_epoch=ep;};
-  
+
+	void set_seasonals(ivg::Matrix seas) {_seasonals=seas;};
+	
     private:
         /**
         *  \b Description: \n
@@ -685,7 +701,8 @@ class Analysis_station : public Station
 
         // Ocean Loading Coefficients
         vector<float> _ol_coeff;
-
+        ivg::Matrix _ol_harpos;
+  
         // eccentricity values
         ivg::Matrix _ecc;
         vector<ivg::Date> _ecc_epochs;
@@ -739,6 +756,8 @@ class Analysis_station : public Station
         int _num_obs=0;
         ivg::Date _first_epoch;
         ivg::Date _last_epoch;
+
+	ivg::Matrix _seasonals;
 };
 
 

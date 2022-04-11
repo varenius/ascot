@@ -44,6 +44,7 @@ namespace parser
     //Used in trf.h
     void optl(ivg::Trf * trf_ptr, const string path);
     void blq(ivg::Trf * trf_ptr, const string path);
+    void harpos(ivg::Trf * trf_ptr, const string path);
     void ecc(ivg::Trf * trf_ptr, const string path);
     void gravdef(ivg::Trf * trf_ptr, const string path, ivg::Date ep);
     void bindisp(ivg::Trf * trf_ptr, const string folder_path, map<string,string> correspondence, ivg::Date start, ivg::Date end);
@@ -54,6 +55,8 @@ namespace parser
     void external_met_data( ivg::Trf * trf_ptr, const string path, ivg::Date start,ivg::Date end, ivg::extdata type );
     void external_met_data_ascii( ivg::Trf * trf_ptr, const string path, ivg::Date start,ivg::Date end, ivg::extdata type );
     void hydlo(ivg::Trf * trf_ptr, const string folder_path);
+    
+    void seasonals(ivg::Trf * trf_ptr, const string path);
     void psd_coefficients(ivg::Trf * trf_ptr, const string path);
     void raytraced_delays( ivg::Trf * trf_ptr, const string path );
     

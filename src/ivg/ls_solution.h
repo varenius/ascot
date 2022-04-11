@@ -82,6 +82,7 @@ namespace ivg {
          *  \return [double] vfac
          */
         virtual double calc_posterior_vfac() {
+	  return 0; //To avoid compiler warning, function should be overridden by the derived class
         };
 
         /**
@@ -96,13 +97,19 @@ namespace ivg {
 
         virtual void update_nnt_nnr_constraints(const ivg::Matrix & B_new,
 			      const ivg::Matrix & wgt_new,
-						const ivg::Matrix r_new = ivg::Matrix()) {}; // r_new is always [0,0]!?
+						const ivg::Matrix r_new = ivg::Matrix()) {
+   
+	}; // r_new is always [0,0]!?
       
-      virtual void rm_nnt_nnr_constraints() {};
+      virtual void rm_nnt_nnr_constraints() {
+
+      };
       
         virtual void update_constraints(const ivg::Matrix & B_new,
                 const ivg::Matrix & wgt_new,
-					const ivg::Matrix r_new = ivg::Matrix()) {};
+					const ivg::Matrix r_new = ivg::Matrix()) {
+
+	};
 
         /**
          *  \b Description: \n
@@ -110,6 +117,7 @@ namespace ivg {
          *  \param [in] [int] column index according to parameter to be eliminated
          */
         virtual void fix_param(std::vector<int> & idx) {
+	  
         };
 
         /**
@@ -119,6 +127,7 @@ namespace ivg {
          *  \param [in] [int] column index according to parameter to be eliminated
          */
         virtual void handle_stoch_param(std::vector<int> & idx) {
+	  
         };        
         
         /**
@@ -134,6 +143,7 @@ namespace ivg {
          *  Method to calculate the wrms
          */
         virtual double calc_wrms() {
+	   return 0; //To avoid compiler warning, function should be overridden by the derived class
         };
 
         /**
@@ -141,6 +151,7 @@ namespace ivg {
          *  Method to calculate the rms
          */
         virtual double calc_rms() {
+	   return 0; //To avoid compiler warning, function should be overridden by the derived class
         };
 
         /**
@@ -213,9 +224,11 @@ namespace ivg {
         };
 
         virtual int get_degrees_of_freedom() {
+	   return 0; //To avoid compiler warning, function should be overridden by the derived class
         };
 
         virtual int get_nobs() {
+	   return 0; //To avoid compiler warning, function should be overridden by the derived class
         };
 
         double get_btPb() {

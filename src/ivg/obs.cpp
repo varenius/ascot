@@ -724,7 +724,7 @@ void Obs::calc_delay( vector<double>::iterator design_iter, vector<double>::iter
             = _scan->_data.at( _sta1_scan_idx ).tropo.get_east_gradient() / ivg::param_unit_fac.at( ivg::paramtype::egr );
 
     // station coordinates
-    ivg::Matrix sta1xyz =sta1->calc_xyz(_epoch);
+    ivg::Matrix sta1xyz =sta1->calc_xyz(_epoch,{"PSD","SEASONALS"});
     *(apriori_iter+_session->_param_list.get_index(ivg::paramtype::stax,_station1))=sta1xyz(0)/ ivg::param_unit_fac.at( ivg::paramtype::stax );
       *(apriori_iter+_session->_param_list.get_index(ivg::paramtype::stay,_station1))=sta1xyz(1)/ ivg::param_unit_fac.at( ivg::paramtype::stay );
       *(apriori_iter+_session->_param_list.get_index(ivg::paramtype::staz,_station1))=sta1xyz(2)/ ivg::param_unit_fac.at( ivg::paramtype::staz );
@@ -737,9 +737,9 @@ void Obs::calc_delay( vector<double>::iterator design_iter, vector<double>::iter
     *(apriori_iter+_session->_param_list.get_index(ivg::paramtype::ngr,_station2)) 
             = _scan->_data.at( _sta2_scan_idx ).tropo.get_north_gradient() / ivg::param_unit_fac.at( ivg::paramtype::ngr );
     *(apriori_iter+_session->_param_list.get_index(ivg::paramtype::egr,_station2)) 
-            = _scan->_data.at( _sta2_scan_idx ).tropo.get_east_gradient() / ivg::param_unit_fac.at( ivg::paramtype::egr );
+            = _scan->_data.at( _sta2_scan_idx ).tropo.get_east_gradient() / ivg::param_unit_fac.at( ivg::paramtype::egr ); 
     // station coordinates
-    ivg::Matrix sta2xyz =sta2->calc_xyz(_epoch);
+    ivg::Matrix sta2xyz =sta2->calc_xyz(_epoch,{"PSD","SEASONALS"});
      *(apriori_iter+_session->_param_list.get_index(ivg::paramtype::stax,_station2))=sta2xyz(0)/ ivg::param_unit_fac.at( ivg::paramtype::stax );
      *(apriori_iter+_session->_param_list.get_index(ivg::paramtype::stay,_station2))=sta2xyz(1)/ ivg::param_unit_fac.at( ivg::paramtype::stay );
      *(apriori_iter+_session->_param_list.get_index(ivg::paramtype::staz,_station2))=sta2xyz(2)/ ivg::param_unit_fac.at( ivg::paramtype::staz );

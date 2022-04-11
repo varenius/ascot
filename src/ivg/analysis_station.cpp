@@ -132,6 +132,17 @@ void Analysis_station::set_ocean_loading_coeff( std::vector<float> olc )
     }
 }
 
+// ...........................................................................
+  void Analysis_station::set_ocean_loading_coeff_harpos( ivg::Matrix olc )
+// ...........................................................................
+{
+    
+        _ol_harpos = olc;
+	
+        _data_status["OLC"] = "X";
+ 
+}
+  
 // .........................................................................................
 void Analysis_station::set_eccentricity( ivg::Matrix ecc,
         std::vector<ivg::Date> refepoch )
@@ -725,6 +736,11 @@ ivg::Matrix Analysis_station::calc_dxyz( ivg::Date epoch,
             d_tmp = calc_psd_displacement( epoch );
             d_pos += d_tmp;
         }
+	else if( disp.at( i ) == "SEASONALS" )
+        {
+	    d_tmp = calc_seas_displacement( epoch );
+	    d_pos += d_tmp;
+        }
         else
         {
             stringstream errormessage;
@@ -807,6 +823,11 @@ ivg::Matrix Analysis_station::calc_dxyz( ivg::Date epoch,
         {
             d_tmp = calc_psd_displacement( epoch );
             d_pos += d_tmp;
+        }
+	else if( disp.at( i ) == "SEASONALS" )
+        {
+	    d_tmp = calc_seas_displacement( epoch );
+	    d_pos += d_tmp;
         }
         else
         {
@@ -1407,12 +1428,32 @@ ivg::Matrix Analysis_station::calc_ocean_loading( ivg::Date epoch )
         log<WARNING>("!!! Ocean Loading Coefficients of site ") % get_name(ivg::staname::ivs_name) % " not available. Using [0.0 / 0.0 / 0.0]";
         return ivg::Matrix(3,1,0.0);
     }
-    
+    ivg::Matrix disp_xyz;
+      if (_ol_harpos.rows()>0)  //Harpos format
+     {
+    	double dt=(epoch.get_mjd_tt()-51544.5)*86400;
+    	vector<double> disp( 3,0.0 );
+    	for (int i=0;i<_ol_harpos.rows();i++)
+    	  {
+    	    double arg=_ol_harpos(i,0)+_ol_harpos(i,1)*dt+0.5*_ol_harpos(i,2)*dt*dt;
+	    
+    	    disp[0]+=_ol_harpos(i,3)*cos(arg)+_ol_harpos(i,6)*sin(arg);
+    	    disp[1]+=_ol_harpos(i,4)*cos(arg)+_ol_harpos(i,7)*sin(arg);
+    	    disp[2]+=_ol_harpos(i,5)*cos(arg)+_ol_harpos(i,8)*sin(arg);
+        
+    	  }
+    	ivg::Matrix d_ren( disp );
+	//	std::cout << disp[0]*1000 << " " <<disp[1]*1000 << " " <<disp[2]*1000 <<endl;
+    	disp_xyz = _ren2xyz( d_ren );
+	
+     }
+    else
+    {
     // divide ocean loading coefficients to amplitude and phase vectors
     vector<float> amp;
     amp.resize(33) ;
     vector<float> pha;
-    pha.resize(33) ;
+    pha.resize(33);
 
     copy( _ol_coeff.begin(), _ol_coeff.begin()+32, amp.begin());
     copy( _ol_coeff.begin()+33, _ol_coeff.end(), pha.begin());
@@ -1427,8 +1468,9 @@ ivg::Matrix Analysis_station::calc_ocean_loading( ivg::Date epoch )
     // transform std::vector to ivg::Matrix
     ivg::Matrix d_ren( disp );
 
-    ivg::Matrix disp_xyz = _ren2xyz( d_ren );
-
+    disp_xyz = _ren2xyz( d_ren );
+    //std::cout << disp[0]*1000 << " " <<disp[1]*1000 << " " <<disp[2]*1000 <<endl;
+    }
     return disp_xyz;
 }
 
@@ -1623,6 +1665,26 @@ ivg::Matrix Analysis_station::interpolate_ext_met_data( std::string type,
            out = _zhd_data.interpolate( _zhd_data(":",0) , epoch.get_double_mjd(), interpolation_type );
     }
     return out;
+}
+
+// .............................................................................
+ivg::Matrix Analysis_station::calc_seas_displacement( ivg::Date epo )
+// .............................................................................
+{
+  
+  ivg::Matrix disp( 3,1,0.0 );
+  for (int i=0;i<_seasonals.rows();i++)
+    {
+      double mjd = epo.get_double_mjd();
+      double period = _seasonals(i,0);
+      double omegat = 2*M_PI*(mjd-51544)/period;
+      
+      disp(0,0)+=_seasonals(i,1)*cos(omegat)+_seasonals(i,3)*sin(omegat);
+      disp(1,0)+=_seasonals(i,5)*cos(omegat)+_seasonals(i,7)*sin(omegat);
+      disp(2,0)+=_seasonals(i,9)*cos(omegat)+_seasonals(i,11)*sin(omegat);
+      
+    }
+  return disp/1000;
 }
 
 // .............................................................................
