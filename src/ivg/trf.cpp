@@ -364,11 +364,13 @@ void Trf::init_displacements(Setting &setup, ivg::Date start, ivg::Date end)
       //log<WARNING>("!!! Using correction of post-seismic deformation - SPECIAL itrf2014 CASE ");
         ivg::parser::psd_coefficients(this,(const char *)get_list_element(setup["stadisp"], "PSD" )[2]);
     }
-    if(setup["stadisp"].exists("SEASONALS") && (bool)get_list_element(setup["stadisp"], "SEASONALS" )[1] )
-    {
-        log<WARNING>("!!! Reading seasonal variations ");
-        ivg::parser::seasonals(this,(const char *)get_list_element(setup["stadisp"], "SEASONALS" )[2]);
-    }
+    try {
+      if( (bool)get_list_element(setup["stadisp"], "SEASONALS" )[1] )
+	{
+	  log<WARNING>("!!! Reading seasonal variations ");
+	  ivg::parser::seasonals(this,(const char *)get_list_element(setup["stadisp"], "SEASONALS" )[2]);
+	}
+    } catch (exception& e) {}
     
 #ifdef DEBUG_REFFRAME
    cerr << "--- void Trf::init_displacements(Setting &setup, ivg::Date start, ivg::Date end)" << " : " << tim.toc() << " s " << endl;
