@@ -1479,7 +1479,8 @@ void Session_inout::_read_vgosdb(ivg::Session *session_ptr, Setting *setup, cons
  //           cerr << "Delay: " << delay.at(cnt) << " SNX_BX: " << snr_bx.at(cnt) << endl;
  //           cerr << "IDX1: " << data_idx1 << " IDX2: " << data_idx2 << " LANG: " <<  aux_data[sta1]["Cal-Cable"].size() << " LANG2: " << aux_data[sta2]["Cal-Cable"].size()<< endl;
 	    
-	    double feedconv,feerot1,feedrot2;
+	    double feedconv,feedrot1,feedrot2;
+	    try {
 	    if (ref_freq.size()==1)
 	      feedconv=1/(2*M_PI*ref_freq.at(0)*1.0e6);
 	    else
