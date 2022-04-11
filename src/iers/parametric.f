@@ -3,7 +3,7 @@
 C
 C Author: Zuheir Altamimi (zuheir.altamimi@ign.fr), IGN France
 C
-C Last updated: August 17, 2015
+C Last updated: December 02, 2021
 C
 C Compute the post-seismic deformation/correction "d" using parametric models:
 C #    Model
@@ -12,6 +12,7 @@ C 1    Logarithmic Function
 C 2    Exponential Function
 C 3    Logarithmic + Exponential
 C 4    Two Exponential Functions
+C 5    Two Logarithmic Functions
 C
 C IN:
 C modn: model #
@@ -61,6 +62,11 @@ C
        te1 = dtq/t1
        te2 = dtq/t2
        d = a1*(1-dexp(-te1)) + a2*(1-dexp(-te2))
+       return
+      end if
+
+      if (modn.eq.5) then
+       d = a1*dlog( 1+ dtq/t1) + a2*dlog( 1+ dtq/t2)
        return
       end if
 
