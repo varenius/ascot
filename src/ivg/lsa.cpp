@@ -310,6 +310,9 @@ void Lsa::solve_neq(int outlier_iterations,double threshold,
     }
     
     _r = (_b-_A*_x); // these are still scaled
+    ivg::Matrix Nneq, nneq;
+    _neq.get_neq(Nneq,nneq,true);
+    _btPb=(_r.transpose()*_r+_x.transpose()*nneq)(0);
     // remove outliers again
     if (_idx_outliers.size()>0)
     {
