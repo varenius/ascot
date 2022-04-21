@@ -991,8 +991,10 @@ void Ls_neq::get_neq(ivg::Matrix & N, ivg::Matrix & n, bool cnstr)
    
    if(cnstr)
    {
-      if( _dN.rows() != _N.rows() || _dn.rows() != _n.rows())
+     if( _dN.rows() != _N.rows() || _dn.rows() != _n.rows()) {
+       if (_dN.rows()>0 || _dn.rows()>0)
           throw runtime_error("void Ls_neq::get_neq(ivg::Matrix & N, ivg::Matrix & n, bool cnstr): Dimensions of _dN/_dn and _N/_n does not correspond.\n");
+     }
       else
       {
         N += _dN; 
