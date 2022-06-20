@@ -51,6 +51,7 @@ enum wrapper_entries{
     ClockBreak,
     Met,
     FeedRotation,
+    CalCableCorrections,
     MAX_WRAPPER_ENTRIES
 };
             

@@ -314,6 +314,10 @@ void Wrapper::_read_wrapper(std::string wrp_path, std::string dbName, std::strin
                         break;
 		    case Station:
 		      {
+			if( line.find("Cal-CableCorrections")  !=std::string::npos)
+                            {
+                                _association_sta[ivg::wrapper_entries::CalCableCorrections][current_station] = _create_wrapper_entry(line, row );
+                            }
 			if( line.find("Cal-Cable")  !=std::string::npos)
                             {
                                 _association_sta[ivg::wrapper_entries::CalCable][current_station] = _create_wrapper_entry(line, row );
@@ -422,6 +426,8 @@ std::string Wrapper::wrapper_entries_to_string(ivg::wrapper_entries entry )
                 return "TimeUTC";	
             case ivg:: wrapper_entries::EffFreq:
                 return "EffFreq";
+	    case ivg:: wrapper_entries::CalCableCorrections:
+                return "CalCableCorrections";
 	    case ivg:: wrapper_entries::CalCable:
                 return "CalCable";
 	    case ivg:: wrapper_entries::ClockBreak:
