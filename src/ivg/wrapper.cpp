@@ -318,7 +318,7 @@ void Wrapper::_read_wrapper(std::string wrp_path, std::string dbName, std::strin
                             {
                                 _association_sta[ivg::wrapper_entries::CalCableCorrections][current_station] = _create_wrapper_entry(line, row );
                             }
-			if( line.find("Cal-Cable")  !=std::string::npos)
+			else if( line.find("Cal-Cable")  !=std::string::npos)
                             {
                                 _association_sta[ivg::wrapper_entries::CalCable][current_station] = _create_wrapper_entry(line, row );
                             }
