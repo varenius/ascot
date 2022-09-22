@@ -62,6 +62,7 @@ namespace parser
     
     //used in eop_series.h
     ivg::Matrix c04(const string path, ivg::Date start, ivg::Date end);
+    ivg::Matrix c04_20(const string path, ivg::Date start, ivg::Date end);
     ivg::Matrix cs_erp(const string path, ivg::Date start, ivg::Date end);
     ivg::Matrix eops(const string path, ivg::Date start, ivg::Date end);
     ivg::Matrix finals(const string path, ivg::Date start, ivg::Date end);

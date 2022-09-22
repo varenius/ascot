@@ -410,6 +410,8 @@ void Eop_series::read_eop( const std::string &file, const std::string &type,
     ivg::Matrix data;
     if( type == "C04" )
         data = ivg::parser::c04(file, start, end);
+    else if( type == "C04_20" )
+        data = ivg::parser::c04_20(file, start, end);
     else if( type == "finals")
         data = ivg::parser::finals(file, start, end);
     else if( type == "cs_erp") // calc_solve_erp

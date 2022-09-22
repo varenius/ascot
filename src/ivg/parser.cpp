@@ -1392,6 +1392,79 @@ ivg::Matrix c04(const string path, ivg::Date start, ivg::Date end)
 #endif
     return(data);
 }
+// ...........................................................................
+ivg::Matrix c04_20(const string path, ivg::Date start, ivg::Date end)
+{
+// ...........................................................................
+#ifdef DEBUG_REFFRAME
+   cerr << "+++ ivg::Matrix c04_20(const string , ivg::Date , ivg::Date )" << endl; 
+   tictoc tim;
+   tim.tic();
+#endif
+   
+    ivg::Matrix data( 1, 11, 0.0 );
+
+//    ifstream inStream;
+//    string line,next_line;
+
+    double lod, sigLOD,xrt,yrt;
+    int line_cnt=0;
+    
+    ifstream inStream(path.c_str(), ios::in);
+    if( !inStream.is_open() ){
+        throw runtime_error( "ivg::Matrix c04(const string path, ivg::Date start, ivg::Date end): Failed to open file: "+path );
+    }else{
+
+        string line;
+        while (getline(inStream,line,'\n'))
+        {
+            // ignore the  header lines of the c04 files
+	  if(line.substr(0,1)!="#")
+            {
+                double mjd = s2d(line.substr( 17, 9 ));
+
+                if(mjd >= start.get_double_mjd() && mjd <= end.get_double_mjd())
+                {
+                    //Reading information
+                    ivg::Matrix c04( 1, 11 );
+                    istringstream c04_line( line.substr( 18, 142 ) );
+                    c04_line >> c04(0,0) >> c04(0,1) >> c04(0,2)
+                             >> c04(0,3)  >> c04(0,4) >> c04(0,5)
+			     >> xrt >> yrt >> lod >> c04(0,6)
+                             >> c04(0,7) >> c04(0,8)  >> c04(0,9) >> c04(0,10) ;
+		    
+                    c04( 0,3 ) -= ivg::Date(mjd).get_leap_sec();
+
+                    c04( 0,1 ) *= ivg::as2rad; //x pole
+                    c04( 0,2 ) *= ivg::as2rad; //y pole
+                    c04( 0,3 ) *= ivg::s2rad; //ut1
+
+                    c04( 0,4 ) *= ivg::as2rad; //nut x
+                    c04( 0,5 ) *= ivg::as2rad; //nut y
+
+                    c04( 0,6 ) *= ivg::as2rad; //x pole
+                    c04( 0,7 ) *= ivg::as2rad; //y pole
+                    c04( 0,8 ) *= ivg::s2rad; //ut1
+
+                    c04( 0,9 ) *= ivg::as2rad; //nut x
+                    c04( 0,10 ) *= ivg::as2rad; //nut y
+
+                    data.append_rows(c04);
+                }
+                else if(mjd > end.get_double_mjd())
+                    break;
+            }
+            line_cnt++;
+        }
+        data.rem_r(0);
+    }
+    inStream.close();
+    
+#ifdef DEBUG_REFFRAME
+   cerr << "--- ivg::Matrix c04_20(const string , ivg::Date , ivg::Date )" << " : " << tim.toc() << " s " << endl;
+#endif
+    return(data);
+}
 
 // ...........................................................................
 ivg::Matrix cs_erp(const string path, ivg::Date start, ivg::Date end)
