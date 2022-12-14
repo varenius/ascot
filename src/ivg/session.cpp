@@ -398,8 +398,11 @@ Session::Session( Setting *setup, string name, void **ephem, int session_cnt )
         _ephem = (*ephem);
 
     // create EOP series
-    
-    ivg::Date date = ivg::Date( _name.substr(0,7), "YYMMMDD" );
+    ivg::Date date;
+    if (_name.size()>9)
+      date = ivg::Date( _name.substr(0,8), "YYYYMMDD" );
+    else
+      date = ivg::Date( _name.substr(0,7), "YYMMMDD" );
     
     if ( (*_setup).exists( "SIM" ) && (bool)(*_setup)[ "SIM" ]["apply"] && (*_setup)[ "SIM" ].exists("eop") ){
         init_session_eop( (*_setup)["SIM"]["eop"], date );

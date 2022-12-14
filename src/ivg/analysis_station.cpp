@@ -297,11 +297,12 @@ void Analysis_station::set_gravdef( ivg::Matrix gd )
     if( gd.cols() == 2 )
     {
       _grav_deform=gd;
-      
+      _data_status["GRAVD"] = "X";
     }
     else
     {
       log<WARNING>("!!! Dimensions of _grav_deform matrix not correct for ") % _names[staname::ivs_name];
+       _data_status["GRAVD"] = "W";
     }
     
     

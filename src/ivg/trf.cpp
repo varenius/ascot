@@ -100,6 +100,20 @@ Trf::Trf( Setting &setup, vector<string> station_names,
         trf_esti.keep_stations(station_names, type);
         // set this as snx-based trf
         (*this) = trf_esti;
+	for (int jj=0;jj<station_names.size();jj++)
+	  {
+	    ivg::Analysis_station * pointer_station;
+	
+            // only compare station up to staname::description-level. Comparing staname::corres would be critical!!
+            _get_station(_stations, &pointer_station, station_names.at(jj), ivg::staname::MINSTA, ivg::staname::description);
+            for(auto &tmp_map: nscodes)
+	      {
+		if(tmp_map[type] == station_names.at(jj))
+                    {
+		      pointer_station->set_name(ivg::staname::lettercode,tmp_map[ivg::staname::lettercode]);
+		    }
+	      }
+	  }
     }
     
     _name = (const char *)setup["trf"];
@@ -387,7 +401,7 @@ void Trf::log_data_info_table()
 #endif
    
     // generate output-table
-    vector<string> data_types = {"XYZ","OPTL","OLC","VMF1","VMF3","NTAPL","TAPL","ECC","ANT_I","HYDLO","ANT_C","SEFD","FREQ","MASK","CHA_I"};
+    vector<string> data_types = {"XYZ","OPTL","OLC","VMF1","VMF3","NTAPL","TAPL","ECC","ANT_I","GRAVD","HYDLO","ANT_C","SEFD","FREQ","MASK","CHA_I"};
     stringstream ssds; // stringstream_data_status
     ssds << "*** TRF " << _name << " Data Information Table (W: Warning, E: Error, X: Set, Empty: Not Set)" << endl;
     ssds << "***          ";

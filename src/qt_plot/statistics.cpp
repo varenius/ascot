@@ -702,12 +702,19 @@ void Statistics::showPointToolTip(QMouseEvent *event)
                         key = (double)(dataMap->lowerBound(x)-1).key();
                     
                     double xfak,yfak;
+		    int xnr,ynr,laynr=0;
                     for(auto const &layers : _axis_layouts ) 
                     {
-                        if(QString::fromStdString(layers.name + layers.unit) == plot->xAxis->label())
+		      
+		      if(QString::fromStdString(layers.name + layers.unit) == plot->xAxis->label()){
                             xfak = layers.fak;
-                        if(QString::fromStdString(layers.name + layers.unit) == plot->yAxis->label())
-                            yfak = layers.fak;
+			    xnr=laynr;
+		      }
+		      if(QString::fromStdString(layers.name + layers.unit) == plot->yAxis->label()){
+			ynr=laynr;
+			yfak = layers.fak;
+		      }
+		      laynr++;
                     }
                     
                     vector<int> indexes_vec  = resid.data.find_idx( key / xfak  );
@@ -720,10 +727,13 @@ void Statistics::showPointToolTip(QMouseEvent *event)
                     ivg::Matrix candidates = resid.data.get_rows(rows_vec);
                     ivg::Matrix diff = candidates - ivg::Matrix(candidates.rows(),candidates.cols(), (y/yfak));
                     ivg::Matrix abs = diff.absD();
-                    
                     int row = abs.minIdx() % abs.rows();
                     
-                    for(auto const &layers : _axis_layouts )
+		    //ivg::Matrix diff = (candidates.get_col(xnr)-x/xfak).absD+(candidates.get_col(ynr)-y/yfak).absD;
+		    
+		    //int row = diff.minIdx();
+
+		    for(auto const &layers : _axis_layouts )
                     {
                         if(layers.name == "Time - hh:mm:ss")
                         {
@@ -733,6 +743,20 @@ void Statistics::showPointToolTip(QMouseEvent *event)
                             ss << "MJD : " << setprecision(10) << fixed << date.get_double_mjd() << endl;
                             ss << setprecision(p);
                         }
+			else if(layers.name == "Scan"){
+			  std::vector<ivg::Scan> *scan_ptr=_session->get_scan_ptr();
+			  ivg::Source *src=scan_ptr->at(candidates(row,layers.data_idx)).get_source();
+			  ss << "Source: " << src->get_name() << endl;
+			}
+			else if(layers.name == "Obs in scan"){
+			  std::vector<ivg::Scan> *scan_ptr=_session->get_scan_ptr();
+			  ivg::Obs *obstmp=scan_ptr->at(candidates(row,14)).get_obs_ptr(candidates(row,15));
+			  string sta1,sta2;
+			  obstmp->get_station_names(sta1,sta2);
+			  ss << "Station 1: " << sta1 << endl;
+			  ss << "Station 2: " << sta2 << endl;
+			  
+			}
                         else if(layers.name != "Time - dd-MMM-yy")
                             ss << layers.name << layers.unit << ": " << candidates(row,layers.data_idx) * layers.fak << endl;
                     }
@@ -768,7 +792,9 @@ void Statistics::_init_axis_layout()
     _axis_layouts.push_back({"Raydistance",11,"[km]",1e-3,QCPAxis::ltNumber,"gb"});
     _axis_layouts.push_back({"SNR X-band",12,"[-]",1.0,QCPAxis::ltNumber,"gb"});
     _axis_layouts.push_back({"SNR S-band",13,"[-]",1.0,QCPAxis::ltNumber,"gb"});
-    
+    _axis_layouts.push_back({"Scan",14,"[-]",1.0,QCPAxis::ltNumber,"gb"});
+     _axis_layouts.push_back({"Obs in scan",15,"[-]",1.0,QCPAxis::ltNumber,"gb"});
+
 }
 
 

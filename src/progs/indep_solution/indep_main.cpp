@@ -170,7 +170,9 @@ int main( int argc, char *argv[] )
     string session_type = (const char *)get_list_element(setup["datadirs"],setup["session_type"])[1];
      
     // initializing masterfiles for more information in logfiles
-    ivg::Masterfile masterfile(setup["definitions"]["masterfiles"], ivg::mastertype::both);
+    ivg::Date now;
+    now.now();
+    ivg::Masterfile masterfile(setup["definitions"]["masterfiles"], ivg::mastertype::both,1979,s2d(now.get_date_time("YYYY")),setup["definitions"]["nscodes"],(const char *)get_list_element((setup)["refframes"],(setup)["trf"])[2],(const char *)get_list_element((setup)["refframes"],(setup)["trf"])[1]);
      
     ivg::Session_inout sessionizer(session_type,masterfile); // NGS / SNX
      
@@ -221,8 +223,8 @@ int main( int argc, char *argv[] )
     // write 'bad-session' file
     // name of the file based on the time of execution
     string dir = setup[ "logdir" ];
-    ivg::Date now;
-    now.now();
+    //ivg::Date now;
+    //now.now();
     std::string ascot_log = dir+"/"+"ascot_"+now.get_date_time("DOY_HH_MI_SS")+".log";
     ofstream outstream( ascot_log.c_str() );
     #endif
@@ -343,11 +345,16 @@ int main( int argc, char *argv[] )
 	    
 	    int year = masterfile.get_session_info(dbname).date.get_int_year();
             if(year == 0){
+	      if (dbname.size()<=9){
                 year = stoi(dbname.substr(0,2));
                 if (year<79)
                     year += 2000;
                 else
                     year += 1900;
+	      } else {
+		year=stoi(dbname.substr(0,4));
+	      }
+	      
             }
 	    
             string vgos_dir = (const char *)get_list_element(setup["datadirs"],setup["session_type"])[2];
@@ -587,10 +594,15 @@ int main( int argc, char *argv[] )
 		    
                     a.exec();
                 }
+		if( setup.exists("export_eop") && (bool)setup["export_eop"]["save"] )
+		  {
+		    std::string name = setup["export_eop"]["filename"];
+		    sessionizer.write_eop_file(&S, dir+"/"+name,info.code);
+		  }
 		}
 	    }
                 // create skyplots and compute coverage vvvvvvvvvvvvvvvvvvvvvvvvvvvv
-                if( only_create_sky_plot || (
+	    if( only_create_sky_plot || (
 			(   setup.exists( "SKED" ) 
                         && (    ( (int)setup[ "SKED" ]["approach"] < 4 && (bool)setup[ "SKED" ]["apply"] ) 
                                 || !(bool)setup[ "SKED" ]["apply"]  )

@@ -582,7 +582,7 @@ void Vgosdb::create_GroupDelayFull_file( vector<double> &gd_full, string session
         // is ncInt
 	string tmp;
 	if (phase)
-	  tmp="PhaseDelay";
+	  tmp="PhaseDelayFull";
 	else
 	  tmp="GroupDelayFull";
         NcVar *gd_full_data = dataFile.add_var(tmp.c_str(), ncDouble, nDim);
@@ -596,14 +596,17 @@ void Vgosdb::create_GroupDelayFull_file( vector<double> &gd_full, string session
         std::vector<std::string> name = {"CreateTime","Band","Definition","Units"};
 	if (phase) {
 	  tmp="Phase Delay";
-	  for (int j=0;j<gd_full.size();j++)
-	    gd_full[j]*=1e6;
+	  //	  for (int j=0;j<gd_full.size();j++)
+	  //  gd_full[j]*=1e6;
 	}
 	else
 	  tmp="Group Delay";
         std::vector<std::string> val = {now,band,tmp,"seconds"};
         add_attribute(gd_full_data,name,val);       
-
+	for (int j=0;j<gd_full.size();j++){
+	  if (isnan(gd_full[j]))
+	    gd_full[j]=0;
+	}
         // Write the  data to the file. 
         gd_full_data->put(&gd_full[0], gd_full.size());
                

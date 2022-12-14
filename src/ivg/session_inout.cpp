@@ -1,6 +1,6 @@
 #include "session_inout.h"
 #include "wrapper.h"
-
+#include <algorithm>
 
 namespace ivg
 {
@@ -71,12 +71,16 @@ std::string Session_inout::load(ivg::Session *session_ptr,Setting *setup,const s
     else if (_type=="vgosdb")
     {
         // create 4 digit year from DB name, in case of ngs / vgosdb needed
-        int year = stoi(name.substr(0,2));
-        if (year<79)
-            year += 2000;
-        else
-            year += 1900;
-
+        int year;
+	if (name.size()>9)
+	  year=stoi(name.substr(0,4));
+	else
+	  {
+	    if (year<79)
+	      year += 2000;
+	    else
+	      year += 1900;
+	  }
         // copy name to be able to change it
         string dbname = name;
 
@@ -1168,7 +1172,7 @@ void Session_inout::_read_vgosdb(ivg::Session *session_ptr, Setting *setup, cons
 	 catch (exception& e) // in case there are no sigmas availible, set them to some value
 	   {
 	     if (ref_freq.size()==1)
-	       for (int j=0;j<ref_freq.size();j++)
+	       for (int j=0;j<phase_sigma.size();j++)
 		 phase_delay_sigma.push_back(phase_sigma.at(j)/(2*M_PI*ref_freq.at(0)*1.0e6));
 	     else {
 	       for (int j=0;j<ref_freq.size();j++)
@@ -1858,6 +1862,398 @@ void Session_inout::write_residuals(ivg::Session *session_ptr,string outfile,std
     cerr<<"--- void Session_inout::write_residuals(ivg::Session *, string )"
             <<" : "<<tim.toc()<<" s "<<endl;
 #endif
+}
+// ...........................................................................
+void Session_inout::write_eop_file(ivg::Session *session_ptr, string outfile, string sess_name)
+// ...........................................................................
+{
+  int idxp=std::find(ivg::paramtype_str.begin(),ivg::paramtype_str.end(),"xpo")-ivg::paramtype_str.begin();
+  ivg::Matrix data,sigdata,colnum;
+  Setting *setup=session_ptr->get_setup();
+  ivg::Matrix vcm= session_ptr->_solution->get_vcm();
+  vector<ivg::Date> epochs;
+  ivg::Date sess_st=session_ptr->_start;
+  ivg::Date sess_en=session_ptr->_end;
+  if (sess_name=="DUMMY") 
+    sess_name=session_ptr->_name_in_masterfile;
+  vector<double> parfactor={0,0,0,0,0};
+  int parid=0;
+  int num_old=0;
+
+  vector<string> techniques;
+  if ((*setup)["export_eop"].exists("technique"))
+    {
+      stringstream ss((*setup)["export_eop"]["technique"]);
+      string tmp;
+      while (getline(ss,tmp,'+'))
+	techniques.push_back(tmp);
+    }
+  
+  vector<string> oldline;
+  vector<ivg::Date> olddate;
+  map<string,bool> oldeoptypes;
+  map<string,string> oldeopstrings;
+  if ((bool) (*setup)["export_eop"]["append"])
+    {
+      ifstream instream(outfile.c_str(),ios::in);
+      if (instream.is_open())
+	{
+	  bool datafield=false, headerfield=false;
+	  string str;
+       
+	  while (getline(instream,str))
+	    {
+	      if (str.substr(0,5)=="+DATA")
+		datafield=true;
+	      else if (str.substr(0,5)=="-DATA")
+		datafield=false;
+	      else if (str.substr(0,7)=="+HEADER")
+		headerfield=true;
+	      else if (str.substr(0,7)=="-HEADER")
+		headerfield=false;
+	      else if (datafield && str.substr(0,1)!="#" && str.substr(0,1)!="*" && str.substr(0,1)!="!")
+		{
+		  stringstream ss(str);
+		  double tmpmjd;
+		  string cursess,tmp;
+		  ss >> tmpmjd >> tmp >> tmp >> tmp>> tmp>> tmp>> tmp >> tmp >> tmp>> tmp>> tmp>> tmp >> tmp >> tmp>> tmp>> tmp>> tmp >> cursess;
+		  if (cursess!=sess_name)
+		    {
+		      num_old++;
+		      olddate.push_back(ivg::Date(tmpmjd));
+		      oldline.push_back(str);
+		    }
+		  
+		}
+	      else if (headerfield && str.substr(0,1)!="#" && str.substr(0,1)!="*" && str.substr(0,1)!="!")
+		{
+		  stringstream ss(str);
+		  string tmp1,tmp2;
+		  ss >> tmp1 >> tmp2;
+		  if (tmp1=="DATA_START")
+		    {
+		      ivg::Date tmpd(stoi(tmp2.substr(0,4)),stoi(tmp2.substr(5,2)),stoi(tmp2.substr(8,2)),stoi(tmp2.substr(11,2)),stoi(tmp2.substr(14,2)),stod(tmp2.substr(17,5)));
+		      if (tmpd<sess_st)
+			sess_st=tmpd;
+		      
+		    }
+		  if (tmp1=="DATA_END")
+		    {
+		      ivg::Date tmpd(stoi(tmp2.substr(0,4)),stoi(tmp2.substr(5,2)),stoi(tmp2.substr(8,2)),stoi(tmp2.substr(11,2)),stoi(tmp2.substr(14,2)),stod(tmp2.substr(17,5)));
+		      if (tmpd>sess_en)
+			sess_en=tmpd;
+		      
+		    }
+		  if (tmp1=="EOP_ESTIMATED")
+		    {
+		      
+		      oldeoptypes[tmp2]=true;
+		      oldeopstrings[tmp2]=str;
+		      
+		    }
+		  if (tmp1=="TECHNIQUE")
+		    {
+		     
+		      stringstream ss(tmp2);
+		      string tmp;
+		      while (getline(ss,tmp,'+'))
+			{
+			  if (std::find(techniques.begin(),techniques.end(),tmp) == techniques.end())
+			    techniques.push_back(tmp);
+			}
+		    }
+		}
+	    }
+	    instream.close();
+
+	    
+	}
+     
+    }
+  
+  for (auto &para : session_ptr->_param_list)
+    {
+      
+      if ((para.get_typename()=="xpo")||(para.get_typename()=="ypo")||(para.get_typename()=="ut1")||(para.get_typename()=="nutx")||(para.get_typename()=="nuty"))
+	{
+	  ivg::Date curt=para.get_epoch();
+	  vector<ivg::Date>::iterator did=std::find(epochs.begin(), epochs.end(), curt);
+	  int id=did-epochs.begin();
+	  if (did==epochs.end())
+	    {
+	      
+	      epochs.push_back(curt);
+	      data.append_rows(ivg::Matrix(1,10,-999999));//vector<double>({-999999,-999999,-999999,-999999,-999999,-999999,-999999,-999999,-999999,-999999}));
+	      sigdata.append_rows(ivg::Matrix(1,10,-999999));//v(vector<double>({-999999,-999999,-999999,-999999,-999999,-999999,-999999,-999999,-999999,-999999}));
+	      colnum.append_rows(ivg::Matrix(1,10,-999999));//v(vector<double>({-999999,-999999,-999999,-999999,-999999,-999999,-999999,-999999,-999999,-999999}));
+	      id=epochs.size()-1;
+	    }
+	 
+	  
+	  int parmnum=para.get_type()-idxp;
+	  									    
+	  int order=para.get_order();
+	  
+	  if (order<=1) {
+	    data(id,parmnum+order*5)=(para.get_apriori()+para.get_estimate())*ivg::param_unit_fac.at(para.get_type());
+	    sigdata(id,parmnum+order*5)=para.get_standard_deviation()*ivg::param_unit_fac.at(para.get_type());
+	    colnum(id,parmnum+order*5)=parid;
+	  }
+	  if (parmnum<=2)
+	    parfactor[parmnum]=ivg::param_unit_fac.at(para.get_type())/1000;
+	  else
+	    parfactor[parmnum]=ivg::param_unit_fac.at(para.get_type());	
+	}
+      parid++;
+    }
+  log<INFO>("*** Writing eop to ")%outfile;
+  ofstream outstream(outfile.c_str(),ios::out);
+  if (!outstream.is_open())
+        throw runtime_error("void Session_inout::write_eop_file(ivg::Session *,string): Failed to open file for writing: "+outfile);
+  ivg::Date curdate;
+  curdate.now();
+  vector<ivg::Date> sortepochs=epochs;
+  std::sort(sortepochs.begin(),sortepochs.end());
+  
+  string agency="OSO";
+  if  ((*setup)["export_eop"].exists("agency"))
+    agency=(const char*)(*setup)["export_eop"]["agency"];
+  outstream <<"%=IVS-EOP 3.0 "<< agency << " " << curdate.get_date_time("YYYY-MO-DDTHH:MI:SS") << " " << agency << " " << sess_st.get_date_time("YYYY-MO-DDTHH:MI:SS") << " " << sess_en.get_date_time("YYYY-MO-DDTHH:MI:SS") << " TAI R" << endl;
+  outstream<< "+HEADER"<< endl;
+  outstream<< setw(20) << left << "GENERATION_TIME" << curdate.get_date_time("YYYY-MO-DDTHH:MI:SS")<< endl;
+  outstream<< setw(20) << left << "DATA_START" << sess_st.get_date_time("YYYY-MO-DDTHH:MI:SS")<< endl;
+  outstream<< setw(20) << left << "DATA_END" << sess_en.get_date_time("YYYY-MO-DDTHH:MI:SS")<< endl;													 
+  if ((*setup)["export_eop"].exists("description"))
+    outstream<< setw(20) << left << "DESCRIPTION" << (const char*)((*setup)["export_eop"]["description"])<<endl;
+  else
+    outstream<< setw(20) << left << "DESCRIPTION" << "EOP estiamted using ASCOT"<<endl;
+  if ((*setup)["export_eop"].exists("analysis_center"))
+    outstream<< setw(20) << left << "ANALYSIS_CENTER" << (const char*)(*setup)["export_eop"]["analysis_center"]<<endl;
+  else
+    outstream<< setw(20) << left << "ANALYSIS_CENTER" << "An analysis center using ASCOT"<<endl;
+  if ((*setup)["export_eop"].exists("contact"))
+    outstream<< setw(20) << left << "CONTACT" << (const char*)(*setup)["export_eop"]["contact"]<<endl;
+  else
+    outstream<< setw(20) << left << "CONTACT" << "ASCOT user <name@ac.xx>"<<endl;
+  if ((*setup)["export_eop"].exists("software"))
+    outstream<< setw(20) << left << "SOFTWARE" << (const char*)(*setup)["export_eop"]["software"]<<endl;													 
+  else
+    outstream<< setw(20) << left << "SOFTWARE" << "ASCOT"<<endl;	
+    if (techniques.size()>0)
+      {
+	outstream<< setw(20) << left << "TECHNIQUE" << techniques.at(0);
+	for (int j=1;j<techniques.size();j++)
+	  outstream<< "+" <<techniques.at(j);
+	outstream<<endl;
+      }
+  else
+    outstream<< setw(20) << left << "TECHNIQUE" << "VLBI"<<endl;
+  if ((*setup)["export_eop"].exists("nutation_type"))
+    outstream<< setw(20) << left << "NUTATION_TYPE" << (const char*)(*setup)["export_eop"]["nutation_type"]<<endl;													 
+  else
+    outstream<< setw(20) << left << "NUTATION_TYPE" << "CIO-BASED"<<endl;
+   if ((*setup)["export_eop"].exists("rotation_type"))
+    outstream<< setw(20) << left << "ROTATION_TYPE" << (const char*)(*setup)["export_eop"]["rottion_type"]<<endl;													 
+  else
+    outstream<< setw(20) << left << "ROTATION_TYPE" << "UT1-TAI_LOD"<<endl;									  
+  if ((*setup)["export_eop"].exists("TRF"))
+    outstream<< setw(20) << left << "TRF_APRIORI" << (const char*)(*setup)["export_eop"]["TRF"]<<endl;													 
+  else
+    outstream<< setw(20) << left << "TRF_APRIORI" << (const char*)(*setup)["trf"]<<endl;	
+  if ((*setup)["export_eop"].exists("CRF"))
+    outstream<< setw(20) << left << "CRF_APRIORI" << (const char*)(*setup)["export_eop"]["CRF"]<<endl;													 
+  else
+    outstream<< setw(20) << left << "CRF_APRIORI" << (const char*)(*setup)["crf"]<<endl;	
+  if ((*setup)["export_eop"].exists("eop_subdaily"))
+    outstream<< setw(20) << left << "EOP_SUB-DAILY_MODEL" << (const char*)(*setup)["export_eop"]["eop_subdaily"]<<endl;													 
+  else
+    outstream<< setw(20) << left << "EOP_SUB-DAILY_MODEL" << (const char*)(*setup)["eop"]["hf_ocean_model"]<<endl;	
+  if ((*setup)["export_eop"].exists("eop_apriori"))
+    outstream<< setw(20) << left << "EOP_APRIORI" << (const char*)(*setup)["export_eop"]["eop_apriori"]<<endl;													 
+  else
+    outstream<< setw(20) << left << "EOP_APRIORI" << (const char*)(*setup)["eop"]["erp_aprioris"]<<endl;
+
+  vector<string> eop_comp={"XPOL","YPOL","DUT1","DX","DY"};
+   vector<string> eop_der={"XPOL_DER_1","YPOL_DER_1","LOD","DX_DER_1","DY_DER_1"};
+  vector<string> eop_unit={"as","as","s","mas","mas"};
+  vector<string> eop_conf={"pm","pm","ut1","nut","nut"};
+  for (int i=0;i<5;i++)
+   {
+     string handling=(*setup)["PARAMS"][eop_conf[i]][0]["handling"];
+     if (handling=="none" )
+       {
+	 if ((bool)(*setup)["PARAMS"][eop_conf[i]][0]["cpwlf"]["insert"])
+	   {
+	     outstream<< setw(20) << left << "EOP_ESTIMATED" << setw(11) << eop_comp.at(i)+"_BSP_1";
+	     if (((double)(*setup)["PARAMS"][eop_conf[i]][0]["cpwlf"]["rate_cnstr"])==0)
+	       outstream<< setw(7) << right << "NONE" << " " << eop_unit.at(i) <<endl;
+	     else
+	       outstream<< fixed <<setw(7) << right << setprecision(4)<<((double)(*setup)["PARAMS"][eop_conf[i]][0]["cpwlf"]["rate_cnstr"])*parfactor.at(i) << " " << eop_unit.at(i) <<endl;
+	   }
+	 else
+	   {
+	       outstream<< setw(20) << left << "EOP_ESTIMATED" << setw(11) << eop_comp.at(i);
+	       if (((double)(*setup)["PARAMS"][eop_conf[i]][0]["polynom"]["cnstr"][0])==0)
+	         outstream<< setw(7) << right << "NONE" << " " << eop_unit.at(i) <<endl;
+	       else
+	         outstream<< fixed <<setw(7) << right << setprecision(4)<< ((double)(*setup)["PARAMS"][eop_conf[i]][0]["polynom"]["cnstr"][0])*parfactor.at(i) << " " << eop_unit.at(i) <<endl;
+	   }
+	 if (((int)(*setup)["PARAMS"][eop_conf[i]][0]["polynom"]["order"])>=1)
+	     {
+	       outstream<< setw(20) << left << "EOP_ESTIMATED" << setw(11) << eop_der.at(i);
+	       if (((double)(*setup)["PARAMS"][eop_conf[i]][0]["polynom"]["cnstr"][1]==0))
+	         outstream<< setw(7) << right << "NONE" << " " << eop_unit.at(i) <<endl;
+	       else
+	         outstream<< fixed <<setw(7) << right << setprecision(4)<< ((double)((*setup)["PARAMS"][eop_conf[i]][0]["polynom"]["cnstr"][1]))*parfactor.at(i) << " " << eop_unit.at(i) << "/day" <<endl;								      
+	     }
+	 else if (oldeoptypes[eop_der.at(i)])
+	   outstream<< oldeopstrings[eop_der.at(i)]<<endl;
+       }
+     else if (oldeoptypes[eop_comp.at(i)]){
+	   outstream<< oldeopstrings[eop_comp.at(i)]<<endl;
+	    if (oldeoptypes[eop_der.at(i)])
+	      outstream<< oldeopstrings[eop_der.at(i)]<<endl;
+     }
+   }
+      
+  outstream<< setw(20) << left <<"NUMBER_OF_ENTRIES"  << num_old+sortepochs.size()<<endl;  
+  outstream<< "-HEADER"<< endl;
+  
+  outstream<< "+DATA"<< endl;
+  outstream<< "# All fields are in free format separated by blanks."<<endl;
+  outstream <<"# If a parameter was not estimated a filler NA is placed."<<endl;
+  outstream<<"#"<<setw(11) << right<< "1" <<" "<< setw(13) << "2" << " "<< setw(13) << "3" << " "<< setw(13) << "4" << " "<< setw(8) << "5" << " "<< setw(8) << "6" << " "<< setw(13) << "7" << " "<< setw(13) << "8" << " "<< setw(13) << "9" << " "<< setw(8) << "10" << " "<< setw(8) << "11" << " "<< setw(8) << "12" << " "<< setw(7) << "13" << " "<< setw(7) << "14" << " "<< setw(7) << "15" << " "<< setw(7) << "16" << " "<< setw(7) << "17" << " "<< setw(10) << "18" << " "<< setw(6) << "19" << " "<< setw(13) << "20" << " "<< setw(13) << "21" << " "<< setw(13) << "22" << " "<< setw(8) << "23" << " "<< setw(8) << "24" << " "<< setw(13) << "25" << " "<< setw(13) << "26" << " "<< setw(13) << "27" << " "<< setw(8) << "28" << " "<< setw(8) << "29" << setw(8)<< "30"<<endl;
+  outstream <<"#"<< setw(11) << right<< "epoch" <<" "<< setw(13) << "xPol" << " "<< setw(13) << "yPol" << " "<< setw(13) << "dUT1" << " "<< setw(8) << "dX" << " "<< setw(8) << "dY" << " "<< setw(13) << "sig_xp" << " "<< setw(13) << "sig_yp" << " "<< setw(13) << "sig_UT1" << " "<< setw(8) << "sig_dX" << " "<< setw(8) << "sig_dY" << " "<< setw(8) << "wRMS" << " "<< setw(7) << "cc_xpyp" << " "<< setw(7) << "cc_xput" << " "<< setw(7) << "cc_yput" << " "<< setw(7) << "cc_dXdY" << " "<< setw(7) << "nObs" << " "<< setw(10) << "sessID" << " "<< setw(6) << "span" << " "<< setw(13) << "xPolR" << " "<< setw(13) << "yPolR" << " "<< setw(13) << "LOD" << " "<< setw(8) << "dXR" << " "<< setw(8) << "dYR" << " "<< setw(13) << "sig_xpR" << " "<< setw(13) << "sig_ypR" << " "<< setw(13) << "sig_LOD" << " "<< setw(8) << "sig_dXR" << " "<< setw(8) << "sig_dYR" << setw(8)<< "network"<<endl;
+  
+   outstream <<"#"<< setw(11) << right<< "[MJD]" <<" "<< setw(13) << "[as]" << " "<< setw(13) << "[as]" << " "<< setw(13) << "[s]" << " "<< setw(8) << "[mas]" << " "<< setw(8) << "[mas]" << " "<< setw(13) << "[as]" << " "<< setw(13) << "[as]" << " "<< setw(13) << "[s]" << " "<< setw(8) << "[mas]" << " "<< setw(8) << "[mas]" << " "<< setw(8) << "[ps]" << " "<< setw(7) << "[-]" << " "<< setw(7) << "[-]" << " "<< setw(7) << "[-]" << " "<< setw(7) << "[-]" << " "<< setw(7) << "[-]" << " "<< setw(10) << "[-]" << " "<< setw(6) << "[h]" << " "<< setw(13) << "[as/d]" << " "<< setw(13) << "[as/d]" << " "<< setw(13) << "[s]" << " "<< setw(8) << "[mas/d]" << " "<< setw(8) << "[mas/d]" << " "<< setw(13) << "[as/d]" << " "<< setw(13) << "[as/d]" << " "<< setw(13) << "[s]" << " "<< setw(8) << "[mas/d]" << " "<< setw(8) << "[mas/d]" << setw(8)<< "[-]"<<endl;
+ 
+  double duration=(sess_en.get_mjd_tt()-sess_st.get_mjd_tt())*24;
+  vector<string> allstats=session_ptr->get_trf_ptr()->get_station_names(ivg::staname::lettercode);
+  vector<string> stats;
+  for (int i=0;i<allstats.size();i++)
+    {
+      ivg::Analysis_station *sta=session_ptr->get_trf_ptr()->get_station(i);
+      if (sta->get_num_obs()>0)
+	stats.push_back(allstats.at(i));
+    }
+  int curoldid=0;
+  for (int i=0;i<sortepochs.size();i++) {
+    while (curoldid<num_old && olddate.at(curoldid)<=sortepochs.at(i))
+      {
+	outstream << oldline.at(curoldid) <<endl;
+	curoldid++;
+      }
+     vector<ivg::Date>::iterator  did=std::find(epochs.begin(), epochs.end(), sortepochs.at(i));
+    int id=did-epochs.begin();
+    outstream <<setfill(' ') << fixed << setw(12) << right << setprecision(6)  << sortepochs.at(i).get_mjd_tt()<<" ";
+														      
+    for (int j=0;j<2;j++)
+      {
+	if (colnum(id,j)>=0 )
+	  outstream<<setfill(' ') << fixed << setw(13) << right << setprecision(8) << data(id,j)/1000 << " ";
+	else
+	  outstream<<setfill(' ') << fixed << setw(13) << right<< "NA"<< " ";
+      }
+      if (colnum(id,2)>=0 )	    
+	outstream <<setfill(' ') << fixed << setw(13) << right << setprecision(8)<< -data(id,2)/1000 << " ";
+      else
+	  outstream<<setfill(' ') << fixed << setw(13) << right<< "NA"<< " ";
+	
+     for (int j=3;j<5;j++)
+      {
+	if (colnum(id,j)>=0 )
+	  outstream<<setfill(' ') << fixed << setw(8) << right << setprecision(4) << data(id,j) << " ";
+	 else
+	  outstream<<setfill(' ') << fixed << setw(8) << right<< "NA"<< " ";
+      }
+    for (int j=0;j<3;j++)
+      {
+	if (colnum(id,j)>=0 )
+	  outstream<<setfill(' ') << fixed << setw(13) << right << setprecision(8) << sigdata(id,j)/1000 << " ";
+	else
+	  outstream<<setfill(' ') << fixed << setw(13) << right<< "NA"<< " ";
+      }
+    for (int j=3;j<5;j++)
+      {
+	if (colnum(id,j)>=0 )
+	outstream<<setfill(' ') << fixed << setw(8) << right << setprecision(4) << sigdata(id,j) << " ";
+	else
+	  outstream<<setfill(' ') << fixed << setw(8) << right<< "NA"<< " ";
+      }
+    outstream <<setfill(' ') << fixed << setw(8) << right << setprecision(2) << session_ptr->_solution->calc_wrms()*1e12<<" ";
+  
+ 
+   
+    if (colnum(id,0)>=0 && colnum(id,1)>=0)
+      outstream<< setfill(' ') << fixed << setw(7) << right << setprecision(4) <<vcm(colnum(id,0),colnum(id,1))/sqrt(vcm(colnum(id,0),colnum(id,0))*vcm(colnum(id,1),colnum(id,1)))<< " ";
+    else
+      outstream<< setfill(' ') <<fixed <<  setw(7) << right << "NA"<< " ";
+  
+    if (colnum(id,0)>=0 && colnum(id,2)>=0)
+      
+      outstream<< setfill(' ') << fixed << setw(7) << right << setprecision(4)<<vcm(colnum(id,0),colnum(id,2))/sqrt(vcm(colnum(id,0),colnum(id,0))*vcm(colnum(id,2),colnum(id,2)))<< " ";
+    else
+      outstream<< setfill(' ') << fixed << setw(7) << right << "NA"<< " ";
+    if (colnum(id,1)>=0 && colnum(id,2)>=0)
+      outstream<< setfill(' ') << fixed << setw(7) << right << setprecision(4)<< vcm(colnum(id,1),colnum(id,2))/sqrt(vcm(colnum(id,1),colnum(id,1))*vcm(colnum(id,2),colnum(id,2)))<< " ";
+    else
+      outstream<< setfill(' ') << fixed << setw(7) << right << "NA"<< " ";
+    if (colnum(id,3)>=0 && colnum(id,4)>=0)
+      outstream<< setfill(' ') << fixed << setw(7) << right << setprecision(4) << vcm(colnum(id,3),colnum(id,4))/sqrt(vcm(colnum(id,3),colnum(id,3))*vcm(colnum(id,4),colnum(id,4)))<< " ";
+    else
+      outstream<< setfill(' ') << fixed << setw(7) << right << "NA"<< " ";
+    outstream<< setfill(' ') << fixed << setw(7) << right << setprecision(0) << session_ptr->_solution->get_nobs()<<" ";
+    outstream<< setfill(' ') << fixed << setw(10) << right <<sess_name<<" ";
+    outstream<< setfill(' ') << fixed << setw(6)<< right << setprecision(2) << duration<<" ";
+    for (int j=0;j<2;j++)
+      {
+	if (colnum(id,j+5)>=0 )
+	outstream<<setfill(' ') << fixed << setw(13) << right << setprecision(8)  << data(id,j+5)/1000 << " ";
+	else
+	  outstream<<setfill(' ') << setw(13) << right<< "NA"<< " ";
+      }
+    if (colnum(id,7)>=0 )
+     outstream <<setfill(' ') << fixed << setw(13) << right << setprecision(8)  << -data(id,7)/1000 << " ";
+    else
+	  outstream<<setfill(' ') << setw(13) << right<< "NA"<< " ";
+	
+     for (int j=3;j<5;j++)
+      {
+	if (colnum(id,j+5)>=0 )
+	outstream<<setfill(' ') << fixed << setw(8) << right << setprecision(4) << data(id,j+5) << " ";
+	else
+	  outstream<<setfill(' ') << setw(8) << right<< "NA"<< " ";
+      }
+    for (int j=0;j<3;j++)
+      {
+	if (colnum(id,j+5)>=0 )
+	outstream<<setfill(' ') << fixed << setw(13) << right << setprecision(8) << sigdata(id,j+5)/1000 << " ";
+	else
+	  outstream<<setfill(' ') << setw(13) << right<< "NA"<< " ";
+      }
+    for (int j=3;j<5;j++)
+      {
+	if (colnum(id,j+5)>=0 )
+	outstream<<setfill(' ') << fixed << setw(8) << right << setprecision(4)  << sigdata(id,j+5) << " ";
+	else
+	  outstream<<setfill(' ') << setw(8) << right<< "NA"<< " ";
+      }
+    for (int j=0;j<stats.size();j++){
+      
+      outstream<<setw(2) << right<<stats.at(j);
+      if (j!=stats.size()-1)
+	outstream<<"-";
+    }
+    outstream<<endl;
+  }
+  while (curoldid<num_old)
+    {
+      outstream << oldline.at(curoldid) <<endl;
+       curoldid++;
+    }	       
+  outstream<< "-DATA"<< endl;
+  outstream<< "%IVS-EOP 3.0 END"<< endl;		  
+
 }
 // ...........................................................................
 void Session_inout::write_results(ivg::Session *session_ptr, string outfile, bool write_prediction )
@@ -3038,7 +3434,7 @@ void Session_inout::write_snx(ivg::Session *session_ptr,string outfile, bool inc
 	     <<" "<<setfill(' ')<<setw(60)<< tmpstr <<endl;
     outstream<<setiosflags(ios::left)<<setiosflags(ios::fixed)
             <<" "<<setfill(' ')<<setw(18)<<"SOFTWARE"
-            <<" "<<setfill(' ')<<setw(60)<<"ivg::ASCOT"<<endl;
+            <<" "<<setfill(' ')<<setw(60)<<"ASCOT"<<endl;
     outstream<<setiosflags(ios::left)<<setiosflags(ios::fixed)
             <<" "<<setfill(' ')<<setw(18)<<"HARDWARE"
             <<" "<<setfill(' ')<<setw(60)<<sys.str().c_str()<<endl;

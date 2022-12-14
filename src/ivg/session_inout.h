@@ -59,6 +59,7 @@ public:
     void read_results(ivg::Session *session_ptr,string infile, bool apriori = true);
     void write_residuals(ivg::Session *session_ptr, string outfile,
                          std::string resid_format = "ASCOT");
+    void write_eop_file(ivg::Session *session_ptr, string outfile ,string sess_name = "DUMMY");
     void write_outliers(ivg::Session *session_ptr, string outfile );
     void write_groupdelay( ivg::Session *session_ptr );
     void write_obs_met_info( ivg::Session *session_ptr, string outfile );

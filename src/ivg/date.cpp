@@ -123,6 +123,12 @@ Date::Date( const std::string yymmmdd, const std::string type )
         *this = tmp;
 
     }
+    else if( type == "YYYYMMDD" )
+    {
+      Date tmp(stoi(yymmmdd.substr(0,4)),stoi(yymmmdd.substr(4,2)),stoi(yymmmdd.substr(6,2)));
+      *this = tmp;
+
+    }
     else if( type == "SINEX" )
     {
         int y   = atoi( yymmmdd.substr( 0,2 ).c_str() );

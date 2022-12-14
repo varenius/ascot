@@ -61,9 +61,9 @@ namespace ivg {
         *        Timerange can be defined with start- and end-year. Directory has to contain ns-codes.txt file.
         *  \param [in] [string] directory to masterfiles
         *  \param [in] [int] start year, default 1992
-        *  \param [in] [int] end year, default 2021
+        *  \param [in] [int] end year, default 2022
         */
-        Masterfile(string directory,ivg::mastertype type ,int start_year = 1992, int end_year = 2021);
+        Masterfile(string directory,ivg::mastertype type ,int start_year = 1992, int end_year = 2022, string nscodespath="", string trfpath="", string trftype="");
         
         /**
         *  \b Description: \n
@@ -130,7 +130,9 @@ namespace ivg {
     private:
         
         void parse_file(string path, int year, vector<ivg::Analysis_station> &all_stations, ivg::mastertype type);
-        
+
+	void parse_file_v2(string path, int year, vector<ivg::Analysis_station> &all_stations, ivg::mastertype type);
+	
         // vector storing all session related information
         vector<sessinfo> _sessions;
         // map containing all manually defined group relationships

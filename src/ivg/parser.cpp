@@ -1543,11 +1543,42 @@ ivg::Matrix eops(const string path, ivg::Date start, ivg::Date end)
     ifstream inStream;
     string line,next_line;
 
+    bool iau00=false;
+    if (path.substr(path.length()-4,4)=="eoxy")
+      iau00=true;
     double nutpsi, nuteps;
     int i=0;
-    while(ivg::parser::get_line(path,inStream, line))
+    if (ivg::parser::get_line(path,inStream, line)) { // check if EOP v3 format
+      if (line.substr(0,11)=="%=IVS-EOP 3") {
+	bool hdr=false;
+	while (line.substr(0,6)!="+DATA"){
+	  ivg::parser::get_line(path,inStream, line);
+	  if (line.substr(0,7)=="+HEADER")
+	    hdr=true;
+	  if (line.substr(0,7)=="-HEADER")
+	    hdr=false;
+	  if (hdr && line.substr(0,13)=="NUTATION_TYPE") {
+	    if (line.find("CIO-BASED")!=std::string::npos)
+	      iau00=true;
+	    if (line.find("EQUINOX-BASED")!=std::string::npos)
+	      iau00=false;
+	    
+	  }
+	  
+	  
+	}
+      } else {
+	inStream.seekg(0); // if no EOP v3 file, rewind to beginning
+      }
+	
+	
+    }
+    bool endofdata=false;
+    while((!endofdata)&&(ivg::parser::get_line(path,inStream, line)))
     {
-        if(line.substr(0,3) != "   " && line.substr(0,1) != "#" )
+      if (line.substr(0,6)=="-DATA")
+	endofdata=true;
+      else if(line.substr(0,3) != "   " && line.substr(0,1) != "#" && line.substr(0,1) != "*" && line.substr(0,1) != "!" )
         {
             double mjd = s2d(line.substr( 0, 12 ));
             if(mjd >= start.get_double_mjd() && mjd <= end.get_double_mjd())
@@ -1565,10 +1596,13 @@ ivg::Matrix eops(const string path, ivg::Date start, ivg::Date end)
                 
                 eop( i,3 ) -= ivg::Date(mjd).get_leap_sec(); //ut1
                 eop( i,3 ) *= ivg::s2rad; //ut1
-
-                eop( i,4 ) = 0.0; //nut x
-                eop( i,5 ) = 0.0; //nut y
-
+		if (iau00) {
+		  eop( i,4 ) = nutpsi*mas2rad; //nut x
+		  eop( i,5 ) = nuteps*mas2rad; //nut y
+		} else {
+		  eop( i,4 ) = 0.0; //nut x
+		  eop( i,5 ) = 0.0; //nut y
+		}
                 eop( i,6 ) *= ivg::as2rad; //x pole std
                 eop( i,7 ) *= ivg::as2rad; //y pole std
                 eop( i,8 ) *= ivg::s2rad; //ut1 std
