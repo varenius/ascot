@@ -76,6 +76,7 @@ std::string Session_inout::load(ivg::Session *session_ptr,Setting *setup,const s
 	  year=stoi(name.substr(0,4));
 	else
 	  {
+	    year=stoi(name.substr(0,2));
 	    if (year<79)
 	      year += 2000;
 	    else
@@ -2079,32 +2080,32 @@ void Session_inout::write_eop_file(ivg::Session *session_ptr, string outfile, st
   vector<string> eop_conf={"pm","pm","ut1","nut","nut"};
   for (int i=0;i<5;i++)
    {
-     string handling=(*setup)["PARAMS"][eop_conf[i]][0]["handling"];
+     string handling=(*setup)["PARAMS"].lookup(eop_conf.at(i))[0]["handling"];
      if (handling=="none" )
        {
-	 if ((bool)(*setup)["PARAMS"][eop_conf[i]][0]["cpwlf"]["insert"])
+	   if ((bool)(*setup)["PARAMS"].lookup(eop_conf[i])[0]["cpwlf"]["insert"])
 	   {
 	     outstream<< setw(20) << left << "EOP_ESTIMATED" << setw(11) << eop_comp.at(i)+"_BSP_1";
-	     if (((double)(*setup)["PARAMS"][eop_conf[i]][0]["cpwlf"]["rate_cnstr"])==0)
+	     if (((double)(*setup)["PARAMS"].lookup(eop_conf.at(i))[0]["cpwlf"]["rate_cnstr"])==0)
 	       outstream<< setw(7) << right << "NONE" << " " << eop_unit.at(i) <<endl;
 	     else
-	       outstream<< fixed <<setw(7) << right << setprecision(4)<<((double)(*setup)["PARAMS"][eop_conf[i]][0]["cpwlf"]["rate_cnstr"])*parfactor.at(i) << " " << eop_unit.at(i) <<endl;
+		 outstream<< fixed <<setw(7) << right << setprecision(4)<<((double)(*setup)["PARAMS"].lookup(eop_conf[i])[0]["cpwlf"]["rate_cnstr"])*parfactor.at(i) << " " << eop_unit.at(i) <<endl;
 	   }
 	 else
 	   {
 	       outstream<< setw(20) << left << "EOP_ESTIMATED" << setw(11) << eop_comp.at(i);
-	       if (((double)(*setup)["PARAMS"][eop_conf[i]][0]["polynom"]["cnstr"][0])==0)
+	       if (((double)(*setup)["PARAMS"].lookup(eop_conf[i])[0]["polynom"]["cnstr"][0])==0)
 	         outstream<< setw(7) << right << "NONE" << " " << eop_unit.at(i) <<endl;
 	       else
-	         outstream<< fixed <<setw(7) << right << setprecision(4)<< ((double)(*setup)["PARAMS"][eop_conf[i]][0]["polynom"]["cnstr"][0])*parfactor.at(i) << " " << eop_unit.at(i) <<endl;
+		   outstream<< fixed <<setw(7) << right << setprecision(4)<< ((double)(*setup)["PARAMS"].lookup(eop_conf[i])[0]["polynom"]["cnstr"][0])*parfactor.at(i) << " " << eop_unit.at(i) <<endl;
 	   }
-	 if (((int)(*setup)["PARAMS"][eop_conf[i]][0]["polynom"]["order"])>=1)
+	   if (((int)(*setup)["PARAMS"].lookup(eop_conf[i])[0]["polynom"]["order"])>=1)
 	     {
 	       outstream<< setw(20) << left << "EOP_ESTIMATED" << setw(11) << eop_der.at(i);
-	       if (((double)(*setup)["PARAMS"][eop_conf[i]][0]["polynom"]["cnstr"][1]==0))
+		 if (((double)(*setup)["PARAMS"].lookup(eop_conf[i])[0]["polynom"]["cnstr"][1]==0))
 	         outstream<< setw(7) << right << "NONE" << " " << eop_unit.at(i) <<endl;
 	       else
-	         outstream<< fixed <<setw(7) << right << setprecision(4)<< ((double)((*setup)["PARAMS"][eop_conf[i]][0]["polynom"]["cnstr"][1]))*parfactor.at(i) << " " << eop_unit.at(i) << "/day" <<endl;								      
+		   outstream<< fixed <<setw(7) << right << setprecision(4)<< ((double)((*setup)["PARAMS"].lookup(eop_conf[i])[0]["polynom"]["cnstr"][1]))*parfactor.at(i) << " " << eop_unit.at(i) << "/day" <<endl;								      
 	     }
 	 else if (oldeoptypes[eop_der.at(i)])
 	   outstream<< oldeopstrings[eop_der.at(i)]<<endl;
