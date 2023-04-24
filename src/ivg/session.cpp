@@ -2803,7 +2803,7 @@ void Session::_eliminate_data()
           }
        }
     }
-    
+    remove_duplicates(rem_par);
     sort( rem_par.begin(), rem_par.end() );
     for( int i=rem_par.size()-1; i>=0; --i )
        _param_list.remove_param( rem_par.at( i ) );
