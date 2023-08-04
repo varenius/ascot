@@ -898,11 +898,15 @@ double Obs::calc_total_delay(ivg::delaymodel model, ivg::Matrix &v_earth_ssb, iv
        //            }
 
                    // time of closest approach (from VieVS grav_delay.m)
-                   double dt = ( (x_body_ssb-x1_ssb).norm() )(0)/ivg::c;
+                   double dt = (k.transpose()*(x_body_ssb-x1_ssb))(0)/ivg::c; //( (x_body_ssb-x1_ssb).norm() )(0)/ivg::c;
                    ivg::Matrix xbody = x_body_ssb-v_body_ssb*dt;
-                   dt    = ( (xbody-x1_ssb).norm() )(0)/ivg::c;
+		   //dt    = ( (xbody-x1_ssb).norm() )(0)/ivg::c;
+		   dt=(k.transpose()*(xbody-x1_ssb))(0)/ivg::c;
                    xbody = xbody-v_body_ssb*dt;
-                   dt    = ( (xbody-x1_ssb).norm() )(0)/ivg::c;
+                   //dt    = ( (xbody-x1_ssb).norm() )(0)/ivg::c;
+		    dt=(k.transpose()*(xbody-x1_ssb))(0)/ivg::c;
+		   if (dt<0)
+		     dt=0;
                    xbody = xbody-v_body_ssb*dt;
                    x_body_ssb = xbody;
 

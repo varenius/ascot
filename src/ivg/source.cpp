@@ -273,8 +273,18 @@ ivg::Matrix Source::get_unit_vector_ssb_ga(double mjd, Setting * ga)
     k(1) = cos(_dec0) * sin(_ra0);
     k(2) = sin(_dec0);
     ivg::Matrix A(3,1,0.0), dk(3,1,0.0);
-    double ra_gc=(double) (*ga)["galacitic_center_ra"];
-    double de_gc=(double) (*ga)["galacitic_center_de"];
+    
+    double ra_gc,de_gc;
+    if (((*ga).exists("galacitic_center_ra"))&&(!((*ga).exists("galactic_center_ra"))))
+      {
+	ra_gc=(double) (*ga)["galacitic_center_ra"];
+	de_gc=(double) (*ga)["galacitic_center_de"];
+      } else
+      {
+	ra_gc=(double) (*ga)["galactic_center_ra"];
+	de_gc=(double) (*ga)["galactic_center_de"];
+	
+      }
     double refep=(double) (*ga)["ref_epoch"];
     double acc_ssb=((double) (*ga)["ssb_acceleration"])*(mjd-refep)*M_PI*1e-6/(3600*180*365.25);
 

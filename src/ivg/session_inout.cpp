@@ -3396,7 +3396,7 @@ void Session_inout::write_snx(ivg::Session *session_ptr,string outfile, bool inc
     now.now();
 
     //   outstream << "----|---1|0---|---2|0---|---3|0---|---4|0---|---5|0---|---6|0---|---7|0---|---8| \n" << endl;
-    outstream<<"%=SNX 2.10 "<<agency<<" "<<now.get_date_time("YY:DOY:SSSSS")<<" "<<agency
+    outstream<<"%=SNX 2.02 "<<agency<<" "<<now.get_date_time("YY:DOY:SSSSS")<<" "<<agency
             <<" "<<start.get_date_time("YY:DOY:SSSSS")<<" "<<end.get_date_time("YY:DOY:SSSSS")
             <<" R "<<setfill('0')<<setw(5)<<params->size()<<" "<<2<<" "<<types.str().c_str()<<endl;
 
@@ -3668,14 +3668,14 @@ void Session_inout::write_snx(ivg::Session *session_ptr,string outfile, bool inc
     // ------------------------------
     outstream<<seperator<<endl;
     outstream<<"+NUTATION/DATA"<<endl;
-    outstream<< " IAU_2006/2000A"<<endl;
+    outstream<< " IAU2000a"<<endl;
     outstream<<"-NUTATION/DATA"<<endl;
     // ------------------------------
     // write PRECESSION/DATA block
     // ------------------------------
     outstream<<seperator<<endl;
     outstream<<"+PRECESSION/DATA"<<endl;
-    outstream<< " IAU_2006/2000A"<<endl;
+    outstream<< " IAU2006"<<endl;
     outstream<<"-PRECESSION/DATA"<<endl;
     // ------------------------------
     // write SOLUTION/STATISTICS block
