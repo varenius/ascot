@@ -8,7 +8,8 @@
 #include <boost/algorithm/string.hpp>
 #include "date.h"
 #include <libconfig.h++>
-
+#include <QApplication>
+#include <QColor>
 #include "matrix.h"
 #include "date.h"
 #include "lapack_wrapper.h"
@@ -26,8 +27,6 @@
 
 #include <cstdlib>
 #include <libconfig.h++>
-#include <QApplication>
-#include <QColor>
 #include "statistics.h"
 #include "plot.h"
 #include "ascot.h"
@@ -291,12 +290,18 @@ int main( int argc, char *argv[])
       std::string db=database.at(i);
       std::string logfile;
       ivg::Vgosdb vgosdb;
-      
-      int year = stoi(db.substr(0,2));
-      if (year<79)
-	year += 2000;
-      else
-	year += 1900;
+
+      int year;
+      if (db.size()<=9){
+	year = stoi(db.substr(0,2));
+	if (year<79)
+	  year += 2000;
+	else
+	  year += 1900;
+      } else {
+	year=stoi(db.substr(0,4));
+      }
+ 
       stringstream folderpath;
       string session_dir = (const char *)get_list_element(setup["datadirs"],setup["session_type"])[2];
       folderpath<<session_dir<<year<<"/"<<db<<"/";
@@ -352,7 +357,7 @@ int main( int argc, char *argv[])
 	      {
 	      fp = fopen(logfile.c_str(),"wb");
 	      stringstream cddis;
-	      cddis<<"ftp://cddis.gsfc.nasa.gov/vlbi/ivsdata/aux/"<<year<<"/"<<expname<<"/"<<expname << nscode << ".log";
+	      cddis<<"ftp://ivsopar.obspm.fr/vlbi/ivsdata/aux/"<<year<<"/"<<expname<<"/"<<expname << nscode << ".log";
 		  curl_easy_setopt(curl, CURLOPT_URL,cddis.str().c_str());
 		  curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
 		  curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);

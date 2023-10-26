@@ -377,7 +377,11 @@ void Statistics::createFigure()
                         ivg::Matrix x = it.data.get_sub( idx, {xaxis.data_idx} ) * xaxis.fak;
                         ivg::Matrix y = it.data.get_sub( idx, {yaxis.data_idx} ) * yaxis.fak;
                         ivg::Matrix sig = it.data.get_sub( idx, {5} )*1e12;
-                        
+                        if (it.type==residtype::station) {
+			  for (int i=0;i<idx.size();i++)
+			    if (it.first_station.at(idx[i])!=selection)
+			      y(i)=y(i)*-1;
+			}
                  
                         // TEST OUTPUT to check indices
 //                        std::cerr << "loop: " << loop << " x.size "<< x.size(1) << " " << x.size(2)  <<  std::endl;
@@ -497,15 +501,16 @@ void Statistics::correctCBreak()
         std::cout << "  clockbreak time: " << cbTime.toUTC().toString("dd.MM.yyyy. HH:mm:ss.zzz t").toStdString() << "   offset: " << clockBreak << std::endl;
         
     
-        ivg::Date d( cbTime.date().year(), cbTime.date().month(),cbTime.date().day(),
-                     cbTime.time().hour(), cbTime.time().minute(), 
-                     double(cbTime.time().second()) + double(cbTime.time().msec())  );
+        ivg::Date d( cbTime.toUTC().date().year(), cbTime.toUTC().date().month(),cbTime.toUTC().date().day(),
+                     cbTime.toUTC().time().hour(), cbTime.toUTC().time().minute(), 
+                     double(cbTime.toUTC().time().second()) + double(cbTime.toUTC().time().msec())  );
               
         
-        _clock_break_station.push_back(graph_list.at(0)->name().toStdString());
+        //_clock_break_station.push_back(graph_list.at(0)->name().toStdString());
+	_clock_break_station.push_back(dialog->get_plot()->graph(0)->name().toStdString());
         _clock_break_epoch_mjd.push_back(d.get_double_mjd());
         std::cout << "              mjd: " <<  std::setprecision(12) <<d.get_double_mjd() << endl;
-    
+	
         
     } else {
         std::cerr << "You have to select 2 graphs using STRG" << std::endl;

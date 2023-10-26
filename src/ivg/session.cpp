@@ -139,7 +139,7 @@ Session & Session::operator+=( Session &other )
                 bool sh_source = (find(special_handlings.begin(), special_handlings.end(), remove_spaces_end(param_other->get_name())) != special_handlings.end());
                 // in case of ivg::ASCOT snx files it might be a clockbreak-parameter
                 bool new_clockbreak = param_other->is_type({ivg::paramtype::cbr},{0});
-                                
+                sh_source=false;                
                 // check if special handling source really need to be set up new or if the identical source is already set up within a adjustable time range
                 // ATTENTION: time interval is set manually! default is 45+/- days
                 if(sh_source == true)
@@ -226,15 +226,21 @@ Session & Session::operator+=( Session &other )
 
                     // keep trf and crf up-to-date because the method modify_parameterization() works on _crf and _trf
                     // in case of a station
-                    if(param_other->is_type({ivg::paramtype::stax}, {0,1}))
+                    if(param_other->is_type({ivg::paramtype::stax}, {0}))
                     {
                         ivg::Analysis_station *station_other;
                         if(other._trf.get_station(&station_other,param_other->get_name()))
                         {
-                            ivg::Analysis_station new_station_this = (*station_other);
-                            _trf.push_back(new_station_this);
+                            ivg::Analysis_station* tmp;
+			    if(!(_trf.get_station(&tmp,param_other->get_name())))
+			      {
+				ivg::Analysis_station new_station_this = (*station_other);
+				_trf.push_back(new_station_this);
+			     
 
-                            ss << ". Pushed " << new_station_this.get_name(ivg::staname::ivs_name) << " to _trf ";
+				ss << ". Pushed " << new_station_this.get_name(ivg::staname::ivs_name) << " to _trf ";
+			      }
+                            
                         }
                         else
                             throw runtime_error( "Session & Session::operator+=( Session &other ): SHOULD NOT BE POSSIBLE (TRF)");
@@ -813,6 +819,12 @@ void Session::init_snx_solution(string adjustment_options, ivg::Date t_0)
             // in case of global modus, we use a specific reference epoch
             // and might want to introduce velocities for the stations
             string global_str = (const char*)(*_setup)["PARAMS"]["stations"][0]["stacking"][ "type" ];
+	    if ((*_setup).exists("global"))
+	      {
+		string breakfile=(*_setup)["global"]["break_file"];
+		if ( global_str == "global" && breakfile !="")
+		  _param_list.set_breaks(breakfile);
+	      }
             if( global_str == "global" && (bool)(*_setup)["PARAMS"]["stations"][0]["stacking"][ "insert_velocities" ])
             {
 	      
@@ -1085,7 +1097,12 @@ string Session::solve( bool use_only_indep_bl)
     _param_list.create_nnr_nnt_equations((*_setup),_trf,_crf, (*_solution));
     _nnr_nnt_set = true;
    }
-   
+    if ((*_setup).exists("global"))
+     {
+       string constrfile=(*_setup)["global"]["velocity_constraints"];
+       if ( constrfile !="")
+	 _param_list.create_vel_constr(constrfile, (*_setup),  (*_solution) );
+     }
     _param_list.create_common_clock_equations( (*_setup),(*_solution) );
             
     // OUTLIER HANDLING from config file:
@@ -2803,7 +2820,7 @@ void Session::_eliminate_data()
           }
        }
     }
-    remove_duplicates(rem_par);
+    //remove_duplicates(rem_par);
     sort( rem_par.begin(), rem_par.end() );
     for( int i=rem_par.size()-1; i>=0; --i )
        _param_list.remove_param( rem_par.at( i ) );
@@ -3132,7 +3149,7 @@ string Session::_create_configuration_textblock(Setting *setup)
            station_names = _trf.get_station_names(ivg::staname::ivs_name);
            std::copy(station_names.begin(), station_names.end(), std::ostream_iterator<string>(ss, "\n"));
        }
-       else
+       else if (idx>0)
        {
             ss << " NNR/NNT on following stations: " << endl;
             ss << "--------------------------------" << endl << " ";
@@ -3143,6 +3160,20 @@ string Session::_create_configuration_textblock(Setting *setup)
                 if(_trf.get_station(&tmp, sta_name, ivg::staname::lettercode))
                 {
                     ss << (const char *)S["groups"]["stations"][idx-1 ][ i ] << "\n ";
+                }
+            }
+       }
+       else
+       {
+            ss << " NNR/NNT on all except the following stations: " << endl;
+            ss << "--------------------------------" << endl << " ";
+            for( int i=0; i<S["groups"]["stations"][ -idx-1 ].getLength(); ++i )
+            {
+                string sta_name = S["groups"]["stations"][-idx-1 ][ i ];
+                ivg::Analysis_station *tmp;
+                if(_trf.get_station(&tmp, sta_name, ivg::staname::lettercode))
+                {
+                    ss << (const char *)S["groups"]["stations"][-idx-1 ][ i ] << "\n ";
                 }
             }
        }
@@ -3313,7 +3344,7 @@ void Session::_create_weight_matrix( ivg::Matrix *wgt_ptr )
             //             >0 -> this group
             //             <0 -> all but this group
             int name_idx = stoch_model[ "additional_noise" ][ j ][ "stations" ];
-   
+	    selected_sta.clear();
             // aply settings for all stations
             if( name_idx == 0)
             {
@@ -3341,7 +3372,8 @@ void Session::_create_weight_matrix( ivg::Matrix *wgt_ptr )
             }
 
             for( int i=0;i<selected_sta.size();++i )
-            { 
+            {
+	      
                add_variances[ selected_sta.at( i ) ][ "cl" ] 
                   = pow( (double)(stoch_model)["additional_noise"][j]["constant_sigma"] * 1e-12,2.0 );
                add_variances[ selected_sta.at( i ) ][ "at" ]

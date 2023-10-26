@@ -341,11 +341,16 @@ int main(int argc, char** argv) {
                         // construct wrapper
                         int year = master.get_session_info(db).date.get_int_year();
                         if(year == 0){
-                            year = stoi(db.substr(0,2));
-                            if (year<79)
-                                year += 2000;
-                            else
-                                year += 1900;
+                            
+			  if (db.size()<=9){
+			    year = stoi(db.substr(0,2));
+			    if (year<79)
+			      year += 2000;
+			    else
+			      year += 1900;
+			  } else {
+			    year=stoi(db.substr(0,4));
+			  }
                         }
                         string vgos_dir = (const char *) get_list_element(setup["datadirs"], setup["session_type"])[2];
                         vgos_dir += "/" + std::to_string(year) + "/" + db + "/";

@@ -466,7 +466,8 @@ class Param_list
         {
             return _stoch_params.end();
         };        
-
+        void create_vel_constr( string constr_file, Setting &setup, ivg::Ls_solution &solver );
+        void set_breaks( string breakfile );
  
        
     private:

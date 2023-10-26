@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'statistics.ui'
 **
-** Created by: Qt User Interface Compiler version 5.12.8
+** Created by: Qt User Interface Compiler version 5.15.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -265,7 +265,7 @@ public:
         gridLayout_2->addLayout(gridLayout, 1, 0, 1, 1);
 
         stats_dockwidget->setWidget(stats_contentwidget);
-        Statistics->addDockWidget(static_cast<Qt::DockWidgetArea>(4), stats_dockwidget);
+        Statistics->addDockWidget(Qt::TopDockWidgetArea, stats_dockwidget);
         plot_dockwidget = new QDockWidget(Statistics);
         plot_dockwidget->setObjectName(QString::fromUtf8("plot_dockwidget"));
         QSizePolicy sizePolicy4(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -292,7 +292,7 @@ public:
         gridLayout_5->addWidget(plot_tabwidget, 0, 0, 1, 1);
 
         plot_dockwidget->setWidget(plot_contentwidget);
-        Statistics->addDockWidget(static_cast<Qt::DockWidgetArea>(4), plot_dockwidget);
+        Statistics->addDockWidget(Qt::TopDockWidgetArea, plot_dockwidget);
         hist_dockwidget = new QDockWidget(Statistics);
         hist_dockwidget->setObjectName(QString::fromUtf8("hist_dockwidget"));
         QSizePolicy sizePolicy5(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -305,7 +305,7 @@ public:
         dockWidgetContents->setObjectName(QString::fromUtf8("dockWidgetContents"));
         dockWidgetContents->setMinimumSize(QSize(0, 0));
         hist_dockwidget->setWidget(dockWidgetContents);
-        Statistics->addDockWidget(static_cast<Qt::DockWidgetArea>(4), hist_dockwidget);
+        Statistics->addDockWidget(Qt::TopDockWidgetArea, hist_dockwidget);
 
         retranslateUi(Statistics);
 
@@ -314,21 +314,21 @@ public:
 
     void retranslateUi(QMainWindow *Statistics)
     {
-        Statistics->setWindowTitle(QApplication::translate("Statistics", "MainWindow", nullptr));
-        errorbar_checkbox->setText(QApplication::translate("Statistics", "Errorbar", nullptr));
-        histogram_checkbox->setText(QApplication::translate("Statistics", "Histogram", nullptr));
-        crosscorr_checkbox->setText(QApplication::translate("Statistics", "CrCo", nullptr));
-        yaxis_label->setText(QApplication::translate("Statistics", "Y-Axis:", nullptr));
-        absolute_checkbox->setText(QApplication::translate("Statistics", "absolute", nullptr));
-        xaxis_label->setText(QApplication::translate("Statistics", "X-Axis:", nullptr));
-        outlier_checkbox->setText(QApplication::translate("Statistics", "Outlier", nullptr));
-        boxplot_checkbox->setText(QApplication::translate("Statistics", "BoxPlot", nullptr));
-        cbreak_pushbutton->setText(QApplication::translate("Statistics", "CBreak", nullptr));
-        residUp_pushbotton->setText(QApplication::translate("Statistics", "^", nullptr));
-        residDown_pushbotton->setText(QApplication::translate("Statistics", "v", nullptr));
-        save_pushbutton->setText(QApplication::translate("Statistics", "save", nullptr));
-        plot_tabwidget->setTabText(plot_tabwidget->indexOf(tab), QApplication::translate("Statistics", "Tab 1", nullptr));
-        plot_tabwidget->setTabText(plot_tabwidget->indexOf(tab_2), QApplication::translate("Statistics", "Tab 2", nullptr));
+        Statistics->setWindowTitle(QCoreApplication::translate("Statistics", "MainWindow", nullptr));
+        errorbar_checkbox->setText(QCoreApplication::translate("Statistics", "Errorbar", nullptr));
+        histogram_checkbox->setText(QCoreApplication::translate("Statistics", "Histogram", nullptr));
+        crosscorr_checkbox->setText(QCoreApplication::translate("Statistics", "CrCo", nullptr));
+        yaxis_label->setText(QCoreApplication::translate("Statistics", "Y-Axis:", nullptr));
+        absolute_checkbox->setText(QCoreApplication::translate("Statistics", "absolute", nullptr));
+        xaxis_label->setText(QCoreApplication::translate("Statistics", "X-Axis:", nullptr));
+        outlier_checkbox->setText(QCoreApplication::translate("Statistics", "Outlier", nullptr));
+        boxplot_checkbox->setText(QCoreApplication::translate("Statistics", "BoxPlot", nullptr));
+        cbreak_pushbutton->setText(QCoreApplication::translate("Statistics", "CBreak", nullptr));
+        residUp_pushbotton->setText(QCoreApplication::translate("Statistics", "^", nullptr));
+        residDown_pushbotton->setText(QCoreApplication::translate("Statistics", "v", nullptr));
+        save_pushbutton->setText(QCoreApplication::translate("Statistics", "save", nullptr));
+        plot_tabwidget->setTabText(plot_tabwidget->indexOf(tab), QCoreApplication::translate("Statistics", "Tab 1", nullptr));
+        plot_tabwidget->setTabText(plot_tabwidget->indexOf(tab_2), QCoreApplication::translate("Statistics", "Tab 2", nullptr));
     } // retranslateUi
 
 };
