@@ -178,7 +178,7 @@ void Wrapper::_read_wrapper(std::string wrp_path, std::string dbName, std::strin
             while( ivg::parser::get_line(wrp_path,inStream, line))
             {   
                 ++row;
-                enum blocks {Session, Observation, Station,Scan};
+                enum blocks {Session, Observation, Station,Scan, Solve};
                 int current_block;
 		
                 // exclamation mark is comment symbol
@@ -200,6 +200,10 @@ void Wrapper::_read_wrapper(std::string wrp_path, std::string dbName, std::strin
                     }
 		     else if(line.find("Begin Scan") !=std::string::npos){
                         current_block = blocks::Scan;
+                        continue;
+                    }
+		    else if(line.find("Begin Program Solve") !=std::string::npos){
+                        current_block = blocks::Solve;
                         continue;
                     }
                     // remove the ending (.nc)
@@ -226,7 +230,13 @@ void Wrapper::_read_wrapper(std::string wrp_path, std::string dbName, std::strin
 			if( line.find("Source")  !=std::string::npos ){
                             _association[ivg::wrapper_entries::Sources][ivg::band::X] = _create_wrapper_entry(line, row );
                             _association[ivg::wrapper_entries::Sources][ivg::band::S] = _create_wrapper_entry(line, row );
-                        }   
+                        }
+			if( line.find("BaselineClockSetup")  !=std::string::npos)
+                            {
+                                _association[ivg::wrapper_entries::BLClock][ivg::band::X] = _create_wrapper_entry(line, row );
+				_association[ivg::wrapper_entries::BLClock][ivg::band::S] = _create_wrapper_entry(line, row );
+                            }
+		     
                         break;
                     case Observation:
                         for ( int i = 0; i <  ivg::band::MAXBANDTYPE; i++ )
@@ -336,10 +346,12 @@ void Wrapper::_read_wrapper(std::string wrp_path, std::string dbName, std::strin
                             }
 		      }
 		    case Scan:
-                        if( line.find("ScanName")  !=std::string::npos ){
-                            _association[ivg::wrapper_entries::ScanName][ivg::band::X] = _create_wrapper_entry(line, row );
-                            _association[ivg::wrapper_entries::ScanName][ivg::band::S] = _create_wrapper_entry(line, row );
-                        }
+		      if( line.find("ScanName")  !=std::string::npos ){
+			_association[ivg::wrapper_entries::ScanName][ivg::band::X] = _create_wrapper_entry(line, row );
+			_association[ivg::wrapper_entries::ScanName][ivg::band::S] = _create_wrapper_entry(line, row );
+		      }
+		      
+		      
                     }
                 }
 
@@ -437,7 +449,9 @@ std::string Wrapper::wrapper_entries_to_string(ivg::wrapper_entries entry )
 	    case ivg:: wrapper_entries::Phase:
                 return "Phase"; 	
 	    case ivg:: wrapper_entries::RefFreq:
-                return "RefFreq"; 	
+                return "RefFreq";
+	    case ivg:: wrapper_entries::BLClock:
+                return "BaselineClocks";
             default:
                 return "n/a";
         }

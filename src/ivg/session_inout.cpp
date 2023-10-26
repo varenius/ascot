@@ -755,8 +755,11 @@ void Session_inout::_read_vgosdb(ivg::Session *session_ptr, Setting *setup, cons
         cb_filename = _wrapper_ptr->get_file(ivg::wrapper_entries::ClockBreak,ivg::band::X);
     else
         cb_filename = "ClockBreak";   
-    
-    if(vgosdb.does_file_exist("Session",cb_filename))
+    bool use_cb_file=true;
+    if(setup->exists("UseClockbreakFile"))
+      use_cb_file=(*setup)["UseClockbreakFile"];
+
+    if((vgosdb.does_file_exist("Session",cb_filename))&&use_cb_file)
     {
 
         int ncbr = vgosdb.get_scalar<short>("Session", cb_filename,"BRK_NUMB");
@@ -813,6 +816,32 @@ void Session_inout::_read_vgosdb(ivg::Session *session_ptr, Setting *setup, cons
     {
        session_ptr->_param_list.set_breaks( breaks );   
        log<INFO>("*** Setting clock breaks to be parameterized [#") % breaks[ivg::paramtype::cbr].size() % "] and CPWLF breaks for atmospheric parameters [#" % breaks[ivg::paramtype::atbr].size() % "]";
+    }
+
+    // Check for Baseline clock offset that should be set up
+    bool use_blc_file=false;
+    if(setup->exists("UseBLClockFile"))
+      use_blc_file=(*setup)["UseBLClockFile"];
+    string blc_filename;
+    if( use_wrapper  && _wrapper_ptr->file_exists(ivg::wrapper_entries::BLClock,ivg::band::X))
+        blc_filename = _wrapper_ptr->get_file(ivg::wrapper_entries::BLClock,ivg::band::X);
+    else
+        blc_filename = "BaselineClockSetup";   
+    if((vgosdb.does_file_exist("Solve",blc_filename))&&use_blc_file)
+    {
+      
+      vector<vector<vector<char>>> blc_char= vgosdb.get_vector_3d_data<char>("Solve", blc_filename,"BaselineClock");
+      for (int i=0;i<blc_char.size();i++)
+	{
+	  std::string blsta1(blc_char[i][0].begin(),blc_char[i][0].end());
+	  std::string blsta2(blc_char[i][1].begin(),blc_char[i][1].end());
+	  
+	  session_ptr->_param_list.add_bl_clock(remove_spaces_end(blsta1)+"-"+remove_spaces_end(blsta2));
+	}
+      
+      //vector<vector<string>> blc_stations = vgosdb.get_vector_2d_data<string>("Solve", blc_filename,"BaselineClock");
+      //	for ( int i=0;i<blc_stations.size();i++)
+      //	  std::cout << (blc_stations.at(i))[0] << " -- " <<(blc_stations.at(i))[1]  << endl;
     }
     
     // get information which station-clock should be used as reference
@@ -1587,8 +1616,8 @@ void Session_inout::_read_vgosdb(ivg::Session *session_ptr, Setting *setup, cons
                 obs_new.set_use_flag( false );
 
             //  saving of outliers only possible if all observations are used
-            if( (bool)(*session_ptr->_setup)["outliers"]["save"][0] )
-                obs_new.set_use_flag( true );
+            //if( (bool)(*session_ptr->_setup)["outliers"]["save"][0] )
+            //    obs_new.set_use_flag( true );
 
             // increment counter
             if(delay_flag.at(cnt) != 0) 

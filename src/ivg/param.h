@@ -76,7 +76,7 @@ class Param
         *              [int] degree of polynom
         *  \return An instance of the class 'Param'
         */
-        Param(ivg::paramtype type, string name, ivg::Date epoch, double apriori = 0.0, int order = 0);
+        Param(ivg::paramtype type, string name, ivg::Date epoch, double apriori = 0.0, int order = 0, int br=0);
 
         /**
         *  \b Description: \n
@@ -411,7 +411,11 @@ class Param
         
         void set_reduce_flag( bool f ){ _reduce = f;};
         bool get_reduce_flag(){ return _reduce; };
-
+        int get_break()
+         {
+             return _break;
+         };
+        void set_break( int br ){ _break = br;};
     private:
 
         // ==============================================
@@ -423,7 +427,7 @@ class Param
         string _name;
         int _order;
         int _stacked;
-
+        int _break;
         // a priori value, estimation value, standard deviation (polynom),
         // standard deviation of the offset constraint and epoch of a parameter
         double _apriori;

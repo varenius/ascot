@@ -21,15 +21,17 @@ Param::Param(ivg::paramtype type, string name)
     _previ_para = NULL;
     _after_para = NULL;
     _reduce = false;
+    _break = 0;
 }
 // ...........................................................................
 Param::Param(ivg::paramtype type, string name, ivg::Date epoch, double apriori, 
-             int order) : Param(type,name)
+             int order, int br) : Param(type,name)
 // ...........................................................................
 {
     _epoch = epoch;
     _apriori = apriori;
     _order = order;
+    _break = br;
 }
 // ...........................................................................
 Param::Param(const string line, bool apriori)
@@ -75,6 +77,7 @@ Param::Param(const Param& orig)
     _previ_para = orig._previ_para;
     _after_para = orig._after_para;
     _reduce = orig._reduce;
+    _break= orig._break;
 }
 // ...........................................................................
 Param::~Param()
@@ -85,7 +88,7 @@ bool Param::operator==( const Param test ) const
 // ...........................................................................
 {
     bool out = false;
-    if( _name == test._name && _type == test._type && _order == test._order )
+    if( _name == test._name && _type == test._type && _order == test._order && _break == test._break)
         out = true;
 
     return out;
@@ -141,7 +144,8 @@ string Param::get_resultline(bool apriori)
         << _std*ivg::param_unit_fac.at(_type) << " "
         << setw(3) << left << ivg::paramtype_unit.at(_type) << " ";
 //        << setfill(' ') << setw(22) << right << setprecision(14) << scientific << _apriori << " ";
-      
+    if (_break!=0)
+        ss << setw(3) << right << _break << " ";  
     return ss.str();
 }
 /*

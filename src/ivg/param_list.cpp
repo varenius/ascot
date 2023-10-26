@@ -1272,6 +1272,42 @@ void Param_list::create_constraint_conditions( ivg::Ls_solution &solver )
 #endif  
 }
 // ...........................................................................
+void Param_list::set_breaks( string breakfile )
+// ...........................................................................
+{
+  ifstream inStream;
+  string line;
+  vector<int> breaknr;
+  vector<string> stats;
+  vector<double> mjd_st,mjd_en;
+  while( ivg::parser::get_line(breakfile, inStream, line) )
+    {
+      stats.push_back(remove_spaces_end(line.substr(0,8 )));
+      stringstream ss(line.substr(9));
+      int tmp0;
+      double tmp1,tmp2;
+      ss >> tmp0 >> tmp1 >> tmp2;
+      breaknr.push_back(tmp0);
+      mjd_st.push_back(tmp1);
+      mjd_en.push_back(tmp2);
+      
+    }
+  inStream.close();
+  for (int i=0;i<stats.size();i++)
+    {
+      vector<int> ids=get_indexes({stax,stay,staz},stats.at(i));
+      for (int j=0;j<ids.size();j++)
+      {
+        if (ids.at(j)!=-1) {
+          ivg::Param *para=get_param(ids.at(j));
+          ivg::Date dt=para->get_epoch();
+          if (dt.get_double_mjd()>mjd_st.at(i) && dt.get_double_mjd()<=mjd_en.at(i))
+            para->set_break(breaknr.at(i));
+        }
+      }
+    }
+}
+// ...........................................................................
 void Param_list::insert_station_velocities( ivg::Ls_neq &neq_solution, ivg::Date &ref_epoch, ivg::Trf &trf )
 // ...........................................................................
 {
@@ -1291,21 +1327,20 @@ void Param_list::insert_station_velocities( ivg::Ls_neq &neq_solution, ivg::Date
             ivg::Analysis_station * sta_iter;
             trf.get_station(&sta_iter,param->get_name(), ivg::staname::description);
             
-            ivg::Matrix vel = sta_iter->get_vel(ref_epoch);
+            ivg::Matrix vel = sta_iter->get_vel(param->get_epoch());
             double apriori = vel((int)param->get_type()) / ivg::param_unit_fac.at(param->get_type());
             
             idx_sta_0.push_back(param - begin());
             dt_sta.push_back((param->get_epoch().get_double_mjd() - ref_epoch.get_double_mjd())/365.25);           
-	    ivg::Matrix xyz0=sta_iter->get_xyz(param->get_epoch());
-	   
-	   
-	    param->set_apriori(param->get_apriori()+apriori*(ref_epoch.get_double_mjd()-param->get_epoch().get_double_mjd())/365.25);
+	    ivg::Matrix xyz0=sta_iter->calc_xyz(param->get_epoch());//sta_iter->get_xyz(param->get_epoch());
+	    param->set_apriori(xyz0((int)param->get_type())/ ivg::param_unit_fac.at(param->get_type())+apriori*(ref_epoch.get_double_mjd()-param->get_epoch().get_double_mjd())/365.25);
+	    
+			       //param->set_apriori(param->get_apriori()+apriori*(ref_epoch.get_double_mjd()-param->get_epoch().get_double_mjd())/365.25);
             param->set_epoch(ref_epoch);
 
-	    
 	   
             
-            param = _params.insert( param+1, ivg::Param(param->get_type(), param->get_name(), ref_epoch, apriori, 1));
+            param = _params.insert( param+1, ivg::Param(param->get_type(), param->get_name(), ref_epoch, apriori, 1,param->get_break()));
 	    
         }
     }
@@ -1387,6 +1422,77 @@ void Param_list::transform_cpwlf2offsetrate( ivg::Ls_neq &neq_solution, ivg::Dat
 #if DEBUG_VLBI >=2
    cerr << "--- void Param_list::transform_cpwlf2offsetrate( ivg::Ls_neq &neq_solution, ivg::Date &t_0 )" << " : " << tim.toc() << " s " << endl;
 #endif   
+}
+// ...........................................................................
+void Param_list::create_vel_constr( string constr_file, Setting &setup, ivg::Ls_solution &solver )
+// ...........................................................................
+{
+#if DEBUG_VLBI >=2
+  cerr << "+++ void Param_list::create_vel_constr( string constr_file, Setting &setup, ivg::Ls_solution &solver )" << endl;
+  tictoc tim;
+  tim.tic();
+#endif
+  
+  ifstream inStream;
+  string line;
+  vector<double> constr;
+  ivg::Matrix B(0,_params.size());
+  while( ivg::parser::get_line(constr_file, inStream, line) )
+    {
+      if (line.size()>26) {
+	ivg::Matrix ids(3,2,-1);
+	for (int i=0;i<=1;i++)
+	  {
+	    string st=remove_spaces_end(line.substr(13*i,8 ));
+	    int br=stoi(line.substr(13*i+9,3));
+	    
+	    for (int j=0;j<_params.size();j++)
+	      {
+		if (_params.at(j)==ivg::Param(stax,st,ivg::Date(),0.0,1,br))
+		  ids(0,i)=j;
+		
+		if (_params.at(j)==ivg::Param(stay,st,ivg::Date(),0.0,1,br))
+		  ids(1,i)=j;
+		if (_params.at(j)==ivg::Param(staz,st,ivg::Date(),0.0,1,br))
+		  ids(2,i)=j;
+	      }
+	  }
+	if (ids(0,0)!=-1 && ids(0,1)!=-1 && ids(1,0)!=-1 && ids(1,1)!=-1 && ids(2,0)!=-1 && ids(2,1)!=-1)
+	  {
+	    
+	    ivg::Matrix tmp(3,_params.size(),0.0);
+	    tmp(0,ids(0,0))=1;
+	    tmp(1,ids(1,0))=1;
+	    tmp(2,ids(2,0))=1;
+	    tmp(0,ids(0,1))=-1;
+	    tmp(1,ids(1,1))=-1;
+	    tmp(2,ids(2,1))=-1;
+	    
+	    B.append_rows(tmp);
+	    
+
+	    stringstream ss(line.substr(26));
+	    
+	    double tmpc;
+	    ss >> tmpc ;
+	    
+	    constr.push_back(1/pow(tmpc,2));
+	    constr.push_back(1/pow(tmpc,2));
+	    constr.push_back(1/pow(tmpc,2));
+	  }
+      }
+    }
+  inStream.close();
+  
+  if (B.rows()>0){
+    solver.update_nnt_nnr_constraints( B,ivg::Matrix(constr));
+    log<INFO>("*** ") % B.rows() % " velocity constraints added! ";
+  }
+#if DEBUG_VLBI >=2
+  cerr << "--- void Param_list::create_vel_constr( string constr_file, Setting &setup, ivg::Ls_solution &solver )" << endl;
+  tictoc tim;
+  tim.tic();
+#endif
 }
 // ...........................................................................
 void Param_list::create_nnr_nnt_equations( Setting &setup, ivg::Trf &trf,
@@ -1482,12 +1588,20 @@ void Param_list::create_nnr_nnt_equations( Setting &setup, ivg::Trf &trf,
                 for(int order=0; order<=sta_order; order++)
                 {   
                     int sta_cnt=0;
+		    int maxbr=0;
                     for(int i=0; i<param_lst.size(); i++)
-                    {                 
+                    {
+		      for (int b=0;b<=maxbr;b++) { 
                         vector<int> idx;
                         for(auto &param: _params)
                             if(param.is_type({ivg::paramtype::stax, ivg::paramtype::stay, ivg::paramtype::staz},{order}) && param.get_name() == param_lst.at(i))
-                                idx.push_back(get_index(param));
+			      {
+				int brnr=param.get_break();
+				if (brnr==b)
+				  idx.push_back(get_index(param));
+				if (brnr>maxbr)
+				  maxbr=brnr;
+			      }
 
                         idx.erase( unique( idx.begin(), idx.end() ), idx.end() );
 
@@ -1538,7 +1652,8 @@ void Param_list::create_nnr_nnt_equations( Setting &setup, ivg::Trf &trf,
                         }
                         else if( idx.size() == 1 && idx.at(0) != -1 )
                             log<WARNING>("!!! Unexpected length of parameters for NNR/NNT condition: ") % idx.size() % " for " % param_lst.at(i) % " instead of 3";
-                    }
+		      }
+		    }
                    
                     if(order == 0)
                         log<INFO>("*** #6 constraints added to system due to NNR/NNT on ") % sta_cnt % " of " % sta_names.size() % " station positions";
