@@ -2822,9 +2822,11 @@ void Session::_eliminate_data()
     }
     //remove_duplicates(rem_par);
     sort( rem_par.begin(), rem_par.end() );
+    remove_duplicates(rem_par);
     for( int i=rem_par.size()-1; i>=0; --i )
+      {
        _param_list.remove_param( rem_par.at( i ) );
-
+      }
     // loop over scans and observations therein and remove observations
     // remember indexes to remove them later from Lsa-object
     map<string,int> reason_counter;
