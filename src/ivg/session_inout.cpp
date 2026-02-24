@@ -1538,13 +1538,28 @@ void Session_inout::_read_vgosdb(ivg::Session *session_ptr, Setting *setup, cons
             {
                  for( int i=0; i<(*(session_ptr->_handling))["handling"]["ignore_cable_cal"].getLength(); ++i )
                  {
-                     string station = (*(session_ptr->_handling))["handling"]["ignore_cable_cal"][i];                 
+                     string station = (*(session_ptr->_handling))["handling"]["ignore_cable_cal"][i];
                      if( station == sta1 )
                          cable_cal1 = 0.0;
                      else if( station == sta2 )
                          cable_cal2 = 0.0;
-                 }                                   
+                 }
             }
+
+            double pco1 = 0.0;
+            double pco2 = 0.0;
+            if((bool)(*(session_ptr->_handling)).exists("handling") &&
+               (bool)((*(session_ptr->_handling))["handling"]).exists("phase_center_offset"))
+            {
+                for(int i=0; i<(*(session_ptr->_handling))["handling"]["phase_center_offset"].getLength(); ++i)
+                {
+                    string station = (*(session_ptr->_handling))["handling"]["phase_center_offset"][i][0];
+                    double val     = (*(session_ptr->_handling))["handling"]["phase_center_offset"][i][1];
+                    if( station == sta1 ) pco1 = val;
+                    else if( station == sta2 ) pco2 = val;
+                }
+            }
+            obs_new.set_phase_center_offset( pco1, pco2 );
 
             double temp1 = aux_data[sta1]["TempC"].at(data_idx1); // unit celsius
             double press1 = aux_data[sta1]["AtmPres"].at(data_idx1); // unit hPa

@@ -27,11 +27,11 @@ namespace ivg
 {
 
 //Parameter Type
-                                enum paramtype {        stax,        stay,        staz,    clo,         zwd,         ngr,         egr,          xpo,          ypo,            ut1,         nutx,         nuty,      ra,     dec,     cbr,    nutln,     nutob,    blcl, atbr, MAXPARAM };
-const std::vector<std::string> paramtype_str = {      "stax",      "stay",      "staz",  "clo",    "zwd"   ,       "ngr",       "egr",        "xpo",        "ypo",          "ut1",       "nutx",       "nuty",    "ra",   "dec",   "cbr",  "nutln",   "nutob",  "blcl",  "atbr"};
-const std::vector<std::string> paramtype_snx(  {      "STAX",      "STAY",      "STAZ",  "CLO",    "TROTOT",    "TGNTOT",    "TGETOT",        "XPO",        "YPO",          "UT1",      "NUT_X",      "NUT_Y", "RS_RA", "RS_DE", "CL_BR", "NUT_LN",  "NUT_OB", "BL_CL", "AT_CR"} );
-const std::vector<std::string> paramtype_unit( {      "m"   ,         "m",         "m",    "s",         "m",         "m",         "m",        "mas",        "mas",           "ms",        "mas",        "mas",   "rad",   "rad",     "s",    "mas",     "mas",     "s",     "m"} );
-const std::vector<double> param_unit_fac(      { ivg::c*1e-2, ivg::c*1e-2, ivg::c*1e-2, 1.0e-1, ivg::c*1e-1, ivg::c*1e-2, ivg::c*1e-2, ivg::rad2mas, ivg::rad2mas, ivg::rad2s*1e3, ivg::rad2mas, ivg::rad2mas,     1.0,     1.0,  1.0e-1,      1.0,       1.0,  1.0e-1, ivg::c*1e-1} );
+                                enum paramtype {        stax,        stay,        staz,    clo,         zwd,         ngr,         egr,          xpo,          ypo,            ut1,         nutx,         nuty,      ra,     dec,     cbr,    nutln,     nutob,    blcl, atbr,        pco, MAXPARAM };
+const std::vector<std::string> paramtype_str = {      "stax",      "stay",      "staz",  "clo",    "zwd"   ,       "ngr",       "egr",        "xpo",        "ypo",          "ut1",       "nutx",       "nuty",    "ra",   "dec",   "cbr",  "nutln",   "nutob",  "blcl",  "atbr",      "pco"};
+const std::vector<std::string> paramtype_snx(  {      "STAX",      "STAY",      "STAZ",  "CLO",    "TROTOT",    "TGNTOT",    "TGETOT",        "XPO",        "YPO",          "UT1",      "NUT_X",      "NUT_Y", "RS_RA", "RS_DE", "CL_BR", "NUT_LN",  "NUT_OB", "BL_CL", "AT_CR",      "PCO"} );
+const std::vector<std::string> paramtype_unit( {      "m"   ,         "m",         "m",    "s",         "m",         "m",         "m",        "mas",        "mas",           "ms",        "mas",        "mas",   "rad",   "rad",     "s",    "mas",     "mas",     "s",     "m",         "m"} );
+const std::vector<double> param_unit_fac(      { ivg::c*1e-2, ivg::c*1e-2, ivg::c*1e-2, 1.0e-1, ivg::c*1e-1, ivg::c*1e-2, ivg::c*1e-2, ivg::rad2mas, ivg::rad2mas, ivg::rad2s*1e3, ivg::rad2mas, ivg::rad2mas,     1.0,     1.0,  1.0e-1,      1.0,       1.0,  1.0e-1, ivg::c*1e-1, ivg::c*1e-2} );
 
 //enum paramtype { stax, stay, staz, clo, zwd, ngr, egr, xpo, xpor, ypo, ypor, ut1, lod, nutx, nuty, ra, dec };
 //const std::vector<std::string> paramtype_str = { "stax", "stay", "staz", "clo", "zwd", "ngr", "egr", "xpo", "xpor", "ypo", "ypor", "ut1", "lod", "nutx", "nuty", "ra", "dec" };

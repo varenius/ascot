@@ -150,6 +150,13 @@ class Obs
         void set_feed_rotation( double feed1, double feed2 );
         /**
         *  \b Description: \n
+        *        Method to set phase center offset for both stations
+        *  \param [in] [double] vertical phase center offset for station 1 [m]
+        *              [double] vertical phase center offset for station 2 [m]
+        */
+        void set_phase_center_offset( double pco1, double pco2 );
+        /**
+        *  \b Description: \n
         *        Method to set cable calibration correction
         *  \param [in] [double] cable calibration correction for station 1
         *              [double] cable calibration correction for station 2

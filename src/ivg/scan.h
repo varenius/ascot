@@ -52,6 +52,7 @@ class Scan
             ivg::Troposphere tropo;
             double cable_cal;
             double feed_rotation;
+            double phase_center_height;   // vertical phase center offset [m]
             double clo0;
         };
 

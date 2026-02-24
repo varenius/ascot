@@ -143,6 +143,13 @@ void Obs::set_feed_rotation( double feed1, double feed2 )
     _scan->_data.at( _sta2_scan_idx ).feed_rotation = feed2;
 }
 // ...........................................................................
+void Obs::set_phase_center_offset( double pco1, double pco2 )
+// ...........................................................................
+{
+    _scan->_data.at( _sta1_scan_idx ).phase_center_height = pco1;
+    _scan->_data.at( _sta2_scan_idx ).phase_center_height = pco2;
+}
+// ...........................................................................
 void Obs::set_cable_cal( double cc1, double cc2 )
 // ...........................................................................
 {
@@ -517,7 +524,15 @@ void Obs::calc_delay( vector<double>::iterator design_iter, vector<double>::iter
       gravdef_2 = _scan->calc_gravdef_delay( _sta2_scan_idx, k2_trf  );
     }
     tau += ( gravdef_2-gravdef_1 );
-   
+
+    // phase center offset correction (phase delay only)
+    if( delaytype == 'p' )
+    {
+        double pco1 = _scan->_data.at( _sta1_scan_idx ).phase_center_height;
+        double pco2 = _scan->_data.at( _sta2_scan_idx ).phase_center_height;
+        tau += ( pco2*sin(azel2(1)) - pco1*sin(azel1(1)) ) / ivg::c;
+    }
+
 //    // TEMPORARY LUCIA SATELLITE COMPARISON OUTPUT
 //    stringstream tmp_out2;
 //    tmp_out2 << " " << setfill(' ') << setw(21)<< right << scientific << setprecision(14) << -1.0 * tau << endl;
@@ -653,6 +668,15 @@ void Obs::calc_delay( vector<double>::iterator design_iter, vector<double>::iter
             _station2)) = 1.0/( tan( azel2(1) )*sin( azel2(1) )+0.0032 )
                           *sin( azel2(0) )*1e-2;
 
+    // PCO [m], phase delay only
+    if( delaytype == 'p' )
+    {
+        *(design_iter+_session->_param_list.get_index(ivg::paramtype::pco, _station1))
+            = -sin(azel1(1)) * 1e-2;
+        *(design_iter+_session->_param_list.get_index(ivg::paramtype::pco, _station2))
+            = +sin(azel2(1)) * 1e-2;
+    }
+
     if (par_aplo)
       {
 	*par_aplo=((dx2_ntaplo(0)-dx1_ntaplo(0))*B(0)+(dx2_ntaplo(1)-dx1_ntaplo(1))*B(1)+(dx2_ntaplo(2)-dx1_ntaplo(2))*B(2))/ivg::c;
@@ -736,8 +760,17 @@ void Obs::calc_delay( vector<double>::iterator design_iter, vector<double>::iter
             = (zhd2+zwd2) / ivg::param_unit_fac.at( ivg::paramtype::zwd );
     *(apriori_iter+_session->_param_list.get_index(ivg::paramtype::ngr,_station2)) 
             = _scan->_data.at( _sta2_scan_idx ).tropo.get_north_gradient() / ivg::param_unit_fac.at( ivg::paramtype::ngr );
-    *(apriori_iter+_session->_param_list.get_index(ivg::paramtype::egr,_station2)) 
-            = _scan->_data.at( _sta2_scan_idx ).tropo.get_east_gradient() / ivg::param_unit_fac.at( ivg::paramtype::egr ); 
+    *(apriori_iter+_session->_param_list.get_index(ivg::paramtype::egr,_station2))
+            = _scan->_data.at( _sta2_scan_idx ).tropo.get_east_gradient() / ivg::param_unit_fac.at( ivg::paramtype::egr );
+    if( delaytype == 'p' )
+    {
+        *(apriori_iter+_session->_param_list.get_index(ivg::paramtype::pco,_station1))
+            = _scan->_data.at(_sta1_scan_idx).phase_center_height
+              / ivg::param_unit_fac.at( ivg::paramtype::pco );
+        *(apriori_iter+_session->_param_list.get_index(ivg::paramtype::pco,_station2))
+            = _scan->_data.at(_sta2_scan_idx).phase_center_height
+              / ivg::param_unit_fac.at( ivg::paramtype::pco );
+    }
     // station coordinates
     ivg::Matrix sta2xyz =sta2->calc_xyz(_epoch,{"PSD","SEASONALS"});
      *(apriori_iter+_session->_param_list.get_index(ivg::paramtype::stax,_station2))=sta2xyz(0)/ ivg::param_unit_fac.at( ivg::paramtype::stax );

@@ -76,6 +76,7 @@ Param_list::Param_list(ivg::Trf &trf, ivg::Crf &crf, ivg::Eop_series &eops, ivg:
         _params.push_back(ivg::Param(ivg::paramtype::zwd, sta_name, epoch));
         _params.push_back(ivg::Param(ivg::paramtype::ngr, sta_name, epoch));
         _params.push_back(ivg::Param(ivg::paramtype::egr, sta_name, epoch));
+        _params.push_back(ivg::Param(ivg::paramtype::pco, sta_name, epoch));
     }
 
     ivg::Matrix erp = eops.calc_erp(epoch);
@@ -155,7 +156,8 @@ void Param_list::modify_parameterization( std::string dbname, Setting &setup,
         { "nut", {ivg::paramtype::nutx,ivg::paramtype::nuty}} ,
         { "gradients", {ivg::paramtype::ngr,ivg::paramtype::egr}} ,
         { "sources", {ivg::paramtype::ra,ivg::paramtype::dec}},
-        { "bl_clocks", {ivg::paramtype::blcl}}
+        { "bl_clocks", {ivg::paramtype::blcl}},
+        { "pco", {ivg::paramtype::pco}}
     };
 
     // only if nutobln exists in the config-file, take it into account (for sinex combination dgfi)
@@ -183,7 +185,8 @@ void Param_list::modify_parameterization( std::string dbname, Setting &setup,
          vector<string> altnames;
         // select relevant param names
         if( param_iter->first == "stations" || param_iter->first == "zwd" ||
-                param_iter->first == "gradients"  || param_iter->first == "clocks" )
+                param_iter->first == "gradients"  || param_iter->first == "clocks" ||
+                param_iter->first == "pco" )
 	  {
             names = sta_names;
 	   
