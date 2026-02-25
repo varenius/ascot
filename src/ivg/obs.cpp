@@ -404,7 +404,7 @@ void Obs::calc_delay( vector<double>::iterator design_iter, vector<double>::iter
             _scan->_data.at( _sta1_scan_idx ).tropo.calc_vmf1( azel1(1), interpolation_type, mf_hydr1, mf_wet1 );
         
         if(sta2->get_data_status("VMF1") == "W")
-            _scan->_data.at( _sta1_scan_idx ).tropo.calc_vmf1_gpt2( azel2(1), mf_hydr2, mf_wet2 );
+            _scan->_data.at( _sta2_scan_idx ).tropo.calc_vmf1_gpt2( azel2(1), mf_hydr2, mf_wet2 );
         else
             _scan->_data.at( _sta2_scan_idx ).tropo.calc_vmf1( azel2(1), interpolation_type, mf_hydr2, mf_wet2 );
     }
@@ -424,14 +424,14 @@ void Obs::calc_delay( vector<double>::iterator design_iter, vector<double>::iter
 	  }
         
         if(sta2->get_data_status("VMF3") != "X")
-            _scan->_data.at( _sta1_scan_idx ).tropo.calc_vmf3_gpt3( azel2(1), mf_hydr2, mf_wet2 );
+            _scan->_data.at( _sta2_scan_idx ).tropo.calc_vmf3_gpt3( azel2(1), mf_hydr2, mf_wet2 );
         else
 	  {
 	    try {
             _scan->_data.at( _sta2_scan_idx ).tropo.calc_vmf3( azel2(1), interpolation_type, mf_hydr2, mf_wet2 );
 	    }
 	    catch (int e) {
-	      _scan->_data.at( _sta1_scan_idx ).tropo.calc_vmf3_gpt3( azel2(1), mf_hydr2, mf_wet2 );
+	      _scan->_data.at( _sta2_scan_idx ).tropo.calc_vmf3_gpt3( azel2(1), mf_hydr2, mf_wet2 );
 	    }
 	  }
     }
